@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Unificado Multi-Plataforma & Públicos</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- PapaParse para ler CSVs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    .bg-card { background-color: #12131a; }
+    .border-card { border-color: #27293a; }
+    .fade-in { animation: fadeIn 0.3s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
+
+  <!-- ================================================================= -->
+  <!-- TELA DE AUTENTICAÇÃO (LOGIN / REGISTRO) -->
+  <!-- ================================================================= -->
+  <div id="authScreen" class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-600/20 blur-[100px] rounded-full z-0"></div>
+
+    <div class="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-md relative z-10 fade-in">
+      <div class="text-center space-y-2 mb-6">
+        <div class="inline-block p-3 bg-indigo-600/10 border border-indigo-500/20 rounded-2xl text-2xl mb-2">🔐</div>
+        <h1 id="authTitle" class="text-2xl font-bold text-white">Acesso ao Sistema</h1>
+        <p id="authSubtitle" class="text-slate-400 text-xs">Digite seu e-mail e senha para acessar</p>
+      </div>
+
+      <!-- Formulário de Login -->
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">E-mail</label>
+          <input type="email" id="loginEmail" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500 transition" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Senha</label>
+          <input type="password" id="loginPassword" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500 transition" />
+        </div>
+        <div class="flex justify-between items-center text-xs">
+          <button type="button" onclick="toggleAuthMode('reset')" class="text-indigo-400 hover:text-indigo-300 transition">Esqueceu a senha?</button>
+        </div>
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-600/20 transition text-sm">
+          Entrar no Sistema
+        </button>
+        <div class="text-center text-xs text-slate-500 pt-2">
+          Ainda não tem conta? <button type="button" onclick="toggleAuthMode('register')" class="text-indigo-400 font-semibold hover:text-indigo-300">Cadastre-se</button>
+        </div>
+      </form>
+
+      <!-- Formulário de Cadastro (Sign Up) -->
+      <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">E-mail Autorizado</label>
+          <input type="email" id="registerEmail" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500 transition" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Crie uma Senha</label>
+          <input type="password" id="registerPassword" required minlength="6" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500 transition" />
+        </div>
+        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg shadow-emerald-600/20 transition text-sm mt-2">
+          Criar Conta
+        </button>
+        <div class="text-center text-xs text-slate-500 pt-2">
+          Já tem uma conta? <button type="button" onclick="toggleAuthMode('login')" class="text-indigo-400 font-semibold hover:text-indigo-300">Fazer Login</button>
+        </div>
+      </form>
+
+      <!-- Formulário de Recuperação de Senha -->
+      <form id="resetForm" onsubmit="handleResetPassword(event)" class="space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">E-mail cadastrado</label>
+          <input type="email" id="resetEmail" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500 transition" />
+        </div>
+        <button type="submit" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 rounded-xl shadow-lg shadow-amber-600/20 transition text-sm mt-2">
+          Enviar Link de Recuperação
+        </button>
+        <div class="text-center text-xs text-slate-500 pt-2">
+          Lembrou a senha? <button type="button" onclick="toggleAuthMode('login')" class="text-indigo-400 font-semibold hover:text-indigo-300">Voltar ao Login</button>
+        </div>
+      </form>
+
+      <div id="authMessage" class="text-xs text-center font-medium mt-4 hidden"></div>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- APLICAÇÃO PRINCIPAL (DASHBOARD) -->
+  <!-- ================================================================= -->
+  <div id="appContainer" class="hidden p-4 md:p-6 max-w-[1400px] mx-auto space-y-6">
+
+    <!-- CABEÇALHO & NAVEGAÇÃO -->
+    <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-5 bg-slate-900/90 p-6 rounded-2xl border border-slate-800 shadow-2xl backdrop-blur-md">
+      
+      <!-- Título -->
+      <div class="w-full xl:w-auto">
+        <div class="flex items-center justify-between xl:justify-start gap-4 w-full">
+          <h1 class="text-xl md:text-2xl font-extrabold text-white tracking-tight flex items-center gap-2.5">
+            <span class="p-2 bg-indigo-500/10 border border-indigo-500/20 rounded-xl text-indigo-400 text-sm md:text-base">📊</span>
+            Dashboard de Mídia
+          </h1>
+          <!-- Botão Sair Mobile -->
+          <button onclick="logout()" class="xl:hidden px-3 py-1.5 rounded-lg bg-rose-600/10 text-rose-400 border border-rose-500/20 hover:bg-rose-600 hover:text-white transition text-xs font-bold flex items-center gap-1">
+            Sair
+          </button>
+        </div>
+        <p id="userRoleBadge" class="text-slate-400 text-xs md:text-sm mt-1 truncate"></p>
+      </div>
+
+      <!-- Barra de Navegação (Agora com Flex-Wrap para não vazar a tela) -->
+      <div class="w-full xl:w-auto flex items-center gap-2">
+        <div class="bg-slate-950/80 p-1.5 rounded-2xl border border-slate-800/80 flex flex-wrap items-center gap-1.5 shadow-inner w-full">
+          
+          <button id="btnT1" onclick="navTo('t1')" class="px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 bg-indigo-600 text-white shadow">⚙️ Admin</button>
+          <button id="btnT2" onclick="navTo('t2')" class="px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 text-slate-400 hover:text-white">👁️ Leitura</button>
+          <button id="btnT3" onclick="navTo('t3')" class="px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 text-slate-400 hover:text-white">📈 Total</button>
+          <button id="btnT4" onclick="navTo('t4')" class="px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 text-slate-400 hover:text-white">🔷 Meta Ad</button>
+          <button id="btnT5" onclick="navTo('t5')" class="px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 text-slate-400 hover:text-white">👥 Meta Aud</button>
+          <button id="btnT6" onclick="navTo('t6')" class="px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 text-slate-400 hover:text-white">🔴 Google Ad</button>
+          <button id="btnT7" onclick="navTo('t7')" class="px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 text-slate-400 hover:text-white">🎯 Google Aud</button>
+          
+        </div>
+        <!-- Botão Sair Desktop -->
+        <button onclick="logout()" class="hidden xl:flex px-4 py-2 rounded-xl bg-rose-600/10 text-rose-400 border border-rose-500/20 hover:bg-rose-600 hover:text-white transition text-xs font-bold items-center gap-1.5">
+          Sair
+        </button>
+      </div>
+    </div>
+
+    <!-- TELA 1: ADMIN & INSERÇÃO DE DADOS -->
+    <div id="screenT1" class="screen-content space-y-6 hidden">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4">
+        <h2 class="text-lg font-bold text-white flex items-center gap-2">⚙️ Tela 1: Área do Administrador (Uploads)</h2>
+        <p class="text-xs text-slate-400">Carregue os arquivos CSV gerados pelas plataformas. Os dashboards serão atualizados instantaneamente.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+            <span class="text-xs font-bold text-indigo-400 uppercase">1. Meta Criativos</span>
+            <input type="file" id="upMetaCriativo" accept=".csv" class="block w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white cursor-pointer" />
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+            <span class="text-xs font-bold text-indigo-400 uppercase">2. Meta Públicos</span>
+            <input type="file" id="upMetaPublico" accept=".csv" class="block w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white cursor-pointer" />
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+            <span class="text-xs font-bold text-rose-400 uppercase">3. Google Criativos</span>
+            <input type="file" id="upGoogleCriativo" accept=".csv" class="block w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-rose-600 file:text-white cursor-pointer" />
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+            <span class="text-xs font-bold text-rose-400 uppercase">4. Google Públicos</span>
+            <input type="file" id="upGooglePublico" accept=".csv" class="block w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-rose-600 file:text-white cursor-pointer" />
+          </div>
+        </div>
+
+        <!-- Botão de Salvar com Progresso Visual -->
+        <div class="pt-4 border-t border-slate-800 mt-6 relative">
+          <button id="btnSaveData" onclick="saveAllDataToFirebase()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-emerald-600/20 transition text-sm flex items-center justify-center gap-2">
+            <span>💾</span>
+            <span id="btnSaveText">Salvar Dados Diários no Firebase</span>
+          </button>
+          
+          <!-- Feedback Visual de Sucesso/Erro -->
+          <div id="saveFeedback" class="absolute left-0 -bottom-8 w-full text-xs font-semibold opacity-0 transition-opacity"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TELA 2: MODO LEITURA -->
+    <div id="screenT2" class="screen-content space-y-6 hidden">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800">
+        <h2 class="text-lg font-bold text-white mb-2">👁️ Tela 2: Visão do Usuário (Read-Only)</h2>
+        <p class="text-xs text-slate-400">Bem-vindo(a). Navegue pelas abas superiores para acessar o detalhamento de cada plataforma. Controles de edição estão desativados.</p>
+      </div>
+    </div>
+
+    <!-- TELA 3: CONSOLIDADO HISTÓRICO -->
+    <div id="screenT3" class="screen-content space-y-6 hidden">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800">
+        <h2 class="text-lg font-bold text-white mb-2">📈 Tela 3: Acumulado Histórico Geral</h2>
+        <p class="text-xs text-slate-400 mb-6">Soma de investimento e leads desde o início (Meta + Google) do banco de dados.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <span class="text-xs font-semibold text-slate-400 uppercase">Gasto Total Acumulado</span>
+            <div id="totalAccSpent" class="text-2xl font-bold text-indigo-400 mt-1">R$ 0,00</div>
+          </div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <span class="text-xs font-semibold text-slate-400 uppercase">Leads Totais</span>
+            <div id="totalAccLeads" class="text-2xl font-bold text-emerald-400 mt-1">0</div>
+          </div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <span class="text-xs font-semibold text-slate-400 uppercase">CPL Médio Histórico</span>
+            <div id="totalAccCPL" class="text-2xl font-bold text-amber-400 mt-1">R$ 0,00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA 4: META CRIATIVOS -->
+    <div id="screenT4" class="screen-content space-y-6 hidden">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-6">
+        <div class="flex justify-between items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
+          <span class="text-sm font-semibold text-slate-300">Análise Diária de Criativos - Meta Ads</span>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800"><span class="text-xs font-semibold text-slate-400 uppercase">Gasto Total</span><div id="metaKpiSpent" class="text-xl font-bold text-indigo-400 mt-1">R$ 0,00</div></div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800"><span class="text-xs font-semibold text-slate-400 uppercase">Leads</span><div id="metaKpiLeads" class="text-xl font-bold text-emerald-400 mt-1">0</div></div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800"><span class="text-xs font-semibold text-slate-400 uppercase">CPL Médio</span><div id="metaKpiCPL" class="text-xl font-bold text-amber-400 mt-1">R$ 0,00</div></div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800"><span class="text-xs font-semibold text-slate-400 uppercase">CTR Médio</span><div id="metaKpiCTR" class="text-xl font-bold text-pink-400 mt-1">0.00%</div></div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800"><span class="text-xs font-semibold text-slate-400 uppercase">Hook Médio</span><div id="metaKpiHook" class="text-xl font-bold text-purple-400 mt-1">0.0%</div></div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800"><span class="text-xs font-semibold text-slate-400 uppercase">Connect Rate</span><div id="metaKpiConnect" class="text-xl font-bold text-cyan-400 mt-1">0.00%</div></div>
+        </div>
+
+        <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
+          <div class="p-4 border-b border-slate-800"><h2 class="text-md font-semibold text-white">Detalhamento por Criativo</h2></div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-slate-300">
+              <thead class="bg-slate-900 text-xs text-slate-400 uppercase border-b border-slate-800">
+                <tr><th class="p-3">Anúncio</th><th class="p-3">Gasto</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3">CTR</th><th class="p-3">Hook Rate</th><th class="p-3">Hold Rate</th><th class="p-3">Body Rate</th><th class="p-3">Connect Rate</th></tr>
+              </thead>
+              <tbody id="metaTableBody" class="divide-y divide-slate-800">
+                <tr><td colspan="9" class="p-6 text-center text-slate-500">Importe o CSV na Tela 1...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA 5: META PÚBLICOS -->
+    <div id="screenT5" class="screen-content space-y-6 hidden">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-6">
+        <h3 class="text-md font-bold text-white">⚡ Resumo por Categoria de Público (Meta)</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-slate-950 p-5 rounded-2xl border border-indigo-500/30">
+            <div class="flex justify-between items-center"><span class="text-xs font-bold text-indigo-400 uppercase">🔥 Público Quente</span><span class="text-xs text-slate-400">Remarketing</span></div>
+            <div id="metaCatHotLeads" class="text-2xl font-extrabold text-white mt-1">0 leads</div>
+            <div class="grid grid-cols-3 gap-2 mt-2 text-xs">
+              <div><span class="text-slate-400 block text-[10px]">Gasto</span><b id="metaCatHotSpent" class="text-slate-200">R$ 0,00</b></div>
+              <div><span class="text-slate-400 block text-[10px]">CPL</span><b id="metaCatHotCPL" class="text-amber-400">R$ 0,00</b></div>
+              <div><span class="text-slate-400 block text-[10px]">CVR</span><b id="metaCatHotCVR" class="text-purple-400">0.0%</b></div>
+            </div>
+          </div>
+          <div class="bg-slate-950 p-5 rounded-2xl border border-cyan-500/30">
+            <div class="flex justify-between items-center"><span class="text-xs font-bold text-cyan-400 uppercase">🧊 Público Frio</span><span class="text-xs text-slate-400">Interesses</span></div>
+            <div id="metaCatColdLeads" class="text-2xl font-extrabold text-white mt-1">0 leads</div>
+            <div class="grid grid-cols-3 gap-2 mt-2 text-xs">
+              <div><span class="text-slate-400 block text-[10px]">Gasto</span><b id="metaCatColdSpent" class="text-slate-200">R$ 0,00</b></div>
+              <div><span class="text-slate-400 block text-[10px]">CPL</span><b id="metaCatColdCPL" class="text-amber-400">R$ 0,00</b></div>
+              <div><span class="text-slate-400 block text-[10px]">CVR</span><b id="metaCatColdCVR" class="text-purple-400">0.0%</b></div>
+            </div>
+          </div>
+          <div class="bg-slate-950 p-5 rounded-2xl border border-emerald-500/30">
+            <div class="flex justify-between items-center"><span class="text-xs font-bold text-emerald-400 uppercase">⚡ Advantage+</span><span class="text-xs text-slate-400">IA Meta</span></div>
+            <div id="metaCatAdvLeads" class="text-2xl font-extrabold text-white mt-1">0 leads</div>
+            <div class="grid grid-cols-3 gap-2 mt-2 text-xs">
+              <div><span class="text-slate-400 block text-[10px]">Gasto</span><b id="metaCatAdvSpent" class="text-slate-200">R$ 0,00</b></div>
+              <div><span class="text-slate-400 block text-[10px]">CPL</span><b id="metaCatAdvCPL" class="text-amber-400">R$ 0,00</b></div>
+              <div><span class="text-slate-400 block text-[10px]">CVR</span><b id="metaCatAdvCVR" class="text-purple-400">0.0%</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
+          <div class="p-4 border-b border-slate-800"><h2 class="text-md font-semibold text-white">Detalhamento por Público (Conjuntos)</h2></div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-slate-300">
+              <thead class="bg-slate-900 text-xs text-slate-400 uppercase border-b border-slate-800">
+                <tr><th class="p-3">Público</th><th class="p-3">Orçamento</th><th class="p-3">Gasto</th><th class="p-3">Leads</th><th class="p-3">CPL (R$)</th><th class="p-3">CTR</th><th class="p-3">Connect Rate</th><th class="p-3">CVR</th></tr>
+              </thead>
+              <tbody id="metaAudienceTableBody">
+                <tr><td colspan="8" class="p-6 text-center text-slate-500">Importe o CSV na Tela 1...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA 6: GOOGLE CRIATIVOS -->
+    <div id="screenT6" class="screen-content space-y-6 hidden">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-6">
+        <div class="flex justify-between items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
+          <span class="text-sm font-semibold text-slate-300">Análise de Criativos - Google Ads (YouTube)</span>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800"><span class="text-xs font-semibold text-slate-400 uppercase">Gasto Total</span><div id="googleKpiSpent" class="text-xl font-bold text-red-400 mt-1">R$ 0,00</div></div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800"><span class="text-xs font-semibold text-slate-400 uppercase">Leads</span><div id="googleKpiConversions" class="text-xl font-bold text-emerald-400 mt-1">0</div></div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800"><span class="text-xs font-semibold text-slate-400 uppercase">CPA Médio</span><div id="googleKpiCPA" class="text-xl font-bold text-amber-400 mt-1">R$ 0,00</div></div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800"><span class="text-xs font-semibold text-slate-400 uppercase">CPC Médio</span><div id="googleKpiCPC" class="text-xl font-bold text-blue-400 mt-1">R$ 0,00</div></div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800"><span class="text-xs font-semibold text-slate-400 uppercase">CTR Médio</span><div id="googleKpiCTR" class="text-xl font-bold text-pink-400 mt-1">0.00%</div></div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800"><span class="text-xs font-semibold text-slate-400 uppercase">Taxa Conv.</span><div id="googleKpiCVR" class="text-xl font-bold text-purple-400 mt-1">0.00%</div></div>
+        </div>
+
+        <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
+          <div class="p-4 border-b border-slate-800"><h2 class="text-md font-semibold text-white">Detalhamento de Criativos</h2></div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-slate-300">
+              <thead class="bg-slate-900 text-xs text-slate-400 uppercase border-b border-slate-800">
+                <tr><th class="p-3">Criativo</th><th class="p-3">Leads</th><th class="p-3">% Participação</th><th class="p-3">CPL Estimado</th><th class="p-3">CTR</th><th class="p-3">Headline</th></tr>
+              </thead>
+              <tbody id="googleTableBody">
+                <tr><td colspan="6" class="p-6 text-center text-slate-500">Importe o CSV na Tela 1...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA 7: GOOGLE PÚBLICOS -->
+    <div id="screenT7" class="screen-content space-y-6 hidden">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-6">
+        <h3 class="text-md font-bold text-white">🎯 Resumo por Categoria de Público (Google)</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-slate-950 p-5 rounded-2xl border border-rose-500/30">
+            <div class="flex justify-between items-center"><span class="text-xs font-bold text-rose-400 uppercase">🔥 Público Quente</span><span class="text-xs text-slate-400">Remarketing</span></div>
+            <div id="googleCatHotLeads" class="text-2xl font-extrabold text-white mt-1">0 leads</div>
+            <div class="grid grid-cols-3 gap-2 mt-2 text-xs">
+              <div><span class="text-slate-400 block text-[10px]">Gasto</span><b id="googleCatHotSpent" class="text-slate-200">R$ 0,00</b></div>
+              <div><span class="text-slate-400 block text-[10px]">CPL</span><b id="googleCatHotCPL" class="text-amber-400">R$ 0,00</b></div>
+              <div><span class="text-slate-400 block text-[10px]">CVR</span><b id="googleCatHotCVR" class="text-purple-400">0.0%</b></div>
+            </div>
+          </div>
+          <div class="bg-slate-950 p-5 rounded-2xl border border-cyan-500/30">
+            <div class="flex justify-between items-center"><span class="text-xs font-bold text-cyan-400 uppercase">🧊 Público Frio</span><span class="text-xs text-slate-400">Interesses</span></div>
+            <div id="googleCatColdLeads" class="text-2xl font-extrabold text-white mt-1">0 leads</div>
+            <div class="grid grid-cols-3 gap-2 mt-2 text-xs">
+              <div><span class="text-slate-400 block text-[10px]">Gasto</span><b id="googleCatColdSpent" class="text-slate-200">R$ 0,00</b></div>
+              <div><span class="text-slate-400 block text-[10px]">CPL</span><b id="googleCatColdCPL" class="text-amber-400">R$ 0,00</b></div>
+              <div><span class="text-slate-400 block text-[10px]">CVR</span><b id="googleCatColdCVR" class="text-purple-400">0.0%</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
+          <div class="p-4 border-b border-slate-800"><h2 class="text-md font-semibold text-white">Detalhamento por Público (Grupos)</h2></div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-slate-300">
+              <thead class="bg-slate-900 text-xs text-slate-400 uppercase border-b border-slate-800">
+                <tr><th class="p-3">Público / Grupo</th><th class="p-3">Campanha</th><th class="p-3">Leads</th><th class="p-3">Gasto</th><th class="p-3">CPL</th><th class="p-3">CTR</th><th class="p-3">CVR</th></tr>
+              </thead>
+              <tbody id="googleAudienceTableBody">
+                <tr><td colspan="7" class="p-6 text-center text-slate-500">Importe o CSV na Tela 1...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ==========================================
+    // CONFIGURAÇÃO FIREBASE & AUTENTICAÇÃO
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZYRKSZ3ain-6NXrvBux9K2WzJ27TTjlQ",
+      authDomain: "dashboardtrafego-4417b.firebaseapp.com",
+      projectId: "dashboardtrafego-4417b",
+      storageBucket: "dashboardtrafego-4417b.firebasestorage.app",
+      messagingSenderId: "239927644481",
+      appId: "1:239927644481:web:6cca3de0b7cdbc642851c0"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const ALLOWED_EMAILS = ['andreluizbastosnunes@gmail.com', 'contatomjunior@gmail.com'];
+    let currentUserRole = 'user';
+
+    function toggleAuthMode(mode) {
+      document.getElementById('loginForm').classList.add('hidden');
+      document.getElementById('registerForm').classList.add('hidden');
+      document.getElementById('resetForm').classList.add('hidden');
+      document.getElementById('authMessage').classList.add('hidden');
+      
+      const title = document.getElementById('authTitle');
+      const subtitle = document.getElementById('authSubtitle');
+
+      if (mode === 'login') {
+        document.getElementById('loginForm').classList.remove('hidden');
+        title.innerText = 'Acesso ao Sistema'; subtitle.innerText = 'Digite seu e-mail e senha para acessar';
+      } else if (mode === 'register') {
+        document.getElementById('registerForm').classList.remove('hidden');
+        title.innerText = 'Criar Conta'; subtitle.innerText = 'Apenas usuários autorizados podem se cadastrar';
+      } else if (mode === 'reset') {
+        document.getElementById('resetForm').classList.remove('hidden');
+        title.innerText = 'Recuperar Senha'; subtitle.innerText = 'Enviaremos um link de redefinição para o seu e-mail';
+      }
+    }
+
+    function showAuthError(msg, colorClass) {
+      const errorDiv = document.getElementById('authMessage');
+      errorDiv.innerText = msg;
+      errorDiv.className = `text-xs text-center font-medium mt-4 ${colorClass}`;
+      errorDiv.classList.remove('hidden');
+    }
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        if (!ALLOWED_EMAILS.includes(user.email.toLowerCase())) {
+          auth.signOut();
+          showAuthError("Este e-mail não possui permissão de acesso ao sistema.", "text-rose-400");
+          return;
+        }
+        document.getElementById('authScreen').classList.add('hidden');
+        document.getElementById('appContainer').classList.remove('hidden');
+
+        const userEmail = user.email.toLowerCase();
+        if (userEmail === 'andreluizbastosnunes@gmail.com') {
+          currentUserRole = 'admin';
+          document.getElementById('userRoleBadge').innerText = 'Admin: ' + userEmail;
+          document.getElementById('btnT1').classList.remove('hidden');
+          navTo('t1');
+        } else {
+          currentUserRole = 'user';
+          document.getElementById('userRoleBadge').innerText = 'Leitor: ' + userEmail;
+          document.getElementById('btnT1').classList.add('hidden');
+          navTo('t2');
+        }
+        loadHistoricalTotal();
+      } else {
+        document.getElementById('authScreen').classList.remove('hidden');
+        document.getElementById('appContainer').classList.add('hidden');
+      }
+    });
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('loginPassword').value;
+      if (!ALLOWED_EMAILS.includes(email)) {
+        showAuthError("E-mail não autorizado.", "text-rose-400"); return;
+      }
+      auth.signInWithEmailAndPassword(email, pass).catch(err => showAuthError('Erro: ' + err.message, "text-rose-400"));
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const email = document.getElementById('registerEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('registerPassword').value;
+      if (!ALLOWED_EMAILS.includes(email)) {
+        showAuthError("E-mail não autorizado para cadastro. Fale com o Administrador.", "text-rose-400"); return;
+      }
+      auth.createUserWithEmailAndPassword(email, pass).catch(err => showAuthError('Erro: ' + err.message, "text-rose-400"));
+    }
+
+    function handleResetPassword(e) {
+      e.preventDefault();
+      const email = document.getElementById('resetEmail').value.trim().toLowerCase();
+      auth.sendPasswordResetEmail(email).then(() => {
+        showAuthError("Link enviado! Verifique seu e-mail.", "text-emerald-400");
+        setTimeout(() => toggleAuthMode('login'), 3000);
+      }).catch(() => showAuthError("Erro ao enviar link.", "text-rose-400"));
+    }
+
+    function logout() { auth.signOut(); }
+
+    function navTo(screenId) {
+      document.querySelectorAll('.screen-content').forEach(s => s.classList.add('hidden'));
+      document.getElementById('screen' + screenId.toUpperCase()).classList.remove('hidden');
+
+      const btns = ['btnT1', 'btnT2', 'btnT3', 'btnT4', 'btnT5', 'btnT6', 'btnT7'];
+      btns.forEach(b => {
+        const elem = document.getElementById(b);
+        if (elem) {
+          elem.className = b.toLowerCase().endsWith(screenId) 
+            ? "px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 bg-indigo-600 text-white shadow"
+            : "px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 text-slate-400 hover:text-white";
+        }
+      });
+    }
+
+    // ==========================================
+    // LÓGICA DO BANCO E BARRA DE PROGRESSO
+    // ==========================================
+    function saveAllDataToFirebase() {
+      if (currentUserRole !== 'admin') return alert('Permissão negada.');
+
+      const btn = document.getElementById('btnSaveData');
+      const text = document.getElementById('btnSaveText');
+      const feedback = document.getElementById('saveFeedback');
+      
+      // Estado Visual de Processamento
+      btn.classList.replace('bg-emerald-600', 'bg-slate-600');
+      text.innerText = 'Processando CSVs e Salvando... ⏳';
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      const spentMeta = parseFloat(document.getElementById('metaKpiSpent').innerText.replace('R$ ', '')) || 0;
+      const leadsMeta = parseInt(document.getElementById('metaKpiLeads').innerText) || 0;
+      const spentGoogle = parseFloat(document.getElementById('googleKpiSpent').innerText.replace('R$ ', '')) || 0;
+      const leadsGoogle = parseInt(document.getElementById('googleKpiConversions').innerText) || 0;
+
+      db.collection("daily_reports").doc(todayStr).set({
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        spentMeta, leadsMeta, spentGoogle, leadsGoogle
+      }).then(() => {
+        // Feedback de Sucesso
+        btn.classList.replace('bg-slate-600', 'bg-emerald-600');
+        text.innerText = '💾 Salvar Dados Diários no Firebase';
+        feedback.innerText = '✅ Dados salvos com sucesso no Banco!';
+        feedback.className = 'absolute left-0 -bottom-6 w-full text-xs font-bold text-emerald-400 text-center opacity-100 transition-opacity';
+        loadHistoricalTotal();
+        setTimeout(() => feedback.classList.replace('opacity-100', 'opacity-0'), 3000);
+      }).catch(err => {
+        btn.classList.replace('bg-slate-600', 'bg-emerald-600');
+        text.innerText = '💾 Salvar Dados Diários no Firebase';
+        feedback.innerText = '❌ Erro: ' + err.message;
+        feedback.className = 'absolute left-0 -bottom-6 w-full text-xs font-bold text-rose-400 text-center opacity-100 transition-opacity';
+        setTimeout(() => feedback.classList.replace('opacity-100', 'opacity-0'), 4000);
+      });
+    }
+
+    function loadHistoricalTotal() {
+      db.collection("daily_reports").get().then(snapshot => {
+        let tSpent = 0; let tLeads = 0;
+        snapshot.forEach(doc => {
+          const d = doc.data(); tSpent += (d.spentMeta||0) + (d.spentGoogle||0); tLeads += (d.leadsMeta||0) + (d.leadsGoogle||0);
+        });
+        document.getElementById('totalAccSpent').innerText = 'R$ ' + tSpent.toFixed(2);
+        document.getElementById('totalAccLeads').innerText = tLeads;
+        document.getElementById('totalAccCPL').innerText = 'R$ ' + (tLeads > 0 ? (tSpent/tLeads).toFixed(2) : '0.00');
+      });
+    }
+
+    // ==========================================
+    // LEITORES DE CSV INTEGRAIS (RESTAURADOS)
+    // ==========================================
+    
+    // 1. META CRIATIVOS
+    document.getElementById('csvInputMeta').addEventListener('change', (e) => {
+      const file = e.target.files[0]; if (!file) return;
+      Papa.parse(file, { header: true, skipEmptyLines: true, complete: (results) => {
+        const map = {}; let tSpent=0, tLeads=0, tImp=0, tClicks=0, tLpv=0, tHook=0;
+        results.data.forEach(r => {
+          const adName = String(r['Ad name']||'').trim();
+          if (!adName || adName==='undefined' || adName==='NaN' || adName.startsWith('Total:')) return;
+          const s = r['Amount spent (BRL)']||0, l = r['Leads']||0, i = r['Impressions']||0, c = r['Unique link clicks']||0, lpv = r['Website landing page views']||0, hk = r['Hook Rate']||0, hd = r['Rook Hold']||0;
+          tSpent+=s; tLeads+=l; tImp+=i; tClicks+=c; tLpv+=lpv; tHook+=(hk*i);
+          if(!map[adName]) map[adName] = { adName, spent:0, leads:0, imp:0, clicks:0, lpv:0, hkC:0, hdC:0 };
+          map[adName].spent+=s; map[adName].leads+=l; map[adName].imp+=i; map[adName].clicks+=c; map[adName].lpv+=lpv; map[adName].hkC+=(hk*i); map[adName].hdC+=(hd*i);
+        });
+        const processed = Object.keys(map).map(k => {
+          const ad = map[k];
+          return { adName: ad.adName, spent: ad.spent, leads: ad.leads, 
+            cpl: ad.leads>0 ? ad.spent/ad.leads : 0, 
+            ctr: ad.imp>0 ? (ad.clicks/ad.imp)*100 : 0, 
+            hook: ad.imp>0 ? (ad.hkC/ad.imp)*100 : 0, 
+            hold: ad.imp>0 ? (ad.hdC/ad.imp)*100 : 0, 
+            body: (ad.imp>0 ? (ad.hdC/ad.imp)*100 : 0)*0.726, 
+            connectRate: ad.clicks>0 ? (ad.lpv/ad.clicks)*100 : 0 };
+        }).sort((a,b) => b.leads - a.leads);
+
+        document.getElementById('metaKpiSpent').innerText = 'R$ '+tSpent.toFixed(2);
+        document.getElementById('metaKpiLeads').innerText = tLeads;
+        document.getElementById('metaKpiCPL').innerText = 'R$ '+(tLeads>0 ? (tSpent/tLeads).toFixed(2) : '0.00');
+        document.getElementById('metaKpiCTR').innerText = (tImp>0 ? (tClicks/tImp)*100 : 0).toFixed(2)+'%';
+        document.getElementById('metaKpiHook').innerText = (tImp>0 ? (tHook/tImp)*100 : 0).toFixed(1)+'%';
+        document.getElementById('metaKpiConnect').innerText = (tClicks>0 ? (tLpv/tClicks)*100 : 0).toFixed(2)+'%';
+
+        const tbody = document.getElementById('metaTableBody'); tbody.innerHTML='';
+        processed.forEach(ad => {
+          tbody.innerHTML += `<tr class="border-b border-slate-800"><td class="p-3 text-white">${ad.adName}</td><td class="p-3">R$ ${ad.spent.toFixed(2)}</td><td class="p-3 text-emerald-400 font-bold">${ad.leads}</td><td class="p-3 text-amber-400">R$ ${ad.cpl.toFixed(2)}</td><td class="p-3 text-pink-400">${ad.ctr.toFixed(2)}%</td><td class="p-3 text-purple-300">${ad.hook.toFixed(1)}%</td><td class="p-3 text-cyan-300">${ad.hold.toFixed(1)}%</td><td class="p-3 text-blue-300">${ad.body.toFixed(1)}%</td><td class="p-3">${ad.connectRate.toFixed(1)}%</td></tr>`;
+        });
+        alert('Meta Criativos importado!');
+      }});
+    });
+
+    // 2. META PÚBLICOS
+    document.getElementById('csvInputMetaPublico').addEventListener('change', (e) => {
+      const file = e.target.files[0]; if (!file) return;
+      Papa.parse(file, { header: true, skipEmptyLines: true, complete: (results) => {
+        const catMap = { 'Público Quente': {s:0, l:0, lpv:0}, 'Público Frio': {s:0, l:0, lpv:0}, 'Advantage+': {s:0, l:0, lpv:0} };
+        const list = [];
+        results.data.forEach(r => {
+          const name = String(r['Ad set name']||'').trim();
+          if (!name || name==='NaN' || name.startsWith('Total:')) return;
+          const s = parseFloat(r['Amount spent (BRL)']||0), l = parseFloat(r['Leads']||0), imp = parseFloat(r['Impressions']||0), c = parseFloat(r['Unique link clicks']||0), lpv = parseFloat(r['Website landing page views']||0);
+          
+          let cat = 'Público Frio';
+          if(name.toLowerCase().includes('advantage')) cat='Advantage+';
+          else if(name.toLowerCase().includes('quente')||name.toLowerCase().includes('rmkt')) cat='Público Quente';
+          
+          catMap[cat].s+=s; catMap[cat].l+=l; catMap[cat].lpv+=lpv;
+          list.push({name, s, l, cpl: l>0?s/l:0, ctr: imp>0?(c/imp)*100:0, cvr: lpv>0?(l/lpv)*100:0});
+        });
+
+        // Atualiza Cards
+        const updateCard = (id, obj) => {
+          document.getElementById(id+'Leads').innerText = obj.l + ' leads';
+          document.getElementById(id+'Spent').innerText = 'R$ ' + obj.s.toFixed(2);
+          document.getElementById(id+'CPL').innerText = 'R$ ' + (obj.l>0 ? (obj.s/obj.l).toFixed(2) : '0.00');
+          document.getElementById(id+'CVR').innerText = (obj.lpv>0 ? (obj.l/obj.lpv)*100 : 0).toFixed(1)+'%';
+        };
+        updateCard('metaCatHot', catMap['Público Quente']);
+        updateCard('metaCatCold', catMap['Público Frio']);
+        updateCard('metaCatAdv', catMap['Advantage+']);
+
+        const tbody = document.getElementById('metaAudienceTableBody'); tbody.innerHTML='';
+        list.sort((a,b)=>b.l-a.l).forEach(a => {
+          tbody.innerHTML += `<tr class="border-b border-slate-800"><td class="p-3 text-white">${a.name}</td><td class="p-3">-</td><td class="p-3">R$ ${a.s.toFixed(2)}</td><td class="p-3 text-emerald-400 font-bold">${a.l}</td><td class="p-3 text-amber-400">R$ ${a.cpl.toFixed(2)}</td><td class="p-3 text-pink-400">${a.ctr.toFixed(2)}%</td><td class="p-3">-</td><td class="p-3">${a.cvr.toFixed(1)}%</td></tr>`;
+        });
+        alert('Meta Públicos importado!');
+      }});
+    });
+
+    // 3. GOOGLE CRIATIVOS & PÚBLICOS (Leitura Unificada Simplificada)
+    document.getElementById('csvInputGoogle').addEventListener('change', (e) => {
+      const file = e.target.files[0]; if (!file) return;
+      const r = new FileReader();
+      r.onload = function(evt) {
+        const lines = evt.target.result.split('\n');
+        let hIdx = -1;
+        for(let i=0; i<lines.length; i++){ if(lines[i].includes('Ad name') && lines[i].includes(',')){ hIdx=i; break; } }
+        if(hIdx===-1) return alert('Cabeçalho Google não encontrado.');
+        
+        Papa.parse(lines.slice(hIdx).join('\n'), { header:true, skipEmptyLines:true, complete: (res) => {
+          let tSpent=0, tConv=0, tImp=0, tClicks=0;
+          const map = {};
+          res.data.forEach(r => {
+            const ad = String(r['Ad name']||'').trim();
+            const s = parseFloat(r['Cost']||0), c = parseFloat(r['Conversions']||0);
+            if((!ad || ad==='--' || ad.startsWith('Total:')) && s>0){
+              if(s>tSpent) tSpent=s; if(c>tConv) tConv=c;
+            }
+            if(!ad || ad==='--' || ad.startsWith('Total:')) return;
+            if(!map[ad]) map[ad] = {name:ad, leads:0, head: r['Headline 1']||'Semana do Chinelo'};
+            map[ad].leads += c;
+          });
+          
+          document.getElementById('googleKpiSpent').innerText = 'R$ '+tSpent.toFixed(2);
+          document.getElementById('googleKpiConversions').innerText = tConv;
+          document.getElementById('googleKpiCPA').innerText = 'R$ '+(tConv>0?tSpent/tConv:0).toFixed(2);
+          
+          const tbody = document.getElementById('googleTableBody'); tbody.innerHTML='';
+          Object.values(map).sort((a,b)=>b.leads-a.leads).forEach(a => {
+            if(a.leads===0) return;
+            tbody.innerHTML += `<tr class="border-b border-slate-800"><td class="p-3 text-white">${a.name}</td><td class="p-3 text-emerald-400 font-bold">${a.leads}</td><td class="p-3 text-cyan-300">${(tConv>0?(a.leads/tConv)*100:0).toFixed(1)}%</td><td class="p-3">-</td><td class="p-3">-</td><td class="p-3">${a.head}</td></tr>`;
+          });
+          alert('Google importado com sucesso!');
+        }});
+      };
+      r.readAsText(file);
+    });
+
+  </script>
+</body>
+</html>
