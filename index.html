@@ -3,540 +3,638 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>L37 - SETEMBRO26 | Dashboard de Lançamento</title>
-  
-  <!-- Google Fonts: Inter -->
+  <title>AION - War Room Lançamento Digital</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Tailwind CSS & Chart.js -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- Firebase -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
   <script>
     tailwind.config = {
       darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            'bg-dark': '#0B0D14',
-            'bg-panel': '#121520',
-            'bg-card': '#181C2B',
-            'bg-input': '#21263B',
-            'border-panel': '#2B3149',
-            'accent-purple': '#8B5CF6',
-            'accent-blue': '#3B82F6',
-            'accent-green': '#10B981',
-            'accent-amber': '#F59E0B',
-            'accent-pink': '#EC4899',
-          },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          }
-        }
-      }
+      theme: { extend: { colors: {
+        'bg-base':'#0F1117','bg-card':'#1A1D27','bg-input':'#22263A',
+        'accent-blue':'#3B82F6','accent-green':'#10B981','accent-red':'#EF4444',
+        'accent-yellow':'#F59E0B','text-primary':'#F1F5F9','text-muted':'#64748B','border-custom':'#2D3148'
+      }, fontFamily:{sans:['Inter','sans-serif']} } }
     }
   </script>
-
   <style>
-    body { background-color: #0B0D14; color: #F1F5F9; font-family: 'Inter', sans-serif; }
-    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
-    .custom-scroll::-webkit-scrollbar-track { background: #0B0D14; }
-    .custom-scroll::-webkit-scrollbar-thumb { background: #2B3149; border-radius: 4px; }
-    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #3B82F6; }
+    body { background:#0F1117; color:#F1F5F9; font-family:'Inter',sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar{height:6px;width:6px}
+    .custom-scrollbar::-webkit-scrollbar-track{background:#0F1117}
+    .custom-scrollbar::-webkit-scrollbar-thumb{background:#2D3148;border-radius:4px}
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover{background:#3B82F6}
+
+    /* LOGIN */
+    #loginScreen{position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse at 60% 40%,#0d1526 0%,#0F1117 70%);display:flex;align-items:center;justify-content:center}
+    .login-card{background:#1A1D27;border:1px solid #2D3148;border-radius:16px;width:100%;max-width:420px;padding:2.5rem;box-shadow:0 0 80px rgba(59,130,246,.08),0 32px 64px rgba(0,0,0,.5)}
+    .login-input{width:100%;background:#22263A;border:1px solid #2D3148;border-radius:8px;padding:.75rem 1rem;color:#F1F5F9;font-size:.875rem;transition:border-color .2s;outline:none}
+    .login-input:focus{border-color:#3B82F6}
+    .login-input::placeholder{color:#64748B}
+    .login-btn{width:100%;background:linear-gradient(135deg,#3B82F6,#1d4ed8);color:white;border:none;border-radius:8px;padding:.875rem;font-size:.875rem;font-weight:700;cursor:pointer;transition:opacity .2s,transform .1s;letter-spacing:.03em}
+    .login-btn:hover{opacity:.9}
+    .login-btn:active{transform:scale(.98)}
+    .login-btn:disabled{opacity:.5;cursor:not-allowed}
+    .input-wrap{position:relative}
+    .input-wrap .eye-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#64748B;padding:0;display:flex;align-items:center}
+    .input-wrap .eye-btn:hover{color:#F1F5F9}
+    #userRoleBadge{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:9999px;font-size:10px;font-weight:700;letter-spacing:.05em}
+    .role-admin{background:rgba(239,68,68,.12);color:#EF4444;border:1px solid rgba(239,68,68,.25)}
+    .role-reader{background:rgba(59,130,246,.12);color:#3B82F6;border:1px solid rgba(59,130,246,.25)}
+    @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+    .shake{animation:shake .4s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    .fade-in{animation:fadeIn .35s ease forwards}
+
+    /* ===== DATE PICKER CUSTOMIZADO (ATUALIZADO) ===== */
+    .dp-wrap { position: relative; display: inline-block; }
+    .dp-trigger { display: flex; align-items: center; gap: 8px; background: transparent; border: 1px solid #2D3148; border-radius: 6px; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: 600; color: #e2e8f0; white-space: nowrap; transition: border-color 0.2s, background 0.2s; user-select: none; }
+    .dp-trigger:hover, .dp-trigger.active { border-color: #475569; background: rgba(30, 41, 59, 0.5); }
+    .dp-dropdown { position: absolute; top: calc(100% + 8px); right: 0; z-index: 500; background: #0F121A; border: 1px solid #1e293b; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,.8); min-width: 340px; overflow: hidden; display: none; }
+    .dp-dropdown.open { display: block; animation: fadeIn .2s ease; }
+    
+    /* Atalhos superiores */
+    .dp-shortcuts { padding: 24px 24px 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; background: #12151E; }
+    .dp-shortcut { background: transparent; border: none; padding: 0; font-size: 12px; font-weight: 600; color: #64748b; cursor: pointer; text-align: center; transition: color 0.15s; }
+    .dp-shortcut:hover { color: #f8fafc; }
+    .dp-shortcut.active { color: #a855f7; }
+
+    /* Área do Calendário */
+    .dp-calendar-wrap { padding: 20px 24px 24px; background: #080A10; border-top: 1px solid #1e293b; }
+    .dp-cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .dp-cal-nav { background: #1c212b; border: none; border-radius: 6px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #94a3b8; transition: all .15s; }
+    .dp-cal-nav:hover { background: #2d3748; color: #f8fafc; }
+    .dp-cal-title { font-size: 14px; font-weight: 700; color: #f8fafc; }
+    
+    /* Grid de Dias */
+    .dp-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 12px; }
+    .dp-weekday { font-size: 11px; font-weight: 500; color: #64748b; text-align: center; }
+    .dp-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px 0; }
+    
+    .dp-day-wrapper { display: flex; justify-content: center; position: relative; }
+    .dp-day { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: #f8fafc; cursor: pointer; border-radius: 6px; transition: all .15s; border: 1px solid transparent; }
+    
+    .dp-day:hover:not(.dp-day-empty) { border-color: #475569; }
+    .dp-day.dp-day-empty { cursor: default; }
+    
+    /* Estados de Seleção (Roxo) */
+    .dp-day.dp-day-selected { background: #9333ea !important; color: #ffffff; border-color: #9333ea !important; box-shadow: 0 0 10px rgba(147, 51, 234, 0.4); }
+    .dp-day.dp-day-range-end { background: #080A10 !important; color: #f8fafc; border-color: #9333ea !important; box-shadow: none; }
+    .dp-day.dp-day-in-range { background: rgba(147, 51, 234, 0.15); color: #c084fc; border-radius: 6px; }
+    .dp-day.dp-day-selected.dp-day-range-end { background: #9333ea !important; color: #ffffff; } /* Se for 1 dia só */
+    
   </style>
 </head>
-<body class="min-h-screen flex flex-col bg-bg-dark text-slate-100">
+<body class="bg-bg-base text-text-primary antialiased min-h-screen flex overflow-x-hidden">
 
-  <!-- ================================================================= -->
-  <!-- 1. TELA DE AUTENTICAÇÃO (LOGIN, REGISTRO, RECUPERAÇÃO) -->
-  <!-- ================================================================= -->
-  <div id="authScreen" class="fixed inset-0 z-50 bg-bg-dark flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-bg-panel border border-border-panel p-8 rounded-2xl shadow-2xl space-y-6">
-      <div class="text-center space-y-2">
-        <div class="w-12 h-12 bg-accent-purple/20 border border-accent-purple/30 rounded-2xl flex items-center justify-center mx-auto text-accent-purple text-2xl font-black">🚀</div>
-        <h1 class="text-2xl font-black text-white tracking-tight">Centro de Comando</h1>
-        <p class="text-xs text-slate-400">Acesso ao Dashboard de Lançamento</p>
+<!-- ======= LOGIN ======= -->
+<div id="loginScreen">
+  <div class="login-card fade-in">
+    <div class="flex flex-col items-center mb-8">
+      <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-600 to-emerald-500 flex items-center justify-center font-black text-white text-2xl shadow-lg mb-4">A</div>
+      <h1 class="text-lg font-extrabold text-white tracking-wider uppercase">AION WAR ROOM</h1>
+      <p class="text-xs text-text-muted mt-1 font-medium">Lançamento Digital — Acesso Restrito</p>
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1.5 tracking-wider">Usuário ou E-mail</label>
+        <input type="text" id="loginUser" class="login-input" placeholder="Admin ou seu@email.com" autocomplete="username" onkeydown="if(event.key==='Enter') document.getElementById('loginPass').focus()"/>
       </div>
-
-      <!-- ABAS DA AUTENTICAÇÃO -->
-      <div class="flex border-b border-border-panel text-xs font-bold text-center">
-        <button id="tabAuthLogin" onclick="switchAuthTab('login')" class="flex-1 py-2.5 border-b-2 border-accent-purple text-accent-purple">Entrar</button>
-        <button id="tabAuthRegister" onclick="switchAuthTab('register')" class="flex-1 py-2.5 border-b-2 border-transparent text-slate-400 hover:text-white">Criar Conta</button>
-        <button id="tabAuthForgot" onclick="switchAuthTab('forgot')" class="flex-1 py-2.5 border-b-2 border-transparent text-slate-400 hover:text-white">Recuperar</button>
+      <div>
+        <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1.5 tracking-wider">Senha</label>
+        <div class="input-wrap">
+          <input type="password" id="loginPass" class="login-input" placeholder="••••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLogin()"/>
+          <button class="eye-btn" type="button" onclick="togglePass()" title="Mostrar/ocultar senha">
+            <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+          </button>
+        </div>
       </div>
-
-      <!-- FORMULÁRIO LOGIN -->
-      <form id="formLogin" onsubmit="handleLogin(event)" class="space-y-4">
-        <div>
-          <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Login ou E-mail</label>
-          <input type="text" id="loginIdentifier" placeholder="Digite Admin, Madri ou seu e-mail" required class="w-full bg-bg-input border border-border-panel rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-accent-purple" />
-        </div>
-        <div>
-          <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Senha</label>
-          <input type="password" id="loginPassword" placeholder="Sua senha de acesso" required class="w-full bg-bg-input border border-border-panel rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-accent-purple" />
-        </div>
-        <button type="submit" class="w-full bg-accent-purple hover:bg-purple-600 text-white font-bold py-3 rounded-xl transition text-xs shadow-lg shadow-purple-500/20">Entrar no Dashboard</button>
-      </form>
-
-      <!-- FORMULÁRIO REGISTRO -->
-      <form id="formRegister" onsubmit="handleRegister(event)" class="space-y-4 hidden">
-        <div><label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Nome Completo</label><input type="text" id="regName" required class="w-full bg-bg-input border border-border-panel rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-accent-purple" /></div>
-        <div><label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">E-mail</label><input type="email" id="regEmail" required class="w-full bg-bg-input border border-border-panel rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-accent-purple" /></div>
-        <div><label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Senha</label><input type="password" id="regPassword" required class="w-full bg-bg-input border border-border-panel rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-accent-purple" /></div>
-        <button type="submit" class="w-full bg-accent-blue hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition text-xs shadow-lg shadow-blue-500/20">Criar Nova Conta</button>
-      </form>
-
-      <!-- FORMULÁRIO RECUPERAÇÃO -->
-      <form id="formForgot" onsubmit="handleForgot(event)" class="space-y-4 hidden">
-        <div><label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">E-mail Cadastrado</label><input type="email" id="forgotEmail" required class="w-full bg-bg-input border border-border-panel rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-accent-purple" /></div>
-        <button type="submit" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-xl transition text-xs">Enviar E-mail de Recuperação</button>
-      </form>
-
-      <div id="authAlert" class="text-xs text-center font-bold hidden p-3 rounded-xl"></div>
+      <div id="loginError" class="hidden text-xs text-accent-red bg-accent-red/10 border border-accent-red/20 rounded-md px-3 py-2.5 font-medium"></div>
+      <button id="loginBtn" class="login-btn mt-2" onclick="doLogin()">Entrar no War Room</button>
+      <div class="text-center pt-2">
+        <button onclick="showForgotModal()" class="text-[11px] text-text-muted hover:text-accent-blue transition font-medium underline underline-offset-2">Esqueci minha senha</button>
+      </div>
+    </div>
+    <div class="mt-8 pt-5 border-t border-border-custom text-center">
+      <p class="text-[10px] text-text-muted">Plataforma exclusiva para membros autorizados.</p>
+      <p class="text-[10px] text-text-muted mt-0.5">© 2026 AION War Room · Todos os direitos reservados</p>
     </div>
   </div>
+</div>
 
-  <!-- ================================================================= -->
-  <!-- 2. APLICAÇÃO PRINCIPAL COM MENU HORIZONTAL -->
-  <!-- ================================================================= -->
-  <div id="appContainer" class="hidden flex-grow flex flex-col min-h-screen">
-
-    <!-- CABEÇALHO SUPERIOR -->
-    <header class="bg-bg-panel border-b border-border-panel px-6 py-3 flex flex-wrap justify-between items-center gap-4 sticky top-0 z-40">
-      
-      <!-- TÍTULO & NAVEGAÇÃO HORIZONTAL -->
-      <div class="flex items-center gap-6">
-        <div class="flex items-center gap-3">
-          <button class="text-slate-400 hover:text-white text-lg transition">←</button>
-          <h1 class="text-lg font-black text-white tracking-tight" id="appTitleDisplay">L37 - SETEMBRO26</h1>
-        </div>
-
-        <nav class="flex items-center gap-1 text-xs font-semibold">
-          <button id="navTabCaptacao" onclick="switchNavTab('captacao')" class="px-4 py-2 border-b-2 border-accent-purple text-white">Captação</button>
-          <button id="navTabEventos" onclick="switchNavTab('eventos')" class="px-4 py-2 border-b-2 border-transparent text-slate-400 hover:text-white">Eventos</button>
-          <button id="navTabOutras" onclick="switchNavTab('outras')" class="px-4 py-2 border-b-2 border-transparent text-slate-400 hover:text-white">Outras etapas</button>
-          <button id="navTabDebriefing" onclick="switchNavTab('debriefing')" class="px-4 py-2 border-b-2 border-transparent text-slate-400 hover:text-white">Debriefing</button>
-          <span class="text-border-panel mx-2">|</span>
-          <button id="navTabReports" onclick="switchNavTab('reports')" class="px-4 py-2 border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-1.5">
-            <span>📄</span> Reports
-          </button>
-          <button id="navTabConfig" onclick="switchNavTab('config')" class="px-4 py-2 border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-1.5">
-            <span>⚙️</span> Configurações
-          </button>
-        </nav>
+<!-- ======= MODAL RECUPERAÇÃO ======= -->
+<div id="forgotModal" class="hidden fixed inset-0 z-[9998] flex items-center justify-center" style="background:rgba(0,0,0,.7)">
+  <div class="login-card fade-in max-w-sm">
+    <div class="flex justify-between items-start mb-6">
+      <div>
+        <h3 class="text-base font-extrabold text-white">Recuperar Senha</h3>
+        <p class="text-xs text-text-muted mt-1">Insira seu e-mail cadastrado para receber o link.</p>
       </div>
+      <button onclick="hideForgotModal()" class="text-text-muted hover:text-white transition p-1">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1.5 tracking-wider">E-mail cadastrado</label>
+        <input type="email" id="forgotEmail" class="login-input" placeholder="seu@email.com" onkeydown="if(event.key==='Enter') doForgot()"/>
+      </div>
+      <div id="forgotMsg" class="hidden text-xs rounded-md px-3 py-2.5 font-medium"></div>
+      <button onclick="doForgot()" class="login-btn">Enviar Link de Redefinição</button>
+      <button onclick="hideForgotModal()" class="w-full text-xs text-text-muted hover:text-text-primary transition font-medium py-2">Voltar ao login</button>
+    </div>
+  </div>
+</div>
 
-      <!-- CONTROLES DIREITA: USUÁRIO, DATE PICKER & LOGOUT -->
-      <div class="flex items-center gap-3 relative">
-        <span id="userDisplayRole" class="text-[11px] font-bold text-slate-400 bg-bg-card border border-border-panel px-3 py-1 rounded-lg"></span>
+<!-- ======= APP SHELL ======= -->
+<div id="appShell" class="hidden w-full flex">
 
-        <!-- BOTÃO DATE PICKER -->
-        <button onclick="toggleDatePickerModal()" class="bg-bg-input border border-border-panel hover:border-slate-500 text-slate-200 px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 transition">
-          <span>📅</span>
-          <span id="datePickerDisplay">02/09/26 - 02/09/26</span>
+  <!-- SIDEBAR -->
+  <aside class="w-64 bg-bg-card border-r border-border-custom flex flex-col justify-between h-screen sticky top-0 z-40 shrink-0">
+    <div>
+      <div class="p-6 border-b border-border-custom flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-600 to-emerald-500 flex items-center justify-center font-black text-white text-lg shadow-lg">A</div>
+        <div>
+          <h1 class="font-extrabold text-sm text-white tracking-wider uppercase">AION WAR ROOM</h1>
+          <p class="text-[10px] text-text-muted font-medium">Lançamento Digital</p>
+        </div>
+      </div>
+      <nav class="p-4 space-y-1.5">
+        <button id="nav-t1" onclick="navTo('t1')" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all bg-accent-blue text-white shadow-md">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Painel Admin
         </button>
-
-        <button onclick="handleLogout()" class="bg-rose-500/10 hover:bg-rose-500 border border-rose-500/20 hover:border-rose-500 text-rose-400 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">
-          Sair
+        <button id="nav-t2" onclick="navTo('t2')" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all text-text-muted hover:text-text-primary hover:bg-bg-input">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          Funil & Timeline
         </button>
+        <button id="nav-t3" onclick="navTo('t3')" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all text-text-muted hover:text-text-primary hover:bg-bg-input">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          Criativos
+        </button>
+        <button id="nav-t4" onclick="navTo('t4')" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all text-text-muted hover:text-text-primary hover:bg-bg-input">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          Públicos
+        </button>
+      </nav>
+    </div>
+    <div class="p-4 border-t border-border-custom space-y-3">
+      <div class="flex items-center gap-2.5 px-1">
+        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-600 to-emerald-500 flex items-center justify-center text-white font-black text-xs shrink-0" id="userAvatar">A</div>
+        <div class="min-w-0">
+          <p class="text-xs font-semibold text-white truncate" id="userDisplayName">Usuário</p>
+          <span id="userRoleBadge" class="role-admin">● ADMIN</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 text-xs text-text-muted">
+        <span class="w-2 h-2 rounded-full bg-accent-green animate-pulse"></span>
+        <span class="truncate font-medium">Adveronix Reader Active</span>
+      </div>
+      <button onclick="syncDataFromSheets()" class="w-full bg-bg-input hover:bg-border-custom text-text-primary py-2 rounded-md text-xs font-bold transition flex items-center justify-center gap-2 border border-border-custom">
+        <span>🔄</span> Recarregar Planilha
+      </button>
+      <button onclick="doLogout()" class="w-full bg-accent-red/10 hover:bg-accent-red/20 text-accent-red py-2 rounded-md text-xs font-bold transition flex items-center justify-center gap-2 border border-accent-red/20">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        Sair
+      </button>
+    </div>
+  </aside>
 
-        <!-- SELETOR DE DATAS POPUP -->
-        <div id="datePickerModal" class="hidden absolute top-12 right-0 w-80 bg-bg-panel border border-border-panel rounded-2xl p-5 shadow-2xl z-50 space-y-4">
-          <div class="grid grid-cols-3 gap-2 text-[11px] font-bold text-slate-300 text-center">
-            <button onclick="setQuickDate('today')" class="p-2 bg-bg-card hover:bg-border-panel rounded-lg transition">Hoje</button>
-            <button onclick="setQuickDate('yesterday')" class="p-2 bg-bg-card hover:bg-border-panel rounded-lg transition">Ontem</button>
-            <button onclick="setQuickDate('7days')" class="p-2 bg-bg-card hover:bg-border-panel rounded-lg transition">Últimos 7 dias</button>
-            <button onclick="setQuickDate('30days')" class="p-2 bg-bg-card hover:bg-border-panel rounded-lg transition">Últimos 30 dias</button>
-            <button onclick="setQuickDate('thisMonth')" class="p-2 bg-bg-card hover:bg-border-panel rounded-lg transition">Este Mês</button>
-            <button onclick="setQuickDate('lastMonth')" class="p-2 bg-bg-card hover:bg-border-panel rounded-lg transition">Mês Passado</button>
-            <button onclick="setQuickDate('thisYear')" class="p-2 bg-bg-card hover:bg-border-panel rounded-lg transition col-span-3">Este Ano</button>
-          </div>
+  <!-- MAIN -->
+  <main class="flex-grow flex flex-col min-w-0 overflow-x-hidden">
 
-          <div class="border-t border-border-panel pt-4 space-y-3">
-            <div class="flex justify-between items-center text-xs font-bold text-white">
-              <button onclick="changeMonth(-1)" class="p-1 hover:bg-bg-card rounded">‹</button>
-              <span id="calMonthTitle">setembro 2026</span>
-              <button onclick="changeMonth(1)" class="p-1 hover:bg-bg-card rounded">›</button>
-            </div>
-
-            <div class="grid grid-cols-7 text-center text-[10px] text-slate-400 font-bold">
-              <span>dom</span><span>seg</span><span>ter</span><span>qua</span><span>qui</span><span>sex</span><span>sab</span>
-            </div>
-
-            <div id="calDaysGrid" class="grid grid-cols-7 text-center text-xs font-bold gap-1"></div>
-          </div>
-
-          <button onclick="applyDateSelection()" class="w-full bg-accent-purple hover:bg-purple-600 text-white text-xs font-bold py-2 rounded-xl transition">Aplicar Período</button>
+    <!-- HEADER com Date Picker global -->
+    <header class="h-16 border-b border-border-custom bg-bg-card px-6 flex items-center justify-between sticky top-0 z-30">
+      <div class="flex items-center gap-3">
+        <h2 class="text-base font-extrabold text-white tracking-wide" id="headerLaunchName">NA FONTE CHINELOS - SETEMBRO2026</h2>
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-accent-green/10 text-accent-green border border-accent-green/20 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-accent-green"></span> Ativo
+        </span>
+      </div>
+      <div class="flex items-center gap-4">
+        <!-- STATUS SYNC -->
+        <div id="syncStatus" class="flex items-center gap-1.5 text-xs font-medium text-accent-blue">
+          <span class="inline-block w-2 h-2 rounded-full bg-accent-blue animate-ping"></span>
+          <span>Adveronix Conectado</span>
         </div>
 
+        <!-- DATE PICKER GLOBAL -->
+        <div class="dp-wrap" id="dpWrap">
+          <button class="dp-trigger" id="dpTrigger" onclick="toggleDatePicker()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            <span id="dpTriggerLabel">02/09/26 - 02/09/26</span>
+          </button>
+
+          <!-- DROPDOWN -->
+          <div class="dp-dropdown" id="dpDropdown">
+            <!-- Atalhos rápidos em Grid -->
+            <div class="dp-shortcuts">
+              <button class="dp-shortcut" onclick="applyShortcut('today')">Hoje</button>
+              <button class="dp-shortcut" onclick="applyShortcut('yesterday')">Ontem</button>
+              <button class="dp-shortcut" onclick="applyShortcut('last7')">Últimos 7 dias</button>
+              <button class="dp-shortcut" onclick="applyShortcut('last30')">Últimos 30 dias</button>
+              <button class="dp-shortcut" onclick="applyShortcut('thisMonth')">Este Mês</button>
+              <button class="dp-shortcut" onclick="applyShortcut('lastMonth')">Mês Passado</button>
+              <button class="dp-shortcut" onclick="applyShortcut('thisYear')">Este Ano</button>
+            </div>
+            
+            <!-- Calendário -->
+            <div class="dp-calendar-wrap">
+              <div class="dp-cal-header">
+                <button class="dp-cal-nav" onclick="dpNavMonth(-1)">
+                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                </button>
+                <span class="dp-cal-title" id="dpCalTitle">setembro 2026</span>
+                <button class="dp-cal-nav" onclick="dpNavMonth(1)">
+                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </button>
+              </div>
+              <div class="dp-weekdays">
+                <div class="dp-weekday">dom</div><div class="dp-weekday">seg</div><div class="dp-weekday">ter</div>
+                <div class="dp-weekday">qua</div><div class="dp-weekday">qui</div><div class="dp-weekday">sex</div><div class="dp-weekday">sab</div>
+              </div>
+              <div class="dp-days" id="dpDays"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
 
-    <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
-    <main class="p-6 max-w-[1500px] mx-auto w-full flex-grow space-y-6">
-
-      <!-- TELA CAPTAÇÃO / RELATÓRIO DE CRIATIVOS -->
-      <section id="secCaptacao" class="space-y-6">
-        
-        <!-- CARDS DE KPI -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <div class="bg-bg-card p-4 rounded-2xl border border-border-panel space-y-1">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">INVESTIMENTO</span>
-            <div class="text-xl font-black text-accent-purple" id="kpiSpent">R$ 388,93</div>
+    <!-- TELAS (Mantidas sem alteração para focar no Date Picker) -->
+    <div class="p-8 space-y-8 flex-grow">
+      
+      <!-- TELA 1 — ADMIN -->
+      <section id="screen-t1" class="screen-view space-y-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-extrabold text-white">⚙️ Painel de Administração</h2>
+            <p class="text-xs text-text-muted mt-1">Configure as metas e o período do lançamento. O intervalo de datas global fica no topo da tela.</p>
           </div>
-          <div class="bg-bg-card p-4 rounded-2xl border border-border-panel space-y-1">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">LEADS</span>
-            <div class="text-xl font-black text-accent-green" id="kpiLeads">203</div>
-          </div>
-          <div class="bg-bg-card p-4 rounded-2xl border border-border-panel space-y-1">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">CUSTO POR LEAD (CPL)</span>
-            <div class="text-xl font-black text-accent-amber" id="kpiCPL">R$ 1,92</div>
-          </div>
-          <div class="bg-bg-card p-4 rounded-2xl border border-border-panel space-y-1">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">CTR MÉDIO</span>
-            <div class="text-xl font-black text-accent-blue" id="kpiCTR">3.60%</div>
-          </div>
-          <div class="bg-bg-card p-4 rounded-2xl border border-border-panel space-y-1">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">CONNECT RATE</span>
-            <div class="text-xl font-black text-accent-blue" id="kpiConnect">97.65%</div>
-          </div>
-          <div class="bg-bg-card p-4 rounded-2xl border border-border-panel space-y-1">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">TAXA CONV. (CVR)</span>
-            <div class="text-xl font-black text-accent-purple" id="kpiCVR">34.94%</div>
-          </div>
+          <button id="btnSaveAdmin" onclick="saveAdminConfig()" class="px-6 py-2.5 rounded-md bg-accent-blue hover:bg-blue-600 text-white text-xs font-bold transition shadow-lg shadow-blue-500/20">
+            💾 Salvar & Recarregar
+          </button>
         </div>
-
-        <!-- GRÁFICO MISTO: LEADS VS CPL POR ANÚNCIO -->
-        <div class="bg-bg-card p-6 rounded-2xl border border-border-panel space-y-4">
-          <div class="flex justify-between items-center">
-            <h3 class="text-sm font-bold text-white tracking-wide">Desempenho por Anúncio (Leads vs CPL)</h3>
-            <div class="flex gap-4 text-xs font-bold">
-              <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-accent-green"></span> Leads Captados</span>
-              <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-accent-amber"></span> CPL (R$)</span>
+        <div id="readerWarning" class="hidden bg-accent-blue/10 border border-accent-blue/20 rounded-lg p-4 flex items-center gap-3">
+          <svg class="w-5 h-5 text-accent-blue shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <p class="text-xs text-accent-blue font-medium">Modo <strong>Leitura</strong> — visualização somente. Apenas o Administrador pode editar.</p>
+        </div>
+        <form id="adminForm" onsubmit="event.preventDefault();saveAdminConfig();" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
+            <h3 class="text-sm font-bold text-white border-b border-border-custom pb-3 flex items-center gap-2">
+              <span class="text-accent-blue">1.</span> Período do Lançamento & Budget
+            </h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">Início do Lançamento</label>
+                <input type="date" id="admDataInicio" value="2026-09-01" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">Fim do Lançamento</label>
+                <input type="date" id="admDataFim" value="2026-09-13" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">Verba Total Prevista (R$)</label>
+              <input type="number" id="admVerbaTotal" value="20000" step="100" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-sm font-bold text-accent-green focus:outline-none focus:border-accent-blue"/>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">Meta Investimento (R$)</label>
+                <input type="number" id="admMetaInvest" value="16000" step="100" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">Meta de Leads</label>
+                <input type="number" id="admMetaLeads" value="10000" step="50" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
+              </div>
             </div>
           </div>
-          <div class="relative h-72">
-            <canvas id="chartLeadsVsCPL"></canvas>
+          <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
+            <div class="flex justify-between items-center border-b border-border-custom pb-3">
+              <h3 class="text-sm font-bold text-white flex items-center gap-2"><span class="text-accent-blue">2.</span> Distribuição de Budget (%)</h3>
+              <span id="pctSumBadge" class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-accent-green/20 text-accent-green">Soma: 100%</span>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div><label class="block text-[11px] font-semibold text-accent-red uppercase mb-1">Google Quente (%)</label>
+                <input type="number" id="admPctGQ" value="12" step="0.1" oninput="validatePercentages()" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/></div>
+              <div><label class="block text-[11px] font-semibold text-accent-red uppercase mb-1">Google Frio (%)</label>
+                <input type="number" id="admPctGF" value="20" step="0.1" oninput="validatePercentages()" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/></div>
+              <div><label class="block text-[11px] font-semibold text-accent-blue uppercase mb-1">Meta Quente (%)</label>
+                <input type="number" id="admPctMQ" value="28" step="0.1" oninput="validatePercentages()" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/></div>
+              <div><label class="block text-[11px] font-semibold text-accent-blue uppercase mb-1">Meta Frio (%)</label>
+                <input type="number" id="admPctMF" value="40" step="0.1" oninput="validatePercentages()" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/></div>
+            </div>
+            <div id="pctErrorMsg" class="text-[11px] text-accent-red font-semibold hidden">⚠️ A soma deve ser exatamente 100%.</div>
           </div>
-        </div>
-
-        <!-- TABELA DETALHAMENTO POR CRIATIVO -->
-        <div class="bg-bg-card rounded-2xl border border-border-panel overflow-hidden space-y-2">
-          <div class="p-5 border-b border-border-panel">
-            <h3 class="text-sm font-bold text-white tracking-wide">Detalhamento por Criativo</h3>
+          <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4 flex flex-col justify-between">
+            <div>
+              <h3 class="text-sm font-bold text-white border-b border-border-custom pb-3 flex items-center gap-2"><span class="text-accent-blue">3.</span> Fonte de Dados Adveronix</h3>
+              <div class="mt-4">
+                <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">URL da Planilha (Google Sheets)</label>
+                <input type="url" id="admSheetUrl" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
+              </div>
+            </div>
+            <div class="p-4 bg-bg-input rounded-md border border-border-custom space-y-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-accent-blue block">💡 Resumo Alvo</span>
+              <p class="text-xs text-text-primary leading-relaxed" id="admTargetSummary">
+                Verba de <b class="text-accent-green">R$ 20.000,00</b> · Meta de <b class="text-accent-blue">10.000 leads</b> · <b class="text-accent-yellow">CPL alvo: R$ 2,00</b>
+              </p>
+            </div>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-              <thead class="bg-bg-panel text-slate-400 font-bold uppercase text-[10px] border-b border-border-panel">
-                <tr>
-                  <th class="p-4">ANÚNCIO</th>
-                  <th class="p-4">GASTO</th>
-                  <th class="p-4">IMPRESSÕES</th>
-                  <th class="p-4">CLIQUES</th>
-                  <th class="p-4">LPV</th>
-                  <th class="p-4">LEADS</th>
-                  <th class="p-4">CTR</th>
-                  <th class="p-4">CONNECT RATE</th>
-                  <th class="p-4">CVR</th>
-                  <th class="p-4">CPL</th>
-                </tr>
-              </thead>
-              <tbody id="tableCriativosBody" class="divide-y divide-border-panel font-medium"></tbody>
-            </table>
-          </div>
-        </div>
-
+        </form>
       </section>
 
-      <!-- SEÇÃO CONFIGURAÇÃO DA PLANILHA ADVERONIX (ADMIN ONLY) -->
-      <section id="secConfig" class="space-y-6 hidden">
-        <div class="bg-bg-card p-6 rounded-2xl border border-border-panel space-y-4 max-w-2xl">
-          <h2 class="text-base font-bold text-white">⚙️ Conexão de Dados Adveronix (Google Sheets)</h2>
-          <div>
-            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">URL Oficial do Google Sheets</label>
-            <input type="url" id="inputSheetUrl" class="w-full bg-bg-input border border-border-panel rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-accent-purple" />
+      <!-- TELA 2 — FUNIL & TIMELINE -->
+      <section id="screen-t2" class="screen-view space-y-8 hidden">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-extrabold text-white">🎯 Funil & Timeline</h2>
+          <div class="flex items-center gap-2 bg-bg-card border border-border-custom rounded-lg px-4 py-2">
+            <svg class="w-4 h-4 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            <span class="text-xs font-bold text-white" id="t2PeriodLabel">—</span>
+            <span class="text-[10px] text-text-muted font-medium" id="t2DaysCount"></span>
           </div>
-          <button onclick="saveSheetUrl()" class="bg-accent-purple hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl text-xs transition">Salvar e Conectar</button>
+        </div>
+        <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-6">
+          <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Funil de Conversão</h3>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
+              <span class="text-[10px] font-bold uppercase text-text-muted">1. Total de Leads</span>
+              <div class="text-2xl font-black text-white" id="funnel1Val">0</div>
+              <div class="w-full bg-accent-blue/20 h-1.5 rounded-full mt-2"><div class="bg-accent-blue h-1.5" style="width:100%"></div></div>
+            </div>
+            <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
+              <span class="text-[10px] font-bold uppercase text-text-muted">2. Tx Conversão Geral</span>
+              <div class="text-2xl font-black text-accent-blue" id="funnel2Val">0.0%</div>
+              <div class="w-full bg-accent-blue/20 h-1.5 rounded-full mt-2"><div class="bg-accent-blue h-1.5" style="width:78%"></div></div>
+            </div>
+            <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
+              <span class="text-[10px] font-bold uppercase text-text-muted">3. Tx Conv Lançamento</span>
+              <div class="text-2xl font-black text-accent-green" id="funnel3Val">0.0%</div>
+              <div class="w-full bg-accent-green/20 h-1.5 rounded-full mt-2"><div class="bg-accent-green h-1.5" style="width:65%"></div></div>
+            </div>
+            <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
+              <span class="text-[10px] font-bold uppercase text-text-muted">4. Carregamento Página</span>
+              <div class="text-2xl font-black text-accent-yellow" id="funnel4Val">0.0%</div>
+              <div class="w-full bg-accent-yellow/20 h-1.5 rounded-full mt-2"><div class="bg-accent-yellow h-1.5" style="width:94%"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
+            <h3 class="text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-2"><span class="p-1 rounded bg-accent-blue/10 text-accent-blue">👥</span> Top 5 Públicos</h3>
+            <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-2.5">Rank</th><th class="p-2.5">Público</th><th class="p-2.5">Leads</th><th class="p-2.5">CPL</th><th class="p-2.5">Conv %</th></tr></thead><tbody id="top5PublicosBody" class="divide-y divide-border-custom text-text-primary"></tbody></table>
+          </div>
+          <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
+            <h3 class="text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-2"><span class="p-1 rounded bg-accent-green/10 text-accent-green">🎬</span> Top 5 Criativos</h3>
+            <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-2.5">Rank</th><th class="p-2.5">Criativo</th><th class="p-2.5">Leads</th><th class="p-2.5">CPL</th><th class="p-2.5">Conv %</th></tr></thead><tbody id="top5CriativosBody" class="divide-y divide-border-custom text-text-primary"></tbody></table>
+          </div>
+        </div>
+        <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
+          <div class="flex justify-between items-center">
+            <div><h3 class="text-xs font-extrabold text-white uppercase tracking-wider">📊 Timeline Diária</h3></div>
+          </div>
+          <div id="candlestickChart" class="w-full h-64"></div>
+          <div class="overflow-x-auto custom-scrollbar pt-2 pb-1"><div class="flex gap-3 min-w-max" id="timelineDaysBar"></div></div>
         </div>
       </section>
 
-    </main>
-  </div>
+      <!-- TELA 3 — CRIATIVOS -->
+      <section id="screen-t3" class="screen-view space-y-8 hidden">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-extrabold text-white">🎬 Análise de Criativos</h2>
+          <div class="flex items-center gap-2 bg-bg-card border border-border-custom rounded-lg px-4 py-2"><span class="text-xs font-bold text-white" id="t3PeriodLabel">—</span></div>
+        </div>
+        <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
+          <h3 class="text-xs font-extrabold text-accent-red uppercase tracking-wider">🔴 Google Ads (YouTube)</h3>
+          <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-3">Criativo</th><th class="p-3">Investido</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3">Conv %</th><th class="p-3">Destaque</th></tr></thead><tbody id="googleCriativosTable" class="divide-y divide-border-custom text-text-primary"></tbody></table>
+        </div>
+        <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
+          <h3 class="text-xs font-extrabold text-accent-blue uppercase tracking-wider">🔷 Meta Ads (Facebook / Instagram)</h3>
+          <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-3">Criativo</th><th class="p-3">Investido</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3">Conv %</th><th class="p-3">Destaque</th></tr></thead><tbody id="metaCriativosTable" class="divide-y divide-border-custom text-text-primary"></tbody></table>
+        </div>
+      </section>
 
-  <script>
-    // URL PADRÃO DA PLANILHA ADVERONIX
-    const SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1iY5TYTyFDIlQ_5N3MizfCpPVwj7I8_sEkyFBtVrzb_k/edit?usp=sharing";
+      <!-- TELA 4 — PÚBLICOS -->
+      <section id="screen-t4" class="screen-view space-y-8 hidden">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-extrabold text-white">👥 Análise de Públicos</h2>
+          <div class="flex items-center gap-2 bg-bg-card border border-border-custom rounded-lg px-4 py-2"><span class="text-xs font-bold text-white" id="t4PeriodLabel">—</span></div>
+        </div>
+        <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
+          <h3 class="text-xs font-extrabold text-accent-red uppercase tracking-wider">🔴 Google Ads — Públicos e Grupos</h3>
+          <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-3">Público</th><th class="p-3">Investido</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3">Conv %</th><th class="p-3">Destaque</th></tr></thead><tbody id="googlePublicosTable" class="divide-y divide-border-custom text-text-primary"></tbody></table>
+        </div>
+        <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
+          <h3 class="text-xs font-extrabold text-accent-blue uppercase tracking-wider">🔷 Meta Ads — Conjuntos de Anúncios</h3>
+          <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-3">Conjunto</th><th class="p-3">Investido</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3">Conv %</th><th class="p-3">Destaque</th></tr></thead><tbody id="metaPublicosTable" class="divide-y divide-border-custom text-text-primary"></tbody></table>
+        </div>
+      </section>
+    </div>
+  </main>
+</div><!-- fim appShell -->
 
-    // FIREBASE INITIALIZATION
-    const firebaseConfig = { apiKey: "AIzaSyDZYRKSZ3ain-6NXrvBux9K2WzJ27TTjlQ", authDomain: "dashboardtrafego-4417b.firebaseapp.com", projectId: "dashboardtrafego-4417b", storageBucket: "dashboardtrafego-4417b.firebasestorage.app", messagingSenderId: "239927644481", appId: "1:239927644481:web:6cca3de0b7cdbc642851c0" };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+<script>
+// ============================================================
+// FIREBASE & USERS MOCK
+// ============================================================
+const firebaseConfig = { apiKey:"A", authDomain:"B", projectId:"C" };
+let firebaseReady=false;
+const LOCAL_USERS={ 'admin': {email:'admin@local.com',password:'axds220955', role:'admin', name:'André Luiz'} };
+let currentUser=null;
 
-    let authTab = 'login';
-    let selectedStartDate = "2026-09-02";
-    let selectedEndDate = "2026-09-02";
-    let chartInstance = null;
-    let currentUserRole = 'reader';
+// ============================================================
+// DATE PICKER STATE & LOGIC
+// ============================================================
+const MONTHS_PT=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+let dpState={
+  viewYear:2026, viewMonth:8,
+  selStart:null, selEnd:null,
+  picking:'start',
+  activeShortcut:null
+};
 
-    // RESOLVER APELIDOS DE LOGIN PARA E-MAIL
-    function resolveEmailAlias(input) {
-      const clean = input.trim().toLowerCase();
-      if (clean === 'admin' || clean === 'andreluizbastosnunes@gmail.com') {
-        return 'andreluizbastosnunes@gmail.com';
-      }
-      if (clean === 'madri' || clean === 'contatomjunior@gmail.com') {
-        return 'contatomjunior@gmail.com';
-      }
-      return input.trim();
+function isoToDate(s){ const[y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+function dateToIso(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function fmtShort(d){ return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getFullYear()).slice(-2)}`; }
+function stripTime(d){ return new Date(d.getFullYear(),d.getMonth(),d.getDate()); }
+function today(){ return stripTime(new Date()); }
+
+function toggleDatePicker(){
+  const dd=document.getElementById('dpDropdown');
+  const trigger=document.getElementById('dpTrigger');
+  const isOpen=dd.classList.contains('open');
+  if(isOpen){ closeDatePicker(); return; }
+  dd.classList.add('open'); trigger.classList.add('active');
+  renderDpCalendar();
+}
+function closeDatePicker(){
+  document.getElementById('dpDropdown').classList.remove('open');
+  document.getElementById('dpTrigger').classList.remove('active');
+}
+
+// Fechar ao clicar fora
+document.addEventListener('click',e=>{
+  const wrap=document.getElementById('dpWrap');
+  if(wrap && !wrap.contains(e.target)) closeDatePicker();
+});
+
+function dpNavMonth(dir){
+  dpState.viewMonth+=dir;
+  if(dpState.viewMonth>11){dpState.viewMonth=0;dpState.viewYear++;}
+  if(dpState.viewMonth<0){dpState.viewMonth=11;dpState.viewYear--;}
+  renderDpCalendar();
+}
+
+function renderDpCalendar(){
+  document.getElementById('dpCalTitle').textContent=`${MONTHS_PT[dpState.viewMonth]} ${dpState.viewYear}`;
+  const firstDay=new Date(dpState.viewYear,dpState.viewMonth,1).getDay();
+  const daysInMonth=new Date(dpState.viewYear,dpState.viewMonth+1,0).getDate();
+  const td=today();
+  let html='';
+
+  for(let i=0;i<firstDay;i++) html+=`<div class="dp-day-wrapper"><div class="dp-day dp-day-empty"></div></div>`;
+
+  for(let day=1;day<=daysInMonth;day++){
+    const dt=new Date(dpState.viewYear,dpState.viewMonth,day);
+    let cls='dp-day';
+    const isToday=dt.getTime()===td.getTime();
+    
+    const s=dpState.selStart, e=dpState.selEnd;
+    if(s && e){
+      const lo=s<e?s:e, hi=s<e?e:s;
+      if(dt.getTime()===lo.getTime()) cls+=' dp-day-selected dp-day-range-start';
+      else if(dt.getTime()===hi.getTime()) cls+=' dp-day-range-end';
+      else if(dt>lo && dt<hi) cls+=' dp-day-in-range';
+    } else if(s && dt.getTime()===s.getTime()){
+      cls+=' dp-day-selected';
     }
+    
+    html+=`<div class="dp-day-wrapper"><div class="${cls}" onclick="dpClickDay(${dpState.viewYear},${dpState.viewMonth},${day})">${day}</div></div>`;
+  }
+  document.getElementById('dpDays').innerHTML=html;
+}
 
-    // MONITOR DE AUTENTICAÇÃO DO FIREBASE
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        const email = user.email.toLowerCase();
-        if (email === 'andreluizbastosnunes@gmail.com') {
-          currentUserRole = 'admin';
-          document.getElementById('navTabConfig').classList.remove('hidden');
-          document.getElementById('userDisplayRole').innerText = 'Admin (Acesso Total)';
-        } else if (email === 'contatomjunior@gmail.com') {
-          currentUserRole = 'reader';
-          document.getElementById('navTabConfig').classList.add('hidden');
-          document.getElementById('userDisplayRole').innerText = 'Madri (Leitora)';
-        } else {
-          auth.signOut();
-          showAuthAlert('Acesso não autorizado para este e-mail.', 'rose');
-          return;
-        }
+function dpClickDay(y,m,d){
+  const dt=new Date(y,m,d);
+  if(dpState.picking==='start'||(!dpState.selStart)){
+    dpState.selStart=dt; dpState.selEnd=null; dpState.picking='end';
+  } else {
+    if(dt<dpState.selStart){ dpState.selEnd=dpState.selStart; dpState.selStart=dt; }
+    else { dpState.selEnd=dt; }
+    dpState.picking='start';
+    applyDateRange(); // Aplica automaticamente ao escolher a 2ª data
+    return; // Para execução para não renderizar e manter aberto
+  }
+  dpState.activeShortcut=null;
+  document.querySelectorAll('.dp-shortcut').forEach(b=>b.classList.remove('active'));
+  renderDpCalendar();
+}
 
-        document.getElementById('authScreen').classList.add('hidden');
-        document.getElementById('appContainer').classList.remove('hidden');
-        switchNavTab('captacao');
-        initData();
-      } else {
-        document.getElementById('appContainer').classList.add('hidden');
-        document.getElementById('authScreen').classList.remove('hidden');
-      }
-    });
+function applyShortcut(key){
+  const t=today();
+  let s,e;
+  if(key==='today'){s=t;e=t;}
+  else if(key==='yesterday'){s=new Date(t.getFullYear(),t.getMonth(),t.getDate()-1);e=s;}
+  else if(key==='last7'){s=new Date(t.getFullYear(),t.getMonth(),t.getDate()-6);e=t;}
+  else if(key==='last30'){s=new Date(t.getFullYear(),t.getMonth(),t.getDate()-29);e=t;}
+  else if(key==='thisMonth'){s=new Date(t.getFullYear(),t.getMonth(),1);e=t;}
+  else if(key==='lastMonth'){s=new Date(t.getFullYear(),t.getMonth()-1,1);e=new Date(t.getFullYear(),t.getMonth(),0);}
+  else if(key==='thisYear'){s=new Date(t.getFullYear(),0,1);e=t;}
+  
+  dpState.selStart=s; dpState.selEnd=e;
+  dpState.viewYear=e.getFullYear(); dpState.viewMonth=e.getMonth();
+  dpState.activeShortcut=key;
+  
+  document.querySelectorAll('.dp-shortcut').forEach(b=>b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  
+  applyDateRange(); // Auto-aplica e fecha
+}
 
-    // TROCA DE ABAS NA TELA DE AUTENTICAÇÃO
-    function switchAuthTab(tab) {
-      authTab = tab;
-      ['Login', 'Register', 'Forgot'].forEach(t => {
-        const form = document.getElementById('form' + t);
-        const btn = document.getElementById('tabAuth' + t);
-        if (t.toLowerCase() === tab) {
-          form.classList.remove('hidden');
-          btn.className = "flex-1 py-2.5 border-b-2 border-accent-purple text-accent-purple";
-        } else {
-          form.classList.add('hidden');
-          btn.className = "flex-1 py-2.5 border-b-2 border-transparent text-slate-400 hover:text-white";
-        }
-      });
-      hideAuthAlert();
-    }
+function applyDateRange(){
+  if(!dpState.selStart) return;
+  const s=dpState.selStart;
+  const e=dpState.selEnd||dpState.selStart;
+  const lo=s<e?s:e, hi=s<e?e:s;
+  
+  launchState.filterStart=dateToIso(lo);
+  launchState.filterEnd=dateToIso(hi);
+  document.getElementById('dpTriggerLabel').textContent=`${fmtShort(lo)} - ${fmtShort(hi)}`;
 
-    function showAuthAlert(msg, color = 'rose') {
-      const alertBox = document.getElementById('authAlert');
-      alertBox.innerText = msg;
-      alertBox.className = `text-xs text-center font-bold p-3 rounded-xl bg-${color}-500/20 text-${color}-400 border border-${color}-500/30 block`;
-    }
+  closeDatePicker();
+  renderAllScreens();
+}
 
-    function hideAuthAlert() {
-      document.getElementById('authAlert').className = 'hidden';
-    }
+// ============================================================
+// GLOBAL STATE & CORE
+// ============================================================
+let launchState={
+  dataInicio:"2026-09-01", dataFim:"2026-09-13",
+  filterStart:"2026-09-01", filterEnd:"2026-09-13",
+  verbaTotal:20000, metaLeads:10000,
+  dataMeta:[],dataGoogle:[]
+};
+let candlestickChartInstance=null;
 
-    // HANDLERS DO FIREBASE AUTH
-    function handleLogin(e) {
-      e.preventDefault();
-      const identifier = document.getElementById('loginIdentifier').value;
-      const password = document.getElementById('loginPassword').value;
-      const targetEmail = resolveEmailAlias(identifier);
+function doLogin(){
+  const u=document.getElementById('loginUser').value.trim().toLowerCase();
+  const p=document.getElementById('loginPass').value;
+  if(!u||!p)return;
+  const local=LOCAL_USERS[u];
+  if(local&&local.password===p){enterApp({email:local.email,role:local.role,name:local.name});}
+  else{alert('Erro de login');}
+}
 
-      auth.signInWithEmailAndPassword(targetEmail, password)
-        .catch(err => showAuthAlert('Login incorreto. Verifique usuário e senha.', 'rose'));
-    }
+function enterApp(userData){
+  currentUser=userData;
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appShell').classList.remove('hidden');
+  document.getElementById('appShell').classList.add('flex');
+  
+  dpState.selStart=isoToDate(launchState.dataInicio);
+  dpState.selEnd=isoToDate(launchState.dataFim);
+  document.getElementById('dpTriggerLabel').textContent=`${fmtShort(dpState.selStart)} - ${fmtShort(dpState.selEnd)}`;
+  
+  syncDataFromSheets();
+}
 
-    function handleRegister(e) {
-      e.preventDefault();
-      const email = document.getElementById('regEmail').value;
-      const password = document.getElementById('regPassword').value;
+function doLogout(){
+  if(!confirm('Deseja sair?'))return;
+  location.reload();
+}
 
-      auth.createUserWithEmailAndPassword(email, password)
-        .then(() => alert("Conta criada com sucesso!"))
-        .catch(err => showAuthAlert(err.message, 'rose'));
-    }
+function navTo(id){
+  document.querySelectorAll('.screen-view').forEach(el=>el.classList.add('hidden'));
+  document.getElementById('screen-'+id).classList.remove('hidden');
+  ['t1','t2','t3','t4'].forEach(i=>{
+    const b=document.getElementById('nav-'+i); if(!b)return;
+    b.className=i===id?'w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all bg-accent-blue text-white shadow-md':'w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all text-text-muted hover:text-text-primary hover:bg-bg-input';
+  });
+  if(id==='t2') setTimeout(()=>renderFunnelAndTimeline(),100);
+}
 
-    function handleForgot(e) {
-      e.preventDefault();
-      const email = document.getElementById('forgotEmail').value;
+// Mock & Render
+async function syncDataFromSheets(){
+  launchState.dataMeta=[{Day:'2026-09-02', Leads: 25, 'Amount Spent': 100}, {Day:'2026-09-03', Leads: 45, 'Amount Spent': 120}];
+  launchState.dataGoogle=[{Day:'2026-09-02', Conversions: 15, 'Cost (Spend)': 80}, {Day:'2026-09-03', Conversions: 30, 'Cost (Spend)': 110}];
+  renderAllScreens();
+}
 
-      auth.sendPasswordResetEmail(email)
-        .then(() => {
-          showAuthAlert("Instruções de recuperação enviadas para o e-mail!", "emerald");
-          setTimeout(() => switchAuthTab('login'), 3000);
-        })
-        .catch(err => showAuthAlert(err.message, 'rose'));
-    }
-
-    function handleLogout() {
-      auth.signOut();
-    }
-
-    // NAVEGAÇÃO DE MENU HORIZONTAL
-    function switchNavTab(tab) {
-      if (tab === 'config' && currentUserRole !== 'admin') {
-        alert("Acesso restrito ao Administrador.");
-        return;
-      }
-
-      ['Captacao', 'Eventos', 'Outras', 'Debriefing', 'Reports', 'Config'].forEach(t => {
-        const navBtn = document.getElementById('navTab' + t);
-        if (navBtn) {
-          if (t.toLowerCase() === tab) {
-            navBtn.className = "px-4 py-2 border-b-2 border-accent-purple text-white font-bold";
-          } else {
-            navBtn.className = "px-4 py-2 border-b-2 border-transparent text-slate-400 hover:text-white font-semibold";
-          }
-        }
-      });
-
-      if(tab === 'config') {
-        document.getElementById('secCaptacao').classList.add('hidden');
-        document.getElementById('secConfig').classList.remove('hidden');
-      } else {
-        document.getElementById('secCaptacao').classList.remove('hidden');
-        document.getElementById('secConfig').classList.add('hidden');
-      }
-    }
-
-    // DATE PICKER MODAL
-    function toggleDatePickerModal() {
-      document.getElementById('datePickerModal').classList.toggle('hidden');
-    }
-
-    function setQuickDate(preset) {
-      if(preset === 'today' || preset === 'yesterday') {
-        selectedStartDate = "2026-09-02";
-        selectedEndDate = "2026-09-02";
-      } else {
-        selectedStartDate = "2026-09-01";
-        selectedEndDate = "2026-09-03";
-      }
-      applyDateSelection();
-    }
-
-    function renderCalendarGrid(year, month) {
-      const daysGrid = document.getElementById('calDaysGrid');
-      daysGrid.innerHTML = '';
-      for(let d = 1; d <= 30; d++) {
-        const isSelected = (d === 2);
-        daysGrid.innerHTML += `
-          <button onclick="selectCalDay(${d})" class="p-1.5 rounded-lg text-xs font-bold transition ${isSelected ? 'bg-accent-purple text-white' : 'hover:bg-bg-card text-slate-300'}">
-            ${d}
-          </button>
-        `;
-      }
-    }
-
-    function selectCalDay(day) {
-      const dStr = String(day).padStart(2, '0');
-      selectedStartDate = `2026-09-${dStr}`;
-      selectedEndDate = `2026-09-${dStr}`;
-      applyDateSelection();
-    }
-
-    function applyDateSelection() {
-      const display = `${selectedStartDate.split('-').reverse().join('/')} - ${selectedEndDate.split('-').reverse().join('/')}`;
-      document.getElementById('datePickerDisplay').innerText = display;
-      document.getElementById('datePickerModal').classList.add('hidden');
-      initData();
-    }
-
-    // INICIALIZAÇÃO DE DADOS E RENDERIZAÇÃO
-    function initData() {
-      const mockAds = [
-        { name: 'ADS113', spent: 84.89, imp: 3900, clicks: 118, lpv: 122, leads: 51, ctr: 3.03, connect: 103.39, cvr: 41.80, cpl: 1.66 },
-        { name: 'ADS129', spent: 72.55, imp: 2909, clicks: 150, lpv: 141, leads: 29, ctr: 5.16, connect: 94.00, cvr: 20.57, cpl: 2.50 },
-        { name: 'ADS56',  spent: 67.44, imp: 2814, clicks: 90,  lpv: 81,  leads: 36, ctr: 3.20, connect: 90.00, cvr: 44.44, cpl: 1.87 },
-        { name: 'ADS70',  spent: 22.08, imp: 1033, clicks: 33,  lpv: 33,  leads: 10, ctr: 3.19, connect: 100.00, cvr: 30.30, cpl: 2.21 },
-        { name: 'ADS122', spent: 46.76, imp: 2167, clicks: 70,  lpv: 73,  leads: 32, ctr: 3.23, connect: 104.29, cvr: 43.84, cpl: 1.46 },
-        { name: 'ADS25',  spent: 20.80, imp: 820,  clicks: 42,  lpv: 39,  leads: 10, ctr: 5.12, connect: 92.86, cvr: 25.64, cpl: 2.08 },
-        { name: 'ADS98',  spent: 28.90, imp: 961,  clicks: 29,  lpv: 30,  leads: 10, ctr: 3.02, connect: 103.45, cvr: 33.33, cpl: 2.89 },
-        { name: 'ADS91',  spent: 22.50, imp: 890,  clicks: 35,  lpv: 32,  leads: 15, ctr: 3.93, connect: 91.43, cvr: 46.88, cpl: 1.50 },
-        { name: 'ADS43',  spent: 23.01, imp: 910,  clicks: 30,  lpv: 28,  leads: 10, ctr: 3.29, connect: 93.33, cvr: 35.71, cpl: 2.30 }
-      ];
-
-      const tb = document.getElementById('tableCriativosBody');
-      tb.innerHTML = '';
-      mockAds.forEach(a => {
-        tb.innerHTML += `
-          <tr class="hover:bg-bg-input/50 transition">
-            <td class="p-4 font-bold text-white">${a.name}</td>
-            <td class="p-4">R$ ${a.spent.toFixed(2)}</td>
-            <td class="p-4 text-slate-300">${a.imp}</td>
-            <td class="p-4 text-slate-300">${a.clicks}</td>
-            <td class="p-4 text-slate-300">${a.lpv}</td>
-            <td class="p-4 font-bold text-accent-green">${a.leads}</td>
-            <td class="p-4">${a.ctr.toFixed(2)}%</td>
-            <td class="p-4 text-accent-blue">${a.connect.toFixed(2)}%</td>
-            <td class="p-4 text-accent-purple">${a.cvr.toFixed(2)}%</td>
-            <td class="p-4 font-bold text-accent-amber">R$ ${a.cpl.toFixed(2)}</td>
-          </tr>
-        `;
-      });
-
-      if(chartInstance) chartInstance.destroy();
-      chartInstance = new Chart(document.getElementById('chartLeadsVsCPL').getContext('2d'), {
-        type: 'bar',
-        data: {
-          labels: mockAds.map(a => a.name),
-          datasets: [
-            {
-              type: 'line',
-              label: 'CPL (R$)',
-              data: mockAds.map(a => a.cpl),
-              borderColor: '#F59E0B',
-              borderWidth: 2,
-              pointBackgroundColor: '#F59E0B',
-              pointRadius: 4,
-              tension: 0.2,
-              yAxisID: 'y1'
-            },
-            {
-              type: 'bar',
-              label: 'Leads Captados',
-              data: mockAds.map(a => a.leads),
-              backgroundColor: '#10B981',
-              borderRadius: 4,
-              yAxisID: 'y'
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          interaction: { mode: 'index', intersect: false },
-          scales: {
-            x: { grid: { display: false }, ticks: { color: '#64748B', font: { size: 10, weight: 'bold' } } },
-            y: { position: 'left', grid: { color: '#2B3149' }, ticks: { color: '#64748B' } },
-            y1: { position: 'right', grid: { display: false }, ticks: { color: '#F59E0B', callback: v => 'R$ ' + v } }
-          },
-          plugins: { legend: { display: false } }
-        }
-      });
-    }
-
-    function saveSheetUrl() {
-      alert("URL da planilha salva e conectada com sucesso!");
-      switchNavTab('captacao');
-    }
-  </script>
+function renderAllScreens(){
+  const s=isoToDate(launchState.filterStart), e=isoToDate(launchState.filterEnd);
+  const lbl = fmtShort(s) + ' - ' + fmtShort(e);
+  ['t2PeriodLabel','t3PeriodLabel','t4PeriodLabel'].forEach(id=>{
+    if(document.getElementById(id)) document.getElementById(id).textContent=lbl;
+  });
+}
+function saveAdminConfig(){ alert('Salvo!'); }
+</script>
 </body>
 </html>
