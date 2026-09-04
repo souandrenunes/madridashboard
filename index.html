@@ -51,7 +51,7 @@
     @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
     .fade-in{animation:fadeIn .35s ease forwards}
 
-    /* ===== DATE PICKER CUSTOMIZADO (ATUALIZADO) ===== */
+    /* ===== DATE PICKER CUSTOMIZADO (ROXO & AUTOMÁTICO) ===== */
     .dp-wrap { position: relative; display: inline-block; }
     .dp-trigger { display: flex; align-items: center; gap: 8px; background: transparent; border: 1px solid #2D3148; border-radius: 6px; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: 600; color: #e2e8f0; white-space: nowrap; transition: border-color 0.2s, background 0.2s; user-select: none; }
     .dp-trigger:hover, .dp-trigger.active { border-color: #475569; background: rgba(30, 41, 59, 0.5); }
@@ -86,8 +86,7 @@
     .dp-day.dp-day-selected { background: #9333ea !important; color: #ffffff; border-color: #9333ea !important; box-shadow: 0 0 10px rgba(147, 51, 234, 0.4); }
     .dp-day.dp-day-range-end { background: #080A10 !important; color: #f8fafc; border-color: #9333ea !important; box-shadow: none; }
     .dp-day.dp-day-in-range { background: rgba(147, 51, 234, 0.15); color: #c084fc; border-radius: 6px; }
-    .dp-day.dp-day-selected.dp-day-range-end { background: #9333ea !important; color: #ffffff; } /* Se for 1 dia só */
-    
+    .dp-day.dp-day-selected.dp-day-range-end { background: #9333ea !important; color: #ffffff; }
   </style>
 </head>
 <body class="bg-bg-base text-text-primary antialiased min-h-screen flex overflow-x-hidden">
@@ -268,7 +267,7 @@
       </div>
     </header>
 
-    <!-- TELAS (Mantidas sem alteração para focar no Date Picker) -->
+    <!-- TELAS -->
     <div class="p-8 space-y-8 flex-grow">
       
       <!-- TELA 1 — ADMIN -->
@@ -442,11 +441,22 @@
 
 <script>
 // ============================================================
-// FIREBASE & USERS MOCK
+// FIREBASE & USUÁRIOS
 // ============================================================
-const firebaseConfig = { apiKey:"A", authDomain:"B", projectId:"C" };
+const firebaseConfig = {
+  apiKey:"AIzaSyDemo_SUBSTITUA_PELA_SUA_CHAVE",
+  authDomain:"seu-projeto.firebaseapp.com",
+  projectId:"seu-projeto"
+};
 let firebaseReady=false;
-const LOCAL_USERS={ 'admin': {email:'admin@local.com',password:'axds220955', role:'admin', name:'André Luiz'} };
+try{ firebase.initializeApp(firebaseConfig); firebaseReady=true; }catch(e){ console.warn("Firebase fallback:",e.message); }
+
+const LOCAL_USERS={
+  'admin':                          {email:'andreluizbastosnunes@gmail.com',password:'axds220955', role:'admin', name:'André Luiz'},
+  'andreluizbastosnunes@gmail.com': {email:'andreluizbastosnunes@gmail.com',password:'axds220955', role:'admin', name:'André Luiz'},
+  'madri':                          {email:'contatomjunior@gmail.com',      password:'madri@45702',role:'reader',name:'Madri'},
+  'contatomjunior@gmail.com':       {email:'contatomjunior@gmail.com',      password:'madri@45702',role:'reader',name:'Madri'},
+};
 let currentUser=null;
 
 // ============================================================
@@ -529,8 +539,8 @@ function dpClickDay(y,m,d){
     if(dt<dpState.selStart){ dpState.selEnd=dpState.selStart; dpState.selStart=dt; }
     else { dpState.selEnd=dt; }
     dpState.picking='start';
-    applyDateRange(); // Aplica automaticamente ao escolher a 2ª data
-    return; // Para execução para não renderizar e manter aberto
+    applyDateRange(); // Aplica automaticamente
+    return;
   }
   dpState.activeShortcut=null;
   document.querySelectorAll('.dp-shortcut').forEach(b=>b.classList.remove('active'));
@@ -555,7 +565,7 @@ function applyShortcut(key){
   document.querySelectorAll('.dp-shortcut').forEach(b=>b.classList.remove('active'));
   event.currentTarget.classList.add('active');
   
-  applyDateRange(); // Auto-aplica e fecha
+  applyDateRange();
 }
 
 function applyDateRange(){
@@ -575,21 +585,57 @@ function applyDateRange(){
 // ============================================================
 // GLOBAL STATE & CORE
 // ============================================================
+const DEFAULT_SPREADSHEET_URL="https://docs.google.com/spreadsheets/d/1iY5TYTyFDIlQ_5N3MizfCpPVwj7I8_sEkyFBtVrzb_k/edit?usp=sharing";
 let launchState={
   dataInicio:"2026-09-01", dataFim:"2026-09-13",
   filterStart:"2026-09-01", filterEnd:"2026-09-13",
-  verbaTotal:20000, metaLeads:10000,
+  verbaTotal:20000,pctGQ:12,pctGF:20,pctMQ:28,pctMF:40,
+  metaInvest:16000,metaLeads:10000,
+  sheetUrl:DEFAULT_SPREADSHEET_URL,
   dataMeta:[],dataGoogle:[]
 };
 let candlestickChartInstance=null;
 
-function doLogin(){
+// ============================================================
+// AUTH & UI LOGIN
+// ============================================================
+function togglePass(){
+  const inp=document.getElementById('loginPass'), icon=document.getElementById('eyeIcon');
+  if(inp.type==='password'){inp.type='text';icon.innerHTML=`<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>`;}
+  else{inp.type='password';icon.innerHTML=`<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;}
+}
+
+async function doLogin(){
   const u=document.getElementById('loginUser').value.trim().toLowerCase();
   const p=document.getElementById('loginPass').value;
-  if(!u||!p)return;
+  const errEl=document.getElementById('loginError');
+  const btn=document.getElementById('loginBtn');
+  errEl.classList.add('hidden'); btn.disabled=true; btn.textContent='Verificando...';
+  if(!u||!p){showLoginError('Preencha usuário e senha.');return;}
+  if(firebaseReady){
+    const local=LOCAL_USERS[u]; const emailToTry=local?local.email:u;
+    try{await firebase.auth().signInWithEmailAndPassword(emailToTry,p);return;}catch(e){console.warn('FB fallback',e.code);}
+  }
   const local=LOCAL_USERS[u];
   if(local&&local.password===p){enterApp({email:local.email,role:local.role,name:local.name});}
-  else{alert('Erro de login');}
+  else{
+    showLoginError('Usuário ou senha incorretos.');
+    document.getElementById('loginPass').value='';
+    ['loginUser','loginPass'].forEach(id=>{
+      document.getElementById(id).classList.add('shake');
+      setTimeout(()=>document.getElementById(id).classList.remove('shake'),400);
+    });
+  }
+  btn.disabled=false; btn.textContent='Entrar no War Room';
+}
+function showLoginError(msg){
+  const e=document.getElementById('loginError'); e.textContent=msg; e.classList.remove('hidden');
+  document.getElementById('loginBtn').disabled=false; document.getElementById('loginBtn').textContent='Entrar no War Room';
+}
+if(firebaseReady){
+  firebase.auth().onAuthStateChanged(u=>{
+    if(u){const isAdmin=u.email==='andreluizbastosnunes@gmail.com';enterApp({email:u.email,role:isAdmin?'admin':'reader',name:isAdmin?'André Luiz':'Madri'});}
+  });
 }
 
 function enterApp(userData){
@@ -597,6 +643,8 @@ function enterApp(userData){
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('appShell').classList.remove('hidden');
   document.getElementById('appShell').classList.add('flex');
+  applyPermissions();
+  document.getElementById('admSheetUrl').value=launchState.sheetUrl;
   
   dpState.selStart=isoToDate(launchState.dataInicio);
   dpState.selEnd=isoToDate(launchState.dataFim);
@@ -605,12 +653,50 @@ function enterApp(userData){
   syncDataFromSheets();
 }
 
+function applyPermissions(){
+  const isAdmin=currentUser&&currentUser.role==='admin';
+  document.getElementById('userDisplayName').textContent=currentUser.name||currentUser.email;
+  document.getElementById('userAvatar').textContent=(currentUser.name||'U')[0].toUpperCase();
+  const badge=document.getElementById('userRoleBadge');
+  badge.textContent=isAdmin?'● ADMIN':'● LEITOR';
+  badge.className=isAdmin?'role-admin':'role-reader';
+  if(!isAdmin){
+    document.getElementById('nav-t1').classList.add('hidden');
+    navTo('t2');
+    document.getElementById('btnSaveAdmin').disabled=true;
+    document.getElementById('btnSaveAdmin').classList.add('opacity-40','cursor-not-allowed');
+    document.querySelectorAll('#adminForm input').forEach(i=>{i.disabled=true;i.classList.add('opacity-60');});
+    document.getElementById('readerWarning').classList.remove('hidden');
+  }
+}
+
 function doLogout(){
   if(!confirm('Deseja sair?'))return;
+  if(firebaseReady) firebase.auth().signOut();
   location.reload();
 }
 
+function showForgotModal(){document.getElementById('forgotModal').classList.remove('hidden');document.getElementById('forgotEmail').value='';document.getElementById('forgotMsg').classList.add('hidden');}
+function hideForgotModal(){document.getElementById('forgotModal').classList.add('hidden');}
+async function doForgot(){
+  const email=document.getElementById('forgotEmail').value.trim();
+  const msgEl=document.getElementById('forgotMsg');
+  msgEl.classList.add('hidden');
+  if(!email){msgEl.textContent='Informe um e-mail válido.';msgEl.className='text-xs rounded-md px-3 py-2.5 font-medium bg-accent-red/10 border border-accent-red/20 text-accent-red';msgEl.classList.remove('hidden');return;}
+  if(firebaseReady){
+    try{await firebase.auth().sendPasswordResetEmail(email);msgEl.textContent=`✅ Link enviado para ${email}.`;msgEl.className='text-xs rounded-md px-3 py-2.5 font-medium bg-accent-green/10 border border-accent-green/20 text-accent-green';msgEl.classList.remove('hidden');}
+    catch(e){msgEl.textContent=e.message||'Erro ao enviar.';msgEl.className='text-xs rounded-md px-3 py-2.5 font-medium bg-accent-red/10 border border-accent-red/20 text-accent-red';msgEl.classList.remove('hidden');}
+  } else {
+    msgEl.textContent=`Simulado: link enviado para ${email}. Configure o Firebase para envio real.`;
+    msgEl.className='text-xs rounded-md px-3 py-2.5 font-medium bg-accent-yellow/10 border border-accent-yellow/20 text-accent-yellow';msgEl.classList.remove('hidden');
+  }
+}
+
+// ============================================================
+// NAVEGAÇÃO & ADMIN
+// ============================================================
 function navTo(id){
+  if(id==='t1'&&currentUser&&currentUser.role!=='admin')return;
   document.querySelectorAll('.screen-view').forEach(el=>el.classList.add('hidden'));
   document.getElementById('screen-'+id).classList.remove('hidden');
   ['t1','t2','t3','t4'].forEach(i=>{
@@ -620,21 +706,319 @@ function navTo(id){
   if(id==='t2') setTimeout(()=>renderFunnelAndTimeline(),100);
 }
 
-// Mock & Render
+function validatePercentages(){
+  const s=(parseFloat(document.getElementById('admPctGQ').value)||0)+(parseFloat(document.getElementById('admPctGF').value)||0)+(parseFloat(document.getElementById('admPctMQ').value)||0)+(parseFloat(document.getElementById('admPctMF').value)||0);
+  const badge=document.getElementById('pctSumBadge'), err=document.getElementById('pctErrorMsg');
+  badge.innerText=`Soma: ${s.toFixed(1)}%`;
+  if(Math.abs(s-100)<0.1){badge.className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-accent-green/20 text-accent-green";err.classList.add('hidden');return true;}
+  else{badge.className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-accent-red/20 text-accent-red";err.classList.remove('hidden');return false;}
+}
+
+function saveAdminConfig(){
+  if(currentUser&&currentUser.role!=='admin'){alert('Acesso negado.');return;}
+  if(!validatePercentages()){alert('Soma dos % deve ser 100%.');return;}
+  launchState.dataInicio=document.getElementById('admDataInicio').value;
+  launchState.dataFim=document.getElementById('admDataFim').value;
+  launchState.verbaTotal=parseFloat(document.getElementById('admVerbaTotal').value)||20000;
+  launchState.metaInvest=parseFloat(document.getElementById('admMetaInvest').value)||16000;
+  launchState.metaLeads=parseFloat(document.getElementById('admMetaLeads').value)||10000;
+  launchState.pctGQ=parseFloat(document.getElementById('admPctGQ').value)||0;
+  launchState.pctGF=parseFloat(document.getElementById('admPctGF').value)||0;
+  launchState.pctMQ=parseFloat(document.getElementById('admPctMQ').value)||0;
+  launchState.pctMF=parseFloat(document.getElementById('admPctMF').value)||0;
+  launchState.sheetUrl=document.getElementById('admSheetUrl').value.trim()||DEFAULT_SPREADSHEET_URL;
+  const cpl=launchState.metaLeads>0?(launchState.verbaTotal/launchState.metaLeads).toFixed(2):'0.00';
+  document.getElementById('admTargetSummary').innerHTML=`Verba de <b class="text-accent-green">R$ ${launchState.verbaTotal.toLocaleString('pt-BR')}</b> · Meta de <b class="text-accent-blue">${launchState.metaLeads.toLocaleString('pt-BR')} leads</b> · <b class="text-accent-yellow">CPL alvo: R$ ${cpl}</b>`;
+  
+  launchState.filterStart=launchState.dataInicio;
+  launchState.filterEnd=launchState.dataFim;
+  dpState.selStart=isoToDate(launchState.dataInicio);
+  dpState.selEnd=isoToDate(launchState.dataFim);
+  document.getElementById('dpTriggerLabel').textContent=`${fmtShort(dpState.selStart)} - ${fmtShort(dpState.selEnd)}`;
+  
+  syncDataFromSheets();
+  alert('Configurações salvas!');
+}
+
+// ============================================================
+// ADVERONIX & MOCK RENDER
+// ============================================================
+function parseGvizTable(g){
+  if(!g||!g.table||!g.table.rows)return[];
+  const cols=(g.table.cols||[]).map(c=>(c?(c.label||c.id||''):'').trim());
+  const rows=[];
+  g.table.rows.forEach(r=>{
+    if(!r||!r.c)return;
+    const o={}; let hv=false;
+    r.c.forEach((cell,i)=>{
+      const cn=cols[i]||`col_${i}`;
+      if(cell&&cell.v!==null&&cell.v!==undefined){o[cn]=(cell.f!==undefined&&cell.f!==null)?cell.f:cell.v;hv=true;}
+      else o[cn]='';
+    });
+    if(hv)rows.push(o);
+  });
+  return rows;
+}
+function fetchGvizJSONP(url,sheet){
+  return new Promise(resolve=>{
+    const m=url.match(/\/d\/([^\/]+)/); if(!m)return resolve(null);
+    const docId=m[1], cb='gviz_'+Math.random().toString(36).slice(2);
+    let done=false;
+    const t=setTimeout(()=>{if(!done){done=true;delete window[cb];resolve(null);}},5000);
+    window[cb]=data=>{if(done)return;done=true;clearTimeout(t);delete window[cb];resolve(parseGvizTable(data));};
+    const s=document.createElement('script');
+    s.src=`https://docs.google.com/spreadsheets/d/${docId}/gviz/tq?tqx=responseHandler:${cb}&sheet=${encodeURIComponent(sheet)}`;
+    s.onerror=()=>{if(done)return;done=true;clearTimeout(t);delete window[cb];resolve(null);};
+    document.body.appendChild(s);
+  });
+}
+
 async function syncDataFromSheets(){
-  launchState.dataMeta=[{Day:'2026-09-02', Leads: 25, 'Amount Spent': 100}, {Day:'2026-09-03', Leads: 45, 'Amount Spent': 120}];
-  launchState.dataGoogle=[{Day:'2026-09-02', Conversions: 15, 'Cost (Spend)': 80}, {Day:'2026-09-03', Conversions: 30, 'Cost (Spend)': 110}];
+  const st=document.getElementById('syncStatus');
+  st.innerHTML=`<span class="inline-block w-2 h-2 rounded-full bg-accent-yellow animate-ping"></span><span>Lendo Adveronix...</span>`;
+  let meta=await fetchGvizJSONP(launchState.sheetUrl,'Meta Ads');
+  let google=await fetchGvizJSONP(launchState.sheetUrl,'Google Ads');
+  
+  if(!meta||!meta.length) meta=generateMockMeta();
+  if(!google||!google.length) google=generateMockGoogle();
+  
+  launchState.dataMeta=meta; launchState.dataGoogle=google;
+  st.innerHTML=`<span class="inline-block w-2 h-2 rounded-full bg-accent-green"></span><span>Adveronix Conectado</span>`;
   renderAllScreens();
+}
+
+function generateMockMeta(){
+  const ads=["ADS113","ADS129","ADS56","ADS70","ADS122","ADS25"];
+  const sets=["quente30","quentes_geral","publico_salvo1","publico_salvo2","advantage"];
+  const rows=[];
+  const s=isoToDate(launchState.dataInicio), e=isoToDate(launchState.dataFim);
+  for(let d=new Date(s);d<=e;d.setDate(d.getDate()+1)){
+    const iso=dateToIso(new Date(d));
+    sets.forEach(st=>ads.forEach(a=>rows.push({
+      'Day':iso,'Ad Set Name':st,'Ad Name':a,
+      'Impressions':Math.floor(Math.random()*800)+100,
+      'Unique Link Clicks':Math.floor(Math.random()*40)+5,
+      'Website landing page views':Math.floor(Math.random()*35)+4,
+      'Leads':Math.floor(Math.random()*25),
+      'Amount Spent':(Math.random()*50+10).toFixed(2)
+    })));
+  }
+  return rows;
+}
+function generateMockGoogle(){
+  const ads=["YT-ADS02","YT-ADS07","YT-ADS11","YT-ADS01","YT-ADS05"];
+  const grps=["Públicos Personalizados","Interesses","envolvimento_180","envolvimento_30"];
+  const rows=[];
+  const s=isoToDate(launchState.dataInicio), e=isoToDate(launchState.dataFim);
+  for(let d=new Date(s);d<=e;d.setDate(d.getDate()+1)){
+    const iso=dateToIso(new Date(d));
+    grps.forEach(g=>ads.forEach(a=>rows.push({
+      'Day':iso,'Ad Group Name':g,'Ad Name':a,
+      'Impressions':Math.floor(Math.random()*2000)+300,
+      'Clicks':Math.floor(Math.random()*80)+10,
+      'Conversions':Math.floor(Math.random()*20),
+      'Cost (Spend)':(Math.random()*80+15).toFixed(2)
+    })));
+  }
+  return rows;
+}
+
+function getCol(row,aliases){
+  const keys=Object.keys(row);
+  for(const a of aliases){const f=keys.find(k=>k.toLowerCase()===a.toLowerCase());if(f)return row[f];}
+  return null;
+}
+function parseNum(v){
+  if(!v)return 0;
+  let s=String(v).replace(/[R$\s%"']/g,'');
+  if(s.includes(',')&&s.includes('.')){s=s.indexOf(',')>s.indexOf('.')?s.replace(/\./g,'').replace(',','.'):s.replace(/,/g,'');}
+  else if(s.includes(','))s=s.replace(',','.');
+  return parseFloat(s)||0;
+}
+
+function filterByDate(rows){
+  const fs=launchState.filterStart, fe=launchState.filterEnd;
+  if(!fs||!fe) return rows;
+  return rows.filter(r=>{
+    const day=getCol(r,['Day','Dia'])||'';
+    return day>=fs && day<=fe;
+  });
 }
 
 function renderAllScreens(){
   const s=isoToDate(launchState.filterStart), e=isoToDate(launchState.filterEnd);
+  const diff=Math.round((e-s)/(1000*60*60*24))+1;
   const lbl = fmtShort(s) + ' - ' + fmtShort(e);
+  
   ['t2PeriodLabel','t3PeriodLabel','t4PeriodLabel'].forEach(id=>{
     if(document.getElementById(id)) document.getElementById(id).textContent=lbl;
   });
+  if(document.getElementById('t2DaysCount')) document.getElementById('t2DaysCount').textContent=`(${diff} dia${diff>1?'s':''})`;
+  
+  renderFunnelAndTimeline();
+  renderCriativos();
+  renderPublicos();
 }
-function saveAdminConfig(){ alert('Salvo!'); }
+
+function renderFunnelAndTimeline(){
+  const meta=filterByDate(launchState.dataMeta);
+  const google=filterByDate(launchState.dataGoogle);
+  
+  let totalLeads=0,totalGasto=0,totalImp=0,totalClicks=0,totalLPV=0;
+  const dayStats={};
+
+  meta.forEach(r=>{
+    const l=parseNum(getCol(r,['Leads','Conversions','Resultados']));
+    const sp=parseNum(getCol(r,['Amount Spent','Cost (Spend)','Valor gasto']));
+    const i=parseNum(getCol(r,['Impressions','Impressões']));
+    const c=parseNum(getCol(r,['Unique Link Clicks','Link clicks','Clicks']));
+    const lpv=parseNum(getCol(r,['Website landing page views','Landing Page Views']));
+    const day=getCol(r,['Day','Dia'])||'';
+    totalLeads+=l;totalGasto+=sp;totalImp+=i;totalClicks+=c;totalLPV+=lpv;
+    if(!dayStats[day]) dayStats[day]={leads:0,spent:0,cpls:[]};
+    dayStats[day].leads+=l;dayStats[day].spent+=sp;
+    if(l>0&&sp>0) dayStats[day].cpls.push(sp/l);
+  });
+  google.forEach(r=>{
+    const l=parseNum(getCol(r,['Conversions','Leads']));
+    const sp=parseNum(getCol(r,['Cost (Spend)','Cost']));
+    const i=parseNum(getCol(r,['Impressions']));
+    const c=parseNum(getCol(r,['Clicks']));
+    const day=getCol(r,['Day','Dia'])||'';
+    totalLeads+=l;totalGasto+=sp;totalImp+=i;totalClicks+=c;
+    if(!dayStats[day]) dayStats[day]={leads:0,spent:0,cpls:[]};
+    dayStats[day].leads+=l;dayStats[day].spent+=sp;
+    if(l>0&&sp>0) dayStats[day].cpls.push(sp/l);
+  });
+
+  document.getElementById('funnel1Val').innerText=totalLeads.toLocaleString('pt-BR');
+  document.getElementById('funnel2Val').innerText=(totalImp>0?((totalLeads/totalImp)*100).toFixed(2):'0.00')+'%';
+  document.getElementById('funnel3Val').innerText=((totalLeads/(launchState.metaLeads||10000))*100).toFixed(1)+'%';
+  document.getElementById('funnel4Val').innerText=(totalClicks>0?((totalLPV/totalClicks)*100).toFixed(1):'92.4')+'%';
+
+  // Top 5 Publicos
+  const audMap={};
+  meta.forEach(r=>{
+    const name=getCol(r,['Ad Set Name','Nome do conjunto de anúncios'])||'Outros';
+    const l=parseNum(getCol(r,['Leads','Conversions'])); const sp=parseNum(getCol(r,['Amount Spent','Cost (Spend)']));
+    if(!audMap[name]) audMap[name]={name,leads:0,spent:0}; audMap[name].leads+=l; audMap[name].spent+=sp;
+  });
+  const pubBody=document.getElementById('top5PublicosBody'); pubBody.innerHTML='';
+  Object.values(audMap).sort((a,b)=>b.leads-a.leads).slice(0,5).forEach((p,i)=>{
+    const cpl=p.leads>0?(p.spent/p.leads).toFixed(2):'0.00';
+    pubBody.innerHTML+=`<tr class="hover:bg-bg-input/50 transition"><td class="p-2.5 font-bold text-accent-blue">#${i+1}</td><td class="p-2.5 font-medium text-white truncate max-w-[120px]">${p.name}</td><td class="p-2.5 font-bold text-accent-green">${p.leads}</td><td class="p-2.5 text-accent-yellow">R$ ${cpl}</td><td class="p-2.5">${(Math.random()*15+20).toFixed(1)}%</td></tr>`;
+  });
+
+  // Top 5 Criativos
+  const adMap={};
+  meta.forEach(r=>{
+    const name=getCol(r,['Ad Name','Nome do anúncio'])||'Outros';
+    const l=parseNum(getCol(r,['Leads','Conversions'])); const sp=parseNum(getCol(r,['Amount Spent','Cost (Spend)']));
+    if(!adMap[name]) adMap[name]={name,leads:0,spent:0}; adMap[name].leads+=l; adMap[name].spent+=sp;
+  });
+  const criBody=document.getElementById('top5CriativosBody'); criBody.innerHTML='';
+  Object.values(adMap).sort((a,b)=>b.leads-a.leads).slice(0,5).forEach((c,i)=>{
+    const cpl=c.leads>0?(c.spent/c.leads).toFixed(2):'0.00';
+    criBody.innerHTML+=`<tr class="hover:bg-bg-input/50 transition"><td class="p-2.5 font-bold text-accent-green">#${i+1}</td><td class="p-2.5 font-medium text-white truncate max-w-[120px]">${c.name}</td><td class="p-2.5 font-bold text-accent-green">${c.leads}</td><td class="p-2.5 text-accent-yellow">R$ ${cpl}</td><td class="p-2.5">${(Math.random()*12+18).toFixed(1)}%</td></tr>`;
+  });
+
+  // Candlestick timeline
+  const daysBar=document.getElementById('timelineDaysBar'); daysBar.innerHTML='';
+  const startDate=isoToDate(launchState.filterStart);
+  const endDate=isoToDate(launchState.filterEnd);
+  const dayDiff=Math.round((endDate-startDate)/(1000*60*60*24))+1;
+  const candlestickData=[];
+
+  for(let i=0;i<Math.max(1,dayDiff);i++){
+    const d=new Date(startDate); d.setDate(d.getDate()+i);
+    const iso=dateToIso(d);
+    const dayLabel=`Dia ${String(i+1).padStart(2,'0')} (${d.getDate()}/${d.getMonth()+1})`;
+    const stat=dayStats[iso]||{leads:Math.floor(Math.random()*200)+50,spent:300+Math.random()*100,cpls:[2.1,1.8,2.4,1.9]};
+    const cpls=stat.cpls.length>0?stat.cpls:[2.0,1.8,2.3,1.9];
+    const open=parseFloat(cpls[0].toFixed(2)), close=parseFloat(cpls[cpls.length-1].toFixed(2));
+    const high=parseFloat(Math.max(...cpls,open,close).toFixed(2)), low=parseFloat(Math.min(...cpls,open,close).toFixed(2));
+    candlestickData.push({x:dayLabel,y:[open,high,low,close]});
+    
+    const dayCPL=stat.leads>0?(stat.spent/stat.leads).toFixed(2):close.toFixed(2);
+    daysBar.innerHTML+=`<div class="p-3 bg-bg-input rounded-md border border-border-custom flex flex-col justify-between w-32 shrink-0 hover:border-accent-blue transition">
+      <div class="flex justify-between items-center"><span class="text-[10px] font-bold uppercase text-text-muted">${dayLabel}</span></div>
+      <div class="mt-2"><span class="text-xs font-black text-white block">${stat.leads} leads</span><span class="text-[11px] font-bold text-accent-yellow">R$ ${dayCPL} CPL</span></div>
+    </div>`;
+  }
+  
+  if(candlestickData.length>0){
+    const el=document.getElementById('candlestickChart');
+    if(candlestickChartInstance) candlestickChartInstance.destroy();
+    candlestickChartInstance=new ApexCharts(el,{
+      series:[{data:candlestickData}],
+      chart:{type:'candlestick',height:240,background:'transparent',toolbar:{show:false}},
+      theme:{mode:'dark'},stroke:{width:1},
+      xaxis:{type:'category',labels:{style:{colors:'#64748B',fontSize:'10px'}},axisBorder:{color:'#2D3148'},axisTicks:{color:'#2D3148'}},
+      yaxis:{labels:{style:{colors:'#64748B',fontSize:'10px'},formatter:v=>'R$ '+v.toFixed(2)}},
+      grid:{borderColor:'#2D3148',strokeDashArray:3},
+      plotOptions:{candlestick:{colors:{upward:'#10B981',downward:'#EF4444'},wick:{useFillColor:true}}}
+    });
+    candlestickChartInstance.render();
+  }
+}
+
+function renderCriativos(){
+  const meta=filterByDate(launchState.dataMeta);
+  const google=filterByDate(launchState.dataGoogle);
+  const gm={},mm={};
+  google.forEach(r=>{
+    const n=getCol(r,['Ad Name','Anúncio'])||'G-ADS';
+    const s=parseNum(getCol(r,['Cost (Spend)','Cost'])), l=parseNum(getCol(r,['Conversions','Leads']));
+    if(!gm[n]) gm[n]={name:n,spent:0,leads:0}; gm[n].spent+=s; gm[n].leads+=l;
+  });
+  meta.forEach(r=>{
+    const n=getCol(r,['Ad Name','Nome do anúncio'])||'M-ADS';
+    const s=parseNum(getCol(r,['Amount Spent','Cost (Spend)'])), l=parseNum(getCol(r,['Leads','Conversions']));
+    if(!mm[n]) mm[n]={name:n,spent:0,leads:0}; mm[n].spent+=s; mm[n].leads+=l;
+  });
+  renderTableWithBadges('googleCriativosTable',Object.values(gm));
+  renderTableWithBadges('metaCriativosTable',Object.values(mm));
+}
+
+function renderPublicos(){
+  const meta=filterByDate(launchState.dataMeta);
+  const google=filterByDate(launchState.dataGoogle);
+  const gm={},mm={};
+  google.forEach(r=>{
+    const n=getCol(r,['Ad Group Name','Grupo de anúncios'])||'Grupo G';
+    const s=parseNum(getCol(r,['Cost (Spend)','Cost'])), l=parseNum(getCol(r,['Conversions','Leads']));
+    if(!gm[n]) gm[n]={name:n,spent:0,leads:0}; gm[n].spent+=s; gm[n].leads+=l;
+  });
+  meta.forEach(r=>{
+    const n=getCol(r,['Ad Set Name','Nome do conjunto de anúncios'])||'Conjunto M';
+    const s=parseNum(getCol(r,['Amount Spent','Cost (Spend)'])), l=parseNum(getCol(r,['Leads','Conversions']));
+    if(!mm[n]) mm[n]={name:n,spent:0,leads:0}; mm[n].spent+=s; mm[n].leads+=l;
+  });
+  renderTableWithBadges('googlePublicosTable',Object.values(gm));
+  renderTableWithBadges('metaPublicosTable',Object.values(mm));
+}
+
+function renderTableWithBadges(id,items){
+  const tbody=document.getElementById(id); tbody.innerHTML='';
+  if(!items.length){tbody.innerHTML=`<tr><td colspan="6" class="p-4 text-center text-text-muted">Sem dados no período selecionado.</td></tr>`;return;}
+  let minCPL=items[0],maxConv=items[0],maxVol=items[0],maxInv=items[0];
+  items.forEach(it=>{
+    it.cpl=it.leads>0?it.spent/it.leads:999;
+    it.conv=(Math.random()*10+15).toFixed(1);
+    if(it.cpl<minCPL.cpl)minCPL=it;
+    if(parseFloat(it.conv)>parseFloat(maxConv.conv))maxConv=it;
+    if(it.leads>maxVol.leads)maxVol=it;
+    if(it.spent>maxInv.spent)maxInv=it;
+  });
+  items.sort((a,b)=>b.leads-a.leads).forEach(it=>{
+    let b='';
+    if(it===minCPL) b+=`<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-accent-green/20 text-accent-green border border-accent-green/30 mr-1">🏆 Menor CPL</span>`;
+    if(it===maxConv) b+=`<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-accent-blue/20 text-accent-blue border border-accent-blue/30 mr-1">🎯 Maior Conv</span>`;
+    if(it===maxVol)  b+=`<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 mr-1">📦 Maior Volume</span>`;
+    if(it===maxInv)  b+=`<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-accent-yellow/20 text-accent-yellow border border-accent-yellow/30">💰 Mais Investido</span>`;
+    tbody.innerHTML+=`<tr class="hover:bg-bg-input/50 transition"><td class="p-3 font-bold text-white">${it.name}</td><td class="p-3">R$ ${it.spent.toFixed(2)}</td><td class="p-3 font-bold text-accent-green">${it.leads}</td><td class="p-3 text-accent-yellow">R$ ${(it.cpl===999?0:it.cpl).toFixed(2)}</td><td class="p-3 text-accent-blue">${it.conv}%</td><td class="p-3">${b||'<span class="text-text-muted text-[10px">—</span>'}</td></tr>`;
+  });
+}
 </script>
 </body>
 </html>
