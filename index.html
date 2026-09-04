@@ -74,8 +74,14 @@
 
       <!-- FORMULÁRIO LOGIN -->
       <form id="formLogin" onsubmit="handleLogin(event)" class="space-y-4">
-        <div><label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">E-mail</label><input type="email" id="loginEmail" required class="w-full bg-bg-input border border-border-panel rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-accent-purple" /></div>
-        <div><label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Senha</label><input type="password" id="loginPassword" required class="w-full bg-bg-input border border-border-panel rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-accent-purple" /></div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Login ou E-mail</label>
+          <input type="text" id="loginIdentifier" placeholder="Digite Admin, Madri ou seu e-mail" required class="w-full bg-bg-input border border-border-panel rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-accent-purple" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Senha</label>
+          <input type="password" id="loginPassword" placeholder="Sua senha de acesso" required class="w-full bg-bg-input border border-border-panel rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-accent-purple" />
+        </div>
         <button type="submit" class="w-full bg-accent-purple hover:bg-purple-600 text-white font-bold py-3 rounded-xl transition text-xs shadow-lg shadow-purple-500/20">Entrar no Dashboard</button>
       </form>
 
@@ -102,17 +108,16 @@
   <!-- ================================================================= -->
   <div id="appContainer" class="hidden flex-grow flex flex-col min-h-screen">
 
-    <!-- CABEÇALHO SUPERIOR (ESTILO PRINT) -->
+    <!-- CABEÇALHO SUPERIOR -->
     <header class="bg-bg-panel border-b border-border-panel px-6 py-3 flex flex-wrap justify-between items-center gap-4 sticky top-0 z-40">
       
-      <!-- TÍTULO & NAVEGAÇÃO -->
+      <!-- TÍTULO & NAVEGAÇÃO HORIZONTAL -->
       <div class="flex items-center gap-6">
         <div class="flex items-center gap-3">
           <button class="text-slate-400 hover:text-white text-lg transition">←</button>
           <h1 class="text-lg font-black text-white tracking-tight" id="appTitleDisplay">L37 - SETEMBRO26</h1>
         </div>
 
-        <!-- ABA DE MENU PRINCIPAL -->
         <nav class="flex items-center gap-1 text-xs font-semibold">
           <button id="navTabCaptacao" onclick="switchNavTab('captacao')" class="px-4 py-2 border-b-2 border-accent-purple text-white">Captação</button>
           <button id="navTabEventos" onclick="switchNavTab('eventos')" class="px-4 py-2 border-b-2 border-transparent text-slate-400 hover:text-white">Eventos</button>
@@ -128,10 +133,11 @@
         </nav>
       </div>
 
-      <!-- CONTROLES DIREITA: DATE PICKER & LOGOUT -->
+      <!-- CONTROLES DIREITA: USUÁRIO, DATE PICKER & LOGOUT -->
       <div class="flex items-center gap-3 relative">
-        
-        <!-- BOTÃO DATE PICKER (PRINT) -->
+        <span id="userDisplayRole" class="text-[11px] font-bold text-slate-400 bg-bg-card border border-border-panel px-3 py-1 rounded-lg"></span>
+
+        <!-- BOTÃO DATE PICKER -->
         <button onclick="toggleDatePickerModal()" class="bg-bg-input border border-border-panel hover:border-slate-500 text-slate-200 px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 transition">
           <span>📅</span>
           <span id="datePickerDisplay">02/09/26 - 02/09/26</span>
@@ -141,11 +147,8 @@
           Sair
         </button>
 
-        <!-- ============================================================= -->
-        <!-- MODAL SELETOR DE DATAS (PRINT 1) -->
-        <!-- ============================================================= -->
+        <!-- SELETOR DE DATAS POPUP -->
         <div id="datePickerModal" class="hidden absolute top-12 right-0 w-80 bg-bg-panel border border-border-panel rounded-2xl p-5 shadow-2xl z-50 space-y-4">
-          <!-- ATALHOS RÁPIDOS -->
           <div class="grid grid-cols-3 gap-2 text-[11px] font-bold text-slate-300 text-center">
             <button onclick="setQuickDate('today')" class="p-2 bg-bg-card hover:bg-border-panel rounded-lg transition">Hoje</button>
             <button onclick="setQuickDate('yesterday')" class="p-2 bg-bg-card hover:bg-border-panel rounded-lg transition">Ontem</button>
@@ -156,7 +159,6 @@
             <button onclick="setQuickDate('thisYear')" class="p-2 bg-bg-card hover:bg-border-panel rounded-lg transition col-span-3">Este Ano</button>
           </div>
 
-          <!-- CALENDÁRIO INTERATIVO -->
           <div class="border-t border-border-panel pt-4 space-y-3">
             <div class="flex justify-between items-center text-xs font-bold text-white">
               <button onclick="changeMonth(-1)" class="p-1 hover:bg-bg-card rounded">‹</button>
@@ -164,15 +166,11 @@
               <button onclick="changeMonth(1)" class="p-1 hover:bg-bg-card rounded">›</button>
             </div>
 
-            <!-- DIAS DA SEMANA -->
             <div class="grid grid-cols-7 text-center text-[10px] text-slate-400 font-bold">
               <span>dom</span><span>seg</span><span>ter</span><span>qua</span><span>qui</span><span>sex</span><span>sab</span>
             </div>
 
-            <!-- GRID DOS DIAS -->
-            <div id="calDaysGrid" class="grid grid-cols-7 text-center text-xs font-bold gap-1">
-              <!-- Gerado via JS -->
-            </div>
+            <div id="calDaysGrid" class="grid grid-cols-7 text-center text-xs font-bold gap-1"></div>
           </div>
 
           <button onclick="applyDateSelection()" class="w-full bg-accent-purple hover:bg-purple-600 text-white text-xs font-bold py-2 rounded-xl transition">Aplicar Período</button>
@@ -181,13 +179,13 @@
       </div>
     </header>
 
-    <!-- ÁREA DE CONTEÚDO -->
+    <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
     <main class="p-6 max-w-[1500px] mx-auto w-full flex-grow space-y-6">
 
-      <!-- TELA CAPTAÇÃO / RELATÓRIO DE CRIATIVOS (PRINTS 3 E 4) -->
+      <!-- TELA CAPTAÇÃO / RELATÓRIO DE CRIATIVOS -->
       <section id="secCaptacao" class="space-y-6">
         
-        <!-- CARDS DE KPI (PRINT 3) -->
+        <!-- CARDS DE KPI -->
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           <div class="bg-bg-card p-4 rounded-2xl border border-border-panel space-y-1">
             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">INVESTIMENTO</span>
@@ -215,7 +213,7 @@
           </div>
         </div>
 
-        <!-- GRÁFICO MISTO: LEADS VS CPL POR ANÚNCIO (PRINT 3) -->
+        <!-- GRÁFICO MISTO: LEADS VS CPL POR ANÚNCIO -->
         <div class="bg-bg-card p-6 rounded-2xl border border-border-panel space-y-4">
           <div class="flex justify-between items-center">
             <h3 class="text-sm font-bold text-white tracking-wide">Desempenho por Anúncio (Leads vs CPL)</h3>
@@ -229,7 +227,7 @@
           </div>
         </div>
 
-        <!-- TABELA DETALHAMENTO POR CRIATIVO (PRINT 4) -->
+        <!-- TABELA DETALHAMENTO POR CRIATIVO -->
         <div class="bg-bg-card rounded-2xl border border-border-panel overflow-hidden space-y-2">
           <div class="p-5 border-b border-border-panel">
             <h3 class="text-sm font-bold text-white tracking-wide">Detalhamento por Criativo</h3>
@@ -250,16 +248,14 @@
                   <th class="p-4">CPL</th>
                 </tr>
               </thead>
-              <tbody id="tableCriativosBody" class="divide-y divide-border-panel font-medium">
-                <!-- Populado via JS -->
-              </tbody>
+              <tbody id="tableCriativosBody" class="divide-y divide-border-panel font-medium"></tbody>
             </table>
           </div>
         </div>
 
       </section>
 
-      <!-- SEÇÃO CONFIGURAÇÃO DA PLANILHA ADVERONIX -->
+      <!-- SEÇÃO CONFIGURAÇÃO DA PLANILHA ADVERONIX (ADMIN ONLY) -->
       <section id="secConfig" class="space-y-6 hidden">
         <div class="bg-bg-card p-6 rounded-2xl border border-border-panel space-y-4 max-w-2xl">
           <h2 class="text-base font-bold text-white">⚙️ Conexão de Dados Adveronix (Google Sheets)</h2>
@@ -275,24 +271,61 @@
   </div>
 
   <script>
-    // =================================================================
-    // ESTADO E CONFIGURAÇÕES DA PLANILHA PADRÃO ADVERONIX
-    // =================================================================
+    // URL PADRÃO DA PLANILHA ADVERONIX
     const SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1iY5TYTyFDIlQ_5N3MizfCpPVwj7I8_sEkyFBtVrzb_k/edit?usp=sharing";
+
+    // FIREBASE INITIALIZATION
+    const firebaseConfig = { apiKey: "AIzaSyDZYRKSZ3ain-6NXrvBux9K2WzJ27TTjlQ", authDomain: "dashboardtrafego-4417b.firebaseapp.com", projectId: "dashboardtrafego-4417b", storageBucket: "dashboardtrafego-4417b.firebasestorage.app", messagingSenderId: "239927644481", appId: "1:239927644481:web:6cca3de0b7cdbc642851c0" };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
     let authTab = 'login';
     let selectedStartDate = "2026-09-02";
     let selectedEndDate = "2026-09-02";
     let chartInstance = null;
+    let currentUserRole = 'reader';
 
-    // INICIALIZAÇÃO
-    window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('inputSheetUrl').value = SPREADSHEET_URL;
-      renderCalendarGrid(2026, 8); // Setembro 2026 (0-indexed 8)
-      initData();
+    // RESOLVER APELIDOS DE LOGIN PARA E-MAIL
+    function resolveEmailAlias(input) {
+      const clean = input.trim().toLowerCase();
+      if (clean === 'admin' || clean === 'andreluizbastosnunes@gmail.com') {
+        return 'andreluizbastosnunes@gmail.com';
+      }
+      if (clean === 'madri' || clean === 'contatomjunior@gmail.com') {
+        return 'contatomjunior@gmail.com';
+      }
+      return input.trim();
+    }
+
+    // MONITOR DE AUTENTICAÇÃO DO FIREBASE
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        const email = user.email.toLowerCase();
+        if (email === 'andreluizbastosnunes@gmail.com') {
+          currentUserRole = 'admin';
+          document.getElementById('navTabConfig').classList.remove('hidden');
+          document.getElementById('userDisplayRole').innerText = 'Admin (Acesso Total)';
+        } else if (email === 'contatomjunior@gmail.com') {
+          currentUserRole = 'reader';
+          document.getElementById('navTabConfig').classList.add('hidden');
+          document.getElementById('userDisplayRole').innerText = 'Madri (Leitora)';
+        } else {
+          auth.signOut();
+          showAuthAlert('Acesso não autorizado para este e-mail.', 'rose');
+          return;
+        }
+
+        document.getElementById('authScreen').classList.add('hidden');
+        document.getElementById('appContainer').classList.remove('hidden');
+        switchNavTab('captacao');
+        initData();
+      } else {
+        document.getElementById('appContainer').classList.add('hidden');
+        document.getElementById('authScreen').classList.remove('hidden');
+      }
     });
 
-    // TROCA DE ABAS NA AUTENTICAÇÃO
+    // TROCA DE ABAS NA TELA DE AUTENTICAÇÃO
     function switchAuthTab(tab) {
       authTab = tab;
       ['Login', 'Register', 'Forgot'].forEach(t => {
@@ -306,26 +339,63 @@
           btn.className = "flex-1 py-2.5 border-b-2 border-transparent text-slate-400 hover:text-white";
         }
       });
+      hideAuthAlert();
     }
 
-    // HANDLERS FAKE DE AUTENTICAÇÃO
-    function handleLogin(e) { e.preventDefault(); completeAuth(); }
-    function handleRegister(e) { e.preventDefault(); completeAuth(); }
-    function handleForgot(e) { e.preventDefault(); alert("Instruções de recuperação enviadas para o seu e-mail!"); switchAuthTab('login'); }
+    function showAuthAlert(msg, color = 'rose') {
+      const alertBox = document.getElementById('authAlert');
+      alertBox.innerText = msg;
+      alertBox.className = `text-xs text-center font-bold p-3 rounded-xl bg-${color}-500/20 text-${color}-400 border border-${color}-500/30 block`;
+    }
 
-    function completeAuth() {
-      document.getElementById('authScreen').classList.add('hidden');
-      document.getElementById('appContainer').classList.remove('hidden');
-      initData();
+    function hideAuthAlert() {
+      document.getElementById('authAlert').className = 'hidden';
+    }
+
+    // HANDLERS DO FIREBASE AUTH
+    function handleLogin(e) {
+      e.preventDefault();
+      const identifier = document.getElementById('loginIdentifier').value;
+      const password = document.getElementById('loginPassword').value;
+      const targetEmail = resolveEmailAlias(identifier);
+
+      auth.signInWithEmailAndPassword(targetEmail, password)
+        .catch(err => showAuthAlert('Login incorreto. Verifique usuário e senha.', 'rose'));
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const email = document.getElementById('regEmail').value;
+      const password = document.getElementById('regPassword').value;
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(() => alert("Conta criada com sucesso!"))
+        .catch(err => showAuthAlert(err.message, 'rose'));
+    }
+
+    function handleForgot(e) {
+      e.preventDefault();
+      const email = document.getElementById('forgotEmail').value;
+
+      auth.sendPasswordResetEmail(email)
+        .then(() => {
+          showAuthAlert("Instruções de recuperação enviadas para o e-mail!", "emerald");
+          setTimeout(() => switchAuthTab('login'), 3000);
+        })
+        .catch(err => showAuthAlert(err.message, 'rose'));
     }
 
     function handleLogout() {
-      document.getElementById('appContainer').classList.add('hidden');
-      document.getElementById('authScreen').classList.remove('hidden');
+      auth.signOut();
     }
 
     // NAVEGAÇÃO DE MENU HORIZONTAL
     function switchNavTab(tab) {
+      if (tab === 'config' && currentUserRole !== 'admin') {
+        alert("Acesso restrito ao Administrador.");
+        return;
+      }
+
       ['Captacao', 'Eventos', 'Outras', 'Debriefing', 'Reports', 'Config'].forEach(t => {
         const navBtn = document.getElementById('navTab' + t);
         if (navBtn) {
@@ -346,12 +416,9 @@
       }
     }
 
-    // =================================================================
-    // MODAL DE DATE PICKER E CALENDÁRIO
-    // =================================================================
+    // DATE PICKER MODAL
     function toggleDatePickerModal() {
-      const modal = document.getElementById('datePickerModal');
-      modal.classList.toggle('hidden');
+      document.getElementById('datePickerModal').classList.toggle('hidden');
     }
 
     function setQuickDate(preset) {
@@ -368,8 +435,6 @@
     function renderCalendarGrid(year, month) {
       const daysGrid = document.getElementById('calDaysGrid');
       daysGrid.innerHTML = '';
-      
-      // 30 dias para setembro
       for(let d = 1; d <= 30; d++) {
         const isSelected = (d === 2);
         daysGrid.innerHTML += `
@@ -394,9 +459,7 @@
       initData();
     }
 
-    // =================================================================
-    // DADOS MOCKADOS E RENDERIZAÇÃO FIEL AOS PRINTS
-    // =================================================================
+    // INICIALIZAÇÃO DE DADOS E RENDERIZAÇÃO
     function initData() {
       const mockAds = [
         { name: 'ADS113', spent: 84.89, imp: 3900, clicks: 118, lpv: 122, leads: 51, ctr: 3.03, connect: 103.39, cvr: 41.80, cpl: 1.66 },
@@ -410,7 +473,6 @@
         { name: 'ADS43',  spent: 23.01, imp: 910,  clicks: 30,  lpv: 28,  leads: 10, ctr: 3.29, connect: 93.33, cvr: 35.71, cpl: 2.30 }
       ];
 
-      // TABELA (PRINT 4)
       const tb = document.getElementById('tableCriativosBody');
       tb.innerHTML = '';
       mockAds.forEach(a => {
@@ -430,7 +492,6 @@
         `;
       });
 
-      // GRÁFICO (PRINT 3)
       if(chartInstance) chartInstance.destroy();
       chartInstance = new Chart(document.getElementById('chartLeadsVsCPL').getContext('2d'), {
         type: 'bar',
