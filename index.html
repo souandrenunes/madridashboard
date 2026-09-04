@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aion - Dashboard de Lançamento</title>
+  <title>AION - Dashboard de Lançamento</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -15,20 +15,19 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
   <style>
-    body { background-color: #0b0e14; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+    body { background-color: #0b0e14; color: #e2e8f0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
     .bg-panel { background-color: #151923; }
     .bg-card { background-color: #1a1f2c; }
     .border-card { border-color: #2a3142; }
     
-    /* Funnel Shape CSS */
+    /* Estilização do Funil */
     .funnel-stage { transition: all 0.3s ease; }
     .funnel-stage:hover { transform: scale(1.02); filter: brightness(1.1); }
-    
     .clip-funnel-1 { clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%); }
     .clip-funnel-2 { clip-path: polygon(15% 0, 85% 0, 70% 100%, 30% 100%); }
     .clip-funnel-3 { clip-path: polygon(30% 0, 70% 0, 60% 100%, 40% 100%); }
 
-    /* Custom Scrollbar */
+    /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #0b0e14; }
     ::-webkit-scrollbar-thumb { background: #2a3142; border-radius: 4px; }
@@ -40,7 +39,7 @@
 </head>
 <body>
 
-  <!-- AUTENTICAÇÃO -->
+  <!-- TELA DE LOGIN -->
   <div id="authScreen" class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-600/10 blur-[100px] rounded-full z-0"></div>
     <div class="bg-panel border border-card p-8 rounded-2xl shadow-2xl w-full max-w-md relative z-10">
@@ -59,7 +58,7 @@
   <!-- APLICAÇÃO PRINCIPAL -->
   <div id="appContainer" class="hidden min-h-screen flex flex-col">
     
-    <!-- TOP NAVBAR -->
+    <!-- BARRA SUPERIOR DE NAVEGAÇÃO -->
     <div class="bg-panel border-b border-card px-6 py-4 flex flex-wrap justify-between items-center gap-4 sticky top-0 z-50">
       <div class="flex items-center gap-6">
         <h1 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
@@ -67,7 +66,6 @@
           AION Dashboard
         </h1>
         
-        <!-- Menu Tabs -->
         <div class="hidden md:flex bg-slate-900 p-1 rounded-lg border border-card">
           <button id="btnT2" onclick="navTo('t2')" class="px-4 py-1.5 rounded-md text-xs font-semibold bg-slate-800 text-white shadow">Início Tráfego</button>
           <button id="btnT3" onclick="navTo('t3')" class="px-4 py-1.5 rounded-md text-xs font-semibold text-slate-400 hover:text-white transition">Relatório Criativos</button>
@@ -77,9 +75,9 @@
         </div>
       </div>
 
-      <!-- Filtro Global de Data no Topo -->
+      <!-- Filtro Global de Data -->
       <div class="flex items-center gap-3">
-        <div id="syncIndicator" class="hidden items-center gap-2 text-purple-400 text-xs font-bold mr-2"><div class="loader rounded-full border-2 border-t-2 h-3 w-3"></div> Atualizando...</div>
+        <div id="syncIndicator" class="hidden items-center gap-2 text-purple-400 text-xs font-bold mr-2"><div class="loader rounded-full border-2 border-t-2 h-3 w-3"></div> Sincronizando...</div>
         
         <div class="flex items-center bg-slate-900 border border-card rounded-lg px-3 py-1.5">
           <span class="text-slate-400 text-xs mr-2">📅</span>
@@ -89,11 +87,12 @@
             <option value="yesterday">Ontem</option>
           </select>
         </div>
-        <button onclick="logout()" class="text-slate-500 hover:text-rose-400 text-xs font-bold transition">Sair</button>
+        <button onclick="fetchLiveSheets()" class="bg-purple-600/20 hover:bg-purple-600 text-purple-300 hover:text-white border border-purple-500/30 font-bold px-3 py-1.5 rounded-lg text-xs transition">🔄 Atualizar</button>
+        <button onclick="logout()" class="text-slate-500 hover:text-rose-400 text-xs font-bold transition ml-2">Sair</button>
       </div>
     </div>
 
-    <!-- BANNER DE ERRO -->
+    <!-- BANNER INFORMATIVO -->
     <div id="statusBanner" class="hidden m-4 p-4 rounded-xl text-xs font-bold border max-w-[1400px] mx-auto w-full"></div>
 
     <div class="flex-grow p-4 md:p-6 max-w-[1400px] mx-auto w-full">
@@ -101,23 +100,31 @@
       <!-- TELA 1: CONFIGURAÇÕES -->
       <div id="screenT1" class="screen-content space-y-6 hidden">
         <div class="bg-panel p-6 rounded-2xl border border-card">
-          <h2 class="text-lg font-bold text-white mb-6">⚙️ Conexão de Dados (Adveronix)</h2>
+          <h2 class="text-lg font-bold text-white mb-6">⚙️ Conexão de Dados (Google Sheets)</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-4 bg-card p-5 rounded-xl border border-card">
-              <h3 class="text-sm font-bold text-white">Links CSV do Google Sheets</h3>
-              <input type="url" id="planUrlMeta" placeholder="Link CSV - Aba Meta Ads" class="w-full bg-slate-900 border border-card rounded-lg px-3 py-2 text-sm text-white" />
-              <input type="url" id="planUrlGoogle" placeholder="Link CSV - Aba Google Ads" class="w-full bg-slate-900 border border-card rounded-lg px-3 py-2 text-sm text-white" />
-              <input type="text" id="planFiltroNome" placeholder="Filtro de Nomenclatura (Opcional. Ex: L37)" class="w-full bg-slate-900 border border-card rounded-lg px-3 py-2 text-sm text-white" />
-              <button onclick="saveAdminConfig()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 rounded-lg text-sm transition mt-2">Salvar Conexão</button>
+              <h3 class="text-sm font-bold text-white">Links das Abas</h3>
+              <div>
+                <label class="block text-xs font-semibold text-purple-400 mb-1">Aba Meta Ads</label>
+                <input type="url" id="planUrlMeta" placeholder="Cole o link da aba Meta Ads" class="w-full bg-slate-900 border border-card rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-rose-400 mb-1">Aba Google Ads</label>
+                <input type="url" id="planUrlGoogle" placeholder="Cole o link da aba Google Ads" class="w-full bg-slate-900 border border-card rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Filtro de Nome (Opcional)</label>
+                <input type="text" id="planFiltroNome" placeholder="Ex: L37" class="w-full bg-slate-900 border border-card rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500" />
+              </div>
+              <button onclick="saveAdminConfig()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 rounded-lg text-sm transition mt-2">Salvar Configuração</button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- TELA 2: VISÃO GERAL (FUNIL E PACING) -->
+      <!-- TELA 2: VISÃO GERAL (FUNIL E HISTÓRICO MISTO) -->
       <div id="screenT2" class="screen-content space-y-6 hidden">
         
-        <!-- KPIs Top -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="bg-panel p-5 rounded-2xl border border-card flex items-center justify-between">
             <div><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Valor Gasto</span><div class="text-2xl font-bold text-white mt-1" id="vg_Spent">R$ 0,00</div></div>
@@ -134,33 +141,30 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Funil de Tráfego -->
+          <!-- Funil Visual -->
           <div class="lg:col-span-1 bg-panel p-6 rounded-2xl border border-card flex flex-col">
             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6">Funil de Tráfego</h3>
             <div class="flex-grow flex flex-col items-center justify-center space-y-1 w-full max-w-[280px] mx-auto">
-              <!-- Topo: Impressões / CPM -->
               <div class="w-full bg-purple-600/80 h-24 clip-funnel-1 funnel-stage flex flex-col items-center justify-center text-white relative">
                 <span class="text-sm font-bold" id="fn_CPM">R$ 0,00</span><span class="text-[10px] opacity-80">CPM</span>
               </div>
-              <!-- Meio: Cliques / CTR -->
               <div class="w-[70%] bg-purple-500/80 h-20 clip-funnel-2 funnel-stage flex flex-col items-center justify-center text-white relative -mt-1">
                 <span class="text-sm font-bold" id="fn_CTR">0%</span><span class="text-[10px] opacity-80">CTR</span>
               </div>
-              <!-- Fundo: Leads / Tx Conv -->
               <div class="w-[40%] bg-purple-400/80 h-16 clip-funnel-3 funnel-stage flex flex-col items-center justify-center text-white relative -mt-1">
                 <span class="text-sm font-bold" id="fn_CVR">0%</span><span class="text-[10px] opacity-80">Tx. Conv.</span>
               </div>
             </div>
           </div>
 
-          <!-- Gráfico de Desempenho Misto -->
+          <!-- Gráfico Misto Diário -->
           <div class="lg:col-span-2 bg-panel p-6 rounded-2xl border border-card flex flex-col">
             <div class="flex justify-between items-center mb-4">
               <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Desempenho por Dia</h3>
               <div class="flex gap-3 text-[10px] font-semibold text-slate-300">
-                <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-purple-500"></div> Gasto</span>
-                <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-blue-500"></div> Leads</span>
-                <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-white"></div> CPL</span>
+                <span class="flex items-center gap-1"><div class="w-2.5 h-2.5 rounded-sm bg-purple-500"></div> Gasto</span>
+                <span class="flex items-center gap-1"><div class="w-2.5 h-2.5 rounded-sm bg-blue-500"></div> Leads</span>
+                <span class="flex items-center gap-1"><div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div> CPL</span>
               </div>
             </div>
             <div class="relative flex-grow min-h-[250px]"><canvas id="mixedChart"></canvas></div>
@@ -171,7 +175,6 @@
       <!-- TELA 3: RELATÓRIO CRIATIVOS META -->
       <div id="screenT3" class="screen-content space-y-6 hidden">
         
-        <!-- KPIs Row -->
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
           <div class="bg-panel p-4 rounded-xl border border-card"><span class="text-[10px] font-bold text-slate-400 uppercase">Investimento</span><div id="cK_Spent" class="text-lg font-bold text-blue-400 mt-1">R$ 0</div></div>
           <div class="bg-panel p-4 rounded-xl border border-card"><span class="text-[10px] font-bold text-slate-400 uppercase">Leads</span><div id="cK_Leads" class="text-lg font-bold text-emerald-400 mt-1">0</div></div>
@@ -182,18 +185,13 @@
 
         <h2 class="text-lg font-bold text-white flex items-center gap-2 mt-8">🏆 Top 3 Criativos Meta Ads</h2>
         
-        <!-- Cards Top 3 -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="top3Container">
-          <!-- Os cards serão injetados via JS -->
-        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="top3Container"></div>
 
-        <!-- Gráfico Leads x CPL -->
         <div class="bg-panel p-6 rounded-2xl border border-card mt-6">
-          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Meta Ads: Leads vs CPL por Anúncio (Top 10)</h3>
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Meta Ads: Leads vs CPL por Anúncio</h3>
           <div class="relative h-64"><canvas id="adsMixedChart"></canvas></div>
         </div>
 
-        <!-- Tabela Completa -->
         <div class="bg-panel rounded-2xl border border-card overflow-hidden">
           <div class="p-4 border-b border-card"><h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Todos os Criativos</h3></div>
           <div class="overflow-x-auto">
@@ -238,12 +236,10 @@
   </div>
 
   <script>
-    // --- ESTADO GLOBAL ---
     let globalConfig = { filtroNome: '', urlMeta: '', urlGoogle: '' };
     let rawMeta = [], rawGoogle = [];
     let mixedChart = null, adsMixedChart = null;
 
-    // --- FUNÇÕES UTILITÁRIAS MÁGICAS ---
     function getV(row, keys) { for(let k of keys) { if(row[k] !== undefined && row[k] !== '') return row[k]; } return null; }
     function parseNum(val) { if(!val) return 0; let s = String(val).replace(/[R$\s%"']/g, ''); if (s.includes(',') && s.includes('.')) { if (s.indexOf(',') > s.indexOf('.')) { s = s.replace(/\./g, '').replace(',', '.'); } else { s = s.replace(/,/g, ''); } } else if (s.includes(',')) { s = s.replace(',', '.'); } return parseFloat(s) || 0; }
     function extractDate(dStr) {
@@ -252,16 +248,16 @@
       const brMatch = dStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/); if(brMatch) return `${brMatch[3]}-${brMatch[2]}-${brMatch[1]}`; 
       return null;
     }
+    
     function formatGoogleCsvUrl(url) {
       if (!url) return ''; let clean = url.trim();
       if (clean.includes('/pubhtml')) clean = clean.replace('/pubhtml', '/pub');
       if (clean.includes('/pub') && !clean.includes('output=csv')) clean += (clean.includes('?') ? '&' : '?') + 'output=csv';
       return clean;
     }
-    function fmtM(val) { return 'R$ ' + val.toLocaleString('pt-BR',{minimumFractionDigits:2}); }
-    function fmtP(val) { return val.toFixed(2).replace('.',',') + '%'; }
+    function fmtM(val) { return 'R$ ' + (val||0).toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2}); }
+    function fmtP(val) { return (val||0).toFixed(2).replace('.',',') + '%'; }
 
-    // Cria a data de Hoje ou Ontem baseado no fuso BR
     function getTargetDate(filter) {
       if(filter === 'all') return null;
       const d = new Date(); const tzOffset = d.getTimezoneOffset() * 60000;
@@ -270,7 +266,7 @@
       return target.toISOString().split('T')[0];
     }
 
-    // --- FIREBASE SETUP ---
+    // FIREBASE
     const firebaseConfig = { apiKey: "AIzaSyDZYRKSZ3ain-6NXrvBux9K2WzJ27TTjlQ", authDomain: "dashboardtrafego-4417b.firebaseapp.com", projectId: "dashboardtrafego-4417b", storageBucket: "dashboardtrafego-4417b.firebasestorage.app", messagingSenderId: "239927644481", appId: "1:239927644481:web:6cca3de0b7cdbc642851c0" };
     firebase.initializeApp(firebaseConfig); const auth = firebase.auth(); const db = firebase.firestore();
     const ALLOWED_EMAILS = ['andreluizbastosnunes@gmail.com', 'contatomjunior@gmail.com'];
@@ -290,7 +286,10 @@
     function logout() { auth.signOut(); }
     
     function navTo(id) { 
-      document.querySelectorAll('.screen-content').forEach(s=>s.classList.add('hidden')); document.getElementById('screen'+id.toUpperCase()).classList.remove('hidden'); 
+      document.querySelectorAll('.screen-content').forEach(s=>s.classList.add('hidden')); 
+      const targetScreen = document.getElementById('screen'+id.toUpperCase());
+      if(targetScreen) targetScreen.classList.remove('hidden'); 
+      
       ['btnT1','btnT2','btnT3','btnT4','btnT5'].forEach(b=>{
         const el=document.getElementById(b); 
         if(el) {
@@ -300,7 +299,6 @@
       }); 
     }
 
-    // --- LEITURA E SINCRONIZAÇÃO DE DADOS ---
     function saveAdminConfig() {
       if(!isAdmin) return;
       globalConfig.filtroNome = document.getElementById('planFiltroNome').value.trim();
@@ -313,31 +311,90 @@
       db.collection("settings").doc("launch_config").get().then(doc => {
         if(doc.exists) {
           globalConfig = { ...globalConfig, ...doc.data() };
-          document.getElementById('planFiltroNome').value = globalConfig.filtroNome;
-          document.getElementById('planUrlMeta').value = globalConfig.urlMeta; document.getElementById('planUrlGoogle').value = globalConfig.urlGoogle;
+          document.getElementById('planFiltroNome').value = globalConfig.filtroNome || '';
+          document.getElementById('planUrlMeta').value = globalConfig.urlMeta || ''; 
+          document.getElementById('planUrlGoogle').value = globalConfig.urlGoogle || '';
         }
         fetchLiveSheets(); 
       });
     }
 
-    function fetchCsv(url) {
-      return new Promise((resolve) => {
-        if (!url) return resolve([]); const cleanUrl = formatGoogleCsvUrl(url);
-        const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(cleanUrl);
-        Papa.parse(proxyUrl, { download: true, header: true, skipEmptyLines: true, complete: res => resolve(res.data || []), error: () => { Papa.parse(cleanUrl, { download: true, header: true, skipEmptyLines: true, complete: res2 => resolve(res2.data || []), error: () => resolve([]) }); } });
-      });
+    // ROBUSTO MECANISMO DE FETCH EM 3 CAMADAS
+    async function fetchCsvData(url) {
+      if (!url || !url.trim()) return [];
+      let cleanUrl = formatGoogleCsvUrl(url);
+      
+      // Camada 1: Fetch Nativo Direto (Google Sheets Published CSV)
+      try {
+        const response = await fetch(cleanUrl);
+        if (response.ok) {
+          const text = await response.text();
+          const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
+          if (parsed.data && parsed.data.length > 0) return parsed.data;
+        }
+      } catch (e) { console.warn("Direct fetch failed for:", cleanUrl, e); }
+
+      // Camada 2: Conversão de ID para Endpoint GViz CSV
+      try {
+        const docIdMatch = cleanUrl.match(/\/d\/(e\/)?([^\/]+)/);
+        if (docIdMatch && docIdMatch[2]) {
+          const docId = docIdMatch[2];
+          let gvizUrl = `https://docs.google.com/spreadsheets/d/${docId}/gviz/tq?tqx=out:csv`;
+          const gidMatch = cleanUrl.match(/gid=([0-9]+)/);
+          if (gidMatch) gvizUrl += `&gid=${gidMatch[1]}`;
+
+          const response = await fetch(gvizUrl);
+          if (response.ok) {
+            const text = await response.text();
+            const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
+            if (parsed.data && parsed.data.length > 0) return parsed.data;
+          }
+        }
+      } catch (e) { console.warn("GViz fetch failed:", e); }
+
+      // Camada 3: Proxy de Segurança AllOrigins
+      try {
+        const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(cleanUrl);
+        const response = await fetch(proxyUrl);
+        if (response.ok) {
+          const text = await response.text();
+          const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
+          if (parsed.data && parsed.data.length > 0) return parsed.data;
+        }
+      } catch (e) { console.warn("Allorigins proxy fetch failed:", e); }
+
+      return [];
     }
 
     async function fetchLiveSheets() {
-      if(!globalConfig.urlMeta && !globalConfig.urlGoogle) return;
-      document.getElementById('syncIndicator').classList.remove('hidden'); document.getElementById('syncIndicator').classList.add('flex');
-      const [metaData, googleData] = await Promise.all([ fetchCsv(globalConfig.urlMeta), fetchCsv(globalConfig.urlGoogle) ]);
+      const banner = document.getElementById('statusBanner');
+      if(!globalConfig.urlMeta && !globalConfig.urlGoogle) {
+        if(banner) {
+          banner.className = 'm-4 p-4 rounded-xl text-xs font-bold bg-amber-900/30 text-amber-400 border border-amber-500/30 block max-w-[1400px] mx-auto w-full';
+          banner.innerText = '⚠️ Insira os links CSV das abas do Google Sheets na aba "Configurações" para carregar os dados.';
+        }
+        return;
+      }
+      if(banner) banner.className = 'hidden';
+      const sync = document.getElementById('syncIndicator');
+      if(sync) { sync.classList.remove('hidden'); sync.classList.add('flex'); }
+      
+      const [metaData, googleData] = await Promise.all([ fetchCsvData(globalConfig.urlMeta), fetchCsvData(globalConfig.urlGoogle) ]);
       rawMeta = metaData; rawGoogle = googleData;
-      document.getElementById('syncIndicator').classList.add('hidden'); document.getElementById('syncIndicator').classList.remove('flex');
+      
+      if(sync) { sync.classList.add('hidden'); sync.classList.remove('flex'); }
+
+      if((!metaData || metaData.length===0) && (!googleData || googleData.length===0)) {
+        if(banner) {
+          banner.className = 'm-4 p-4 rounded-xl text-xs font-bold bg-rose-900/30 text-rose-400 border border-rose-500/30 block max-w-[1400px] mx-auto w-full';
+          banner.innerText = '⚠️ Não foi possível ler os dados da planilha. Verifique se publicou na web em formato CSV e se os links estão corretos na aba Configurações.';
+        }
+        return;
+      }
+
       syncData(); 
     }
 
-    // --- O CÉREBRO: PROCESSA DADOS E DESENHA TELAS ---
     function syncData() {
       const targetDate = getTargetDate(document.getElementById('globalDateFilter').value);
       const fStr = (globalConfig.filtroNome || '').toLowerCase();
@@ -349,32 +406,29 @@
         return true;
       };
 
-      // Variaveis de Pacing / Funil
       let tSpent = 0, tLeads = 0, tImp = 0, tClicks = 0, tLpv = 0;
-      const dailyData = {}; // Para o gráfico misto
+      const dailyData = {}; 
 
-      // Variaveis Meta
       let mSp=0, mL=0, mImp=0, mClick=0, mLpv=0, mHk=0, mHd=0;
       const mAds = {}; const mAud = {}; 
       let mCat = { quente: {s:0, l:0, lpv:0}, frio: {s:0, l:0, lpv:0}, adv: {s:0, l:0, lpv:0} };
 
-      // Variaveis Google
       let gSp=0, gL=0, gClick=0; const gAds = {};
 
-      // 1. Processa Meta
+      // Meta Ads
       rawMeta.forEach(r => {
-        const ad = String(getV(r, ['Ad Name', 'Nome do anúncio'])||'').trim();
-        const set = String(getV(r, ['Ad Set Name', 'Nome do conjunto de anúncios'])||'').trim();
-        const dVal = getV(r, ['Reporting ends', 'Day', 'Dia']);
+        const ad = String(getV(r, ['Ad Name', 'Nome do anúncio', 'Ad name', 'Anúncio'])||'').trim();
+        const set = String(getV(r, ['Ad Set Name', 'Nome do conjunto de anúncios', 'Ad set name', 'Conjunto de anúncios'])||'').trim();
+        const dVal = getV(r, ['Reporting ends', 'Day', 'Dia', 'Reporting starts']);
         
         if(!ad || ad==='NaN' || ad.startsWith('Total:')) return;
         if(!passFilter(`${set} ${ad}`, dVal)) return;
 
-        const s = parseNum(getV(r, ['Cost (Spend)', 'Amount Spent', 'Valor gasto']));
-        const l = parseNum(getV(r, ['Conversions', 'Leads', 'Resultados']));
+        const s = parseNum(getV(r, ['Cost (Spend)', 'Amount Spent', 'Amount spent (BRL)', 'Valor gasto', 'Cost', 'Custo']));
+        const l = parseNum(getV(r, ['Conversions', 'Leads', 'Resultados', 'Cadastros']));
         const i = parseNum(getV(r, ['Impressions', 'Impressões']));
-        const c = parseNum(getV(r, ['Unique Link Clicks', 'Cliques únicos no link']));
-        const lpv = parseNum(getV(r, ['Landing Page Views', 'Visualizações da página de destino']));
+        const c = parseNum(getV(r, ['Unique Link Clicks', 'Unique link clicks', 'Cliques únicos no link', 'Link clicks', 'Cliques no link']));
+        const lpv = parseNum(getV(r, ['Landing Page Views', 'Website landing page views', 'Visualizações da página de destino']));
         const hk = parseNum(getV(r, ['Hook Rate', 'Taxa de Hook']));
         const hd = parseNum(getV(r, ['Hold Rate', 'Rook Hold', 'Taxa de retenção']));
         const dStr = extractDate(dVal) || 'Geral';
@@ -395,16 +449,16 @@
         mAud[set].s+=s; mAud[set].l+=l; mAud[set].c+=c; mAud[set].lpv+=lpv;
       });
 
-      // 2. Processa Google
+      // Google Ads
       rawGoogle.forEach(r => {
-        const ad = String(getV(r, ['Ad Name', 'Anúncio'])||'').trim();
-        const grp = String(getV(r, ['Ad Group Name', 'Grupo de anúncios'])||'Geral').trim();
+        const ad = String(getV(r, ['Ad Name', 'Anúncio', 'Ad name'])||'').trim();
+        const grp = String(getV(r, ['Ad Group Name', 'Grupo de anúncios', 'Ad group'])||'Geral').trim();
         const dVal = getV(r, ['Day', 'Dia']);
         if(!ad || ad==='--' || ad.startsWith('Total:')) return;
         if(!passFilter(`${grp} ${ad}`, dVal)) return;
 
-        const s = parseNum(getV(r, ['Cost (Spend)', 'Cost', 'Custo']));
-        const l = parseNum(getV(r, ['Conversions', 'Conversões']));
+        const s = parseNum(getV(r, ['Cost (Spend)', 'Cost', 'Custo', 'Amount Spent']));
+        const l = parseNum(getV(r, ['Conversions', 'Conversões', 'Leads']));
         const c = parseNum(getV(r, ['Clicks', 'Cliques']));
         const dStr = extractDate(dVal) || 'Geral';
 
@@ -416,50 +470,48 @@
         gAds[ad].s+=s; gAds[ad].l+=l; gAds[ad].c+=c;
       });
 
-      // ------------------------------------
-      // DESENHO: TELA 2 (VISÃO GERAL / FUNIL)
-      // ------------------------------------
+      // Visão Geral / Funil
       document.getElementById('vg_Spent').innerText = fmtM(tSpent);
       document.getElementById('vg_Leads').innerText = tLeads.toLocaleString('pt-BR');
       document.getElementById('vg_CPL').innerText = fmtM(tLeads>0 ? tSpent/tLeads : 0);
 
-      // Calculo do Funil Inteligente (Usa CPM, CTR, CVR)
       const cpm = tImp > 0 ? (tSpent/tImp)*1000 : 0;
       const ctr = tImp > 0 ? (tClicks/tImp)*100 : 0;
-      const cvr = tLpv > 0 ? (tLeads/tLpv)*100 : (tClicks > 0 ? (tLeads/tClicks)*100 : 0); // Fallback pra cliques se não tiver LPV
+      const cvr = tLpv > 0 ? (tLeads/tLpv)*100 : (tClicks > 0 ? (tLeads/tClicks)*100 : 0);
       
       document.getElementById('fn_CPM').innerText = fmtM(cpm);
       document.getElementById('fn_CTR').innerText = fmtP(ctr);
       document.getElementById('fn_CVR').innerText = fmtP(cvr);
 
-      // Gráfico Misto Diário (Barras Gasto+Leads, Linha CPL)
+      // Gráfico Misto Diário
       const days = Object.keys(dailyData).filter(d=>d!=='Geral').sort();
       const dL = days.map(d => dailyData[d].l);
       const dS = days.map(d => dailyData[d].s);
       const dCPL = days.map(d => dailyData[d].l>0 ? dailyData[d].s/dailyData[d].l : 0);
 
       if(mixedChart) mixedChart.destroy();
-      mixedChart = new Chart(document.getElementById('mixedChart').getContext('2d'), {
-        type: 'bar',
-        data: { labels: days.map(d=>d.substring(8,10)+'/'+d.substring(5,7)), 
-          datasets: [
-            { type: 'line', label: 'CPL (R$)', data: dCPL, borderColor: '#ffffff', borderWidth: 2, tension: 0.3, yAxisID: 'y1' },
-            { type: 'bar', label: 'Gasto', data: dS, backgroundColor: '#a855f7', borderRadius: 4, yAxisID: 'y' },
-            { type: 'bar', label: 'Leads', data: dL, backgroundColor: '#3b82f6', borderRadius: 4, yAxisID: 'y' }
-          ]
-        },
-        options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
-          scales: { 
-            x: { grid: { display: false } }, 
-            y: { type: 'linear', display: false, position: 'left' }, 
-            y1: { type: 'linear', display: false, position: 'right', grid: { drawOnChartArea: false } } 
-          }, plugins: { legend: { display: false } } 
-        }
-      });
+      const canvas1 = document.getElementById('mixedChart');
+      if(canvas1) {
+        mixedChart = new Chart(canvas1.getContext('2d'), {
+          type: 'bar',
+          data: { labels: days.map(d=>d.length>=10 ? d.substring(8,10)+'/'+d.substring(5,7) : d), 
+            datasets: [
+              { type: 'line', label: 'CPL (R$)', data: dCPL, borderColor: '#fbbf24', borderWidth: 2, tension: 0.3, yAxisID: 'y1' },
+              { type: 'bar', label: 'Gasto', data: dS, backgroundColor: '#a855f7', borderRadius: 4, yAxisID: 'y' },
+              { type: 'bar', label: 'Leads', data: dL, backgroundColor: '#3b82f6', borderRadius: 4, yAxisID: 'y' }
+            ]
+          },
+          options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+            scales: { 
+              x: { grid: { display: false } }, 
+              y: { type: 'linear', display: false, position: 'left' }, 
+              y1: { type: 'linear', display: false, position: 'right', grid: { drawOnChartArea: false } } 
+            }, plugins: { legend: { display: false } } 
+          }
+        });
+      }
 
-      // ------------------------------------
-      // DESENHO: TELA 3 (TOP CRIATIVOS META)
-      // ------------------------------------
+      // Meta Criativos
       document.getElementById('cK_Spent').innerText = fmtM(mSp); document.getElementById('cK_Leads').innerText = mL;
       document.getElementById('cK_CPL').innerText = fmtM(mL>0?mSp/mL:0);
       document.getElementById('cK_Hook').innerText = fmtP(mImp>0?(mHk/mImp)*100:0);
@@ -467,55 +519,64 @@
 
       const adsList = Object.values(mAds).sort((a,b)=>b.l-a.l);
       
-      // Construtor dos Cards Top 3 Premium
-      const top3Container = document.getElementById('top3Container'); top3Container.innerHTML = '';
-      adsList.slice(0,3).forEach((a, index) => {
-        const cpl = a.l>0?a.s/a.l:0; const hk = a.i>0?(a.hk/a.i)*100:0; const hl = a.i>0?(a.hd/a.i)*100:0; 
-        const bd = hl * 0.72; // Calculo estimado de Body Rate
-        const ctr = a.i>0?(a.c/a.i)*100:0;
-        
-        top3Container.innerHTML += `
-          <div class="bg-card p-5 rounded-xl border border-card relative overflow-hidden group hover:border-purple-500/50 transition">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-600 to-blue-500"></div>
-            <div class="flex justify-between items-start mb-4">
-              <div><span class="bg-purple-600 text-white text-[9px] font-bold px-2 py-0.5 rounded">TOP #${index+1}</span><h3 class="text-white font-bold mt-2 truncate w-40" title="${a.name}">${a.name}</h3><p class="text-[10px] text-slate-400 mt-1">Gasto: <b class="text-white">${fmtM(a.s)}</b> • Leads: <b class="text-emerald-400">${a.l}</b></p></div>
-              <div class="text-right"><span class="block text-[10px] text-slate-500 uppercase">CPL</span><span class="text-lg font-bold text-amber-400">${fmtM(cpl)}</span></div>
-            </div>
-            <div class="space-y-3 mt-4">
-              <div><div class="flex justify-between text-[10px] mb-1"><span class="text-slate-400">✨ CTR</span><span class="text-white">${fmtP(ctr)}</span></div><div class="w-full bg-slate-800 rounded-full h-1"><div class="bg-purple-500 h-1 rounded-full" style="width: ${Math.min(100, ctr*10)}%"></div></div></div>
-              <div><div class="flex justify-between text-[10px] mb-1"><span class="text-slate-400">⚓ Hook Rate</span><span class="text-white">${fmtP(hk)}</span></div><div class="w-full bg-slate-800 rounded-full h-1"><div class="bg-purple-400 h-1 rounded-full" style="width: ${Math.min(100, hk)}%"></div></div></div>
-              <div><div class="flex justify-between text-[10px] mb-1"><span class="text-slate-400">🎯 Hold Rate</span><span class="text-white">${fmtP(hl)}</span></div><div class="w-full bg-slate-800 rounded-full h-1"><div class="bg-cyan-400 h-1 rounded-full" style="width: ${Math.min(100, hl)}%"></div></div></div>
-              <div><div class="flex justify-between text-[10px] mb-1"><span class="text-slate-400">📉 Body Rate</span><span class="text-white">${fmtP(bd)}</span></div><div class="w-full bg-slate-800 rounded-full h-1"><div class="bg-blue-500 h-1 rounded-full" style="width: ${Math.min(100, bd)}%"></div></div></div>
-            </div>
-          </div>`;
-      });
+      const top3Container = document.getElementById('top3Container'); 
+      if(top3Container) {
+        top3Container.innerHTML = '';
+        adsList.slice(0,3).forEach((a, index) => {
+          const cpl = a.l>0?a.s/a.l:0; const hk = a.i>0?(a.hk/a.i)*100:0; const hl = a.i>0?(a.hd/a.i)*100:0; 
+          const bd = hl * 0.72; const ctrAd = a.i>0?(a.c/a.i)*100:0;
+          
+          top3Container.innerHTML += `
+            <div class="bg-card p-5 rounded-xl border border-card relative overflow-hidden group hover:border-purple-500/50 transition">
+              <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-600 to-blue-500"></div>
+              <div class="flex justify-between items-start mb-4">
+                <div><span class="bg-purple-600 text-white text-[9px] font-bold px-2 py-0.5 rounded">META #${index+1}</span><h3 class="text-white font-bold mt-2 truncate w-40" title="${a.name}">${a.name}</h3><p class="text-[10px] text-slate-400 mt-1">Gasto: <b class="text-white">${fmtM(a.s)}</b> • Leads: <b class="text-emerald-400">${a.l}</b></p></div>
+                <div class="text-right"><span class="block text-[10px] text-slate-500 uppercase">CPL</span><span class="text-lg font-bold text-amber-400">${fmtM(cpl)}</span></div>
+              </div>
+              <div class="space-y-3 mt-4">
+                <div><div class="flex justify-between text-[10px] mb-1"><span class="text-slate-400">✨ CTR</span><span class="text-white">${fmtP(ctrAd)}</span></div><div class="w-full bg-slate-800 rounded-full h-1"><div class="bg-purple-500 h-1 rounded-full" style="width: ${Math.min(100, ctrAd*10)}%"></div></div></div>
+                <div><div class="flex justify-between text-[10px] mb-1"><span class="text-slate-400">⚓ Hook Rate</span><span class="text-white">${fmtP(hk)}</span></div><div class="w-full bg-slate-800 rounded-full h-1"><div class="bg-purple-400 h-1 rounded-full" style="width: ${Math.min(100, hk)}%"></div></div></div>
+                <div><div class="flex justify-between text-[10px] mb-1"><span class="text-slate-400">🎯 Hold Rate</span><span class="text-white">${fmtP(hl)}</span></div><div class="w-full bg-slate-800 rounded-full h-1"><div class="bg-cyan-400 h-1 rounded-full" style="width: ${Math.min(100, hl)}%"></div></div></div>
+                <div><div class="flex justify-between text-[10px] mb-1"><span class="text-slate-400">📉 Body Rate</span><span class="text-white">${fmtP(bd)}</span></div><div class="w-full bg-slate-800 rounded-full h-1"><div class="bg-blue-500 h-1 rounded-full" style="width: ${Math.min(100, bd)}%"></div></div></div>
+              </div>
+            </div>`;
+        });
+      }
 
-      // Gráfico Misto Anúncios (Barras Leads + Linha CPL)
       const top10Ads = adsList.slice(0, 10);
       if(adsMixedChart) adsMixedChart.destroy();
-      adsMixedChart = new Chart(document.getElementById('adsMixedChart').getContext('2d'), {
-        type: 'bar',
-        data: { labels: top10Ads.map(a=>a.name.substring(0,10)), 
-          datasets: [
-            { type: 'line', label: 'CPL (R$)', data: top10Ads.map(a=>a.l>0?a.s/a.l:0), borderColor: '#fbbf24', borderWidth: 2, tension: 0.2, yAxisID: 'y1' },
-            { type: 'bar', label: 'Leads', data: top10Ads.map(a=>a.l), backgroundColor: '#10b981', borderRadius: 4, yAxisID: 'y' }
-          ]
-        },
-        options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, scales: { x: { grid: { display: false } }, y: { display: false, position: 'left' }, y1: { display: false, position: 'right' } }, plugins: { legend: { display: false } } }
-      });
+      const canvas2 = document.getElementById('adsMixedChart');
+      if(canvas2) {
+        adsMixedChart = new Chart(canvas2.getContext('2d'), {
+          type: 'bar',
+          data: { labels: top10Ads.map(a=>a.name.substring(0,12)), 
+            datasets: [
+              { type: 'line', label: 'CPL (R$)', data: top10Ads.map(a=>a.l>0?a.s/a.l:0), borderColor: '#fbbf24', borderWidth: 2, tension: 0.2, yAxisID: 'y1' },
+              { type: 'bar', label: 'Leads', data: top10Ads.map(a=>a.l), backgroundColor: '#10b981', borderRadius: 4, yAxisID: 'y' }
+            ]
+          },
+          options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, scales: { x: { grid: { display: false } }, y: { display: false, position: 'left' }, y1: { display: false, position: 'right' } }, plugins: { legend: { display: false } } }
+        });
+      }
 
-      // Tabela Anúncios Meta
-      const tbAds = document.getElementById('mC_Table'); tbAds.innerHTML='';
-      adsList.forEach(a => { tbAds.innerHTML += `<tr class="hover:bg-card/50 transition"><td class="p-4 text-white truncate max-w-[150px]">${a.name}</td><td class="p-4 text-slate-300">${fmtM(a.s)}</td><td class="p-4 text-emerald-400 font-bold">${a.l}</td><td class="p-4 text-amber-400">${fmtM(a.l>0?a.s/a.l:0)}</td><td class="p-4 text-slate-300">${fmtP(a.i>0?(a.c/a.i)*100:0)}</td><td class="p-4 text-purple-400">${fmtP(a.i>0?(a.hk/a.i)*100:0)}</td><td class="p-4 text-cyan-400">${fmtP(a.i>0?(a.hd/a.i)*100:0)}</td><td class="p-4 text-pink-400">${fmtP(a.c>0?(a.lpv/a.c)*100:0)}</td></tr>`; });
+      const tbAds = document.getElementById('mC_Table'); 
+      if(tbAds) {
+        tbAds.innerHTML='';
+        adsList.forEach(a => { tbAds.innerHTML += `<tr class="hover:bg-card/50 transition"><td class="p-4 text-white truncate max-w-[150px]">${a.name}</td><td class="p-4 text-slate-300">${fmtM(a.s)}</td><td class="p-4 text-emerald-400 font-bold">${a.l}</td><td class="p-4 text-amber-400">${fmtM(a.l>0?a.s/a.l:0)}</td><td class="p-4 text-slate-300">${fmtP(a.i>0?(a.c/a.i)*100:0)}</td><td class="p-4 text-purple-400">${fmtP(a.i>0?(a.hk/a.i)*100:0)}</td><td class="p-4 text-cyan-400">${fmtP(a.i>0?(a.hd/a.i)*100:0)}</td><td class="p-4 text-pink-400">${fmtP(a.c>0?(a.lpv/a.c)*100:0)}</td></tr>`; });
+      }
 
-      // ------------------------------------
-      // DESENHO: TELA 4 E 5
-      // ------------------------------------
+      // Meta Públicos e Google
       ['quente','frio','adv'].forEach((c, i) => { const id = ['Hot','Cold','Adv'][i]; document.getElementById('mP_'+id+'Leads').innerText = mCat[c].l; document.getElementById('mP_'+id+'Spent').innerText = fmtM(mCat[c].s); document.getElementById('mP_'+id+'CPL').innerText = fmtM(mCat[c].l>0 ? mCat[c].s/mCat[c].l : 0); document.getElementById('mP_'+id+'CVR').innerText = fmtP(mCat[c].lpv>0 ? (mCat[c].l/mCat[c].lpv)*100 : 0); });
-      const tbAud = document.getElementById('mP_Table'); tbAud.innerHTML=''; Object.values(mAud).sort((a,b)=>b.l-a.l).forEach(a => { tbAud.innerHTML += `<tr class="hover:bg-card/50"><td class="p-4 text-white truncate max-w-[200px]">${a.name}</td><td class="p-4 text-slate-300">${fmtM(a.s)}</td><td class="p-4 text-emerald-400 font-bold">${a.l}</td><td class="p-4 text-amber-400">${fmtM(a.l>0?a.s/a.l:0)}</td><td class="p-4 text-pink-400">${fmtP(a.c>0?(a.lpv/a.c)*100:0)}</td><td class="p-4 text-purple-400">${fmtP(a.lpv>0?(a.l/a.lpv)*100:0)}</td></tr>`; });
+      const tbAud = document.getElementById('mP_Table'); 
+      if(tbAud) {
+        tbAud.innerHTML=''; Object.values(mAud).sort((a,b)=>b.l-a.l).forEach(a => { tbAud.innerHTML += `<tr class="hover:bg-card/50"><td class="p-4 text-white truncate max-w-[200px]">${a.name}</td><td class="p-4 text-slate-300">${fmtM(a.s)}</td><td class="p-4 text-emerald-400 font-bold">${a.l}</td><td class="p-4 text-amber-400">${fmtM(a.l>0?a.s/a.l:0)}</td><td class="p-4 text-pink-400">${fmtP(a.c>0?(a.lpv/a.c)*100:0)}</td><td class="p-4 text-purple-400">${fmtP(a.lpv>0?(a.l/a.lpv)*100:0)}</td></tr>`; });
+      }
 
       document.getElementById('g_Spent').innerText = fmtM(gSp); document.getElementById('g_Leads').innerText = gL; document.getElementById('g_CPA').innerText = fmtM(gL>0?gSp/gL:0); document.getElementById('g_CVR').innerText = fmtP(gClick>0?(gL/gClick)*100:0);
-      const tbGAds = document.getElementById('g_Table'); tbGAds.innerHTML=''; Object.values(gAds).sort((a,b)=>b.l-a.l).forEach(a => { tbGAds.innerHTML += `<tr class="hover:bg-card/50"><td class="p-4 text-white truncate max-w-[200px]">${a.name}</td><td class="p-4 text-xs text-slate-500">${a.grp}</td><td class="p-4 text-slate-300">${fmtM(a.s)}</td><td class="p-4 text-emerald-400 font-bold">${a.l}</td><td class="p-4 text-amber-400">${fmtM(a.l>0?a.s/a.l:0)}</td><td class="p-4 text-blue-400">${a.c}</td></tr>`; });
+      const tbGAds = document.getElementById('g_Table'); 
+      if(tbGAds) {
+        tbGAds.innerHTML=''; Object.values(gAds).sort((a,b)=>b.l-a.l).forEach(a => { tbGAds.innerHTML += `<tr class="hover:bg-card/50"><td class="p-4 text-white truncate max-w-[200px]">${a.name}</td><td class="p-4 text-xs text-slate-500">${a.grp}</td><td class="p-4 text-slate-300">${fmtM(a.s)}</td><td class="p-4 text-emerald-400 font-bold">${a.l}</td><td class="p-4 text-amber-400">${fmtM(a.l>0?a.s/a.l:0)}</td><td class="p-4 text-blue-400">${a.c}</td></tr>`; });
+      }
     }
   </script>
 </body>
