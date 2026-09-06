@@ -366,42 +366,55 @@
           <h2 class="text-xl font-extrabold text-white">🎯 Centro de Comando</h2>
         </div>
         
-        <!-- NOVO FUNIL (7 ETAPAS) -->
+        <!-- NOVO FUNIL (8 ETAPAS - COM INVESTIMENTO NO INÍCIO) -->
         <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
           <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Jornada de Tráfego</h3>
-          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+            
+            <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-red transition">
+              <span class="text-[10px] font-bold uppercase text-text-muted block">1. Investimento</span>
+              <div class="text-xl font-black text-accent-red" id="funnelSpent">R$ 0,00</div>
+              <div class="w-full bg-accent-red/20 h-1 rounded-full mt-2"><div class="bg-accent-red h-1" style="width:100%"></div></div>
+            </div>
+
             <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
-              <span class="text-[10px] font-bold uppercase text-text-muted block">1. Impressões</span>
+              <span class="text-[10px] font-bold uppercase text-text-muted block">2. Impressões</span>
               <div class="text-xl font-black text-white" id="funnelImp">0</div>
               <div class="w-full bg-accent-blue/20 h-1 rounded-full mt-2"><div class="bg-accent-blue h-1" style="width:100%"></div></div>
             </div>
+
             <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
-              <span class="text-[10px] font-bold uppercase text-text-muted block">2. Cliques</span>
+              <span class="text-[10px] font-bold uppercase text-text-muted block">3. Cliques</span>
               <div class="text-xl font-black text-white" id="funnelClick">0</div>
               <div class="w-full bg-accent-blue/20 h-1 rounded-full mt-2"><div class="bg-accent-blue h-1" id="barClick" style="width:0%"></div></div>
             </div>
+
             <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
-              <span class="text-[10px] font-bold uppercase text-text-muted block">3. CTR</span>
+              <span class="text-[10px] font-bold uppercase text-text-muted block">4. CTR</span>
               <div class="text-xl font-black text-accent-blue" id="funnelCTR">0.0%</div>
               <div class="w-full bg-accent-blue/20 h-1 rounded-full mt-2"><div class="bg-accent-blue h-1" id="barCTR" style="width:0%"></div></div>
             </div>
+
             <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
-              <span class="text-[10px] font-bold uppercase text-text-muted block">4. Visitas (LPV)</span>
+              <span class="text-[10px] font-bold uppercase text-text-muted block">5. Visitas (LPV)</span>
               <div class="text-xl font-black text-white" id="funnelLPV">0</div>
               <div class="w-full bg-accent-yellow/20 h-1 rounded-full mt-2"><div class="bg-accent-yellow h-1" id="barLPV" style="width:0%"></div></div>
             </div>
+
             <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
-              <span class="text-[10px] font-bold uppercase text-text-muted block">5. Connect Rate</span>
+              <span class="text-[10px] font-bold uppercase text-text-muted block">6. Connect Rate</span>
               <div class="text-xl font-black text-accent-yellow" id="funnelCR">0.0%</div>
               <div class="w-full bg-accent-yellow/20 h-1 rounded-full mt-2"><div class="bg-accent-yellow h-1" id="barCR" style="width:0%"></div></div>
             </div>
+
             <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
-              <span class="text-[10px] font-bold uppercase text-text-muted block">6. Leads</span>
+              <span class="text-[10px] font-bold uppercase text-text-muted block">7. Leads</span>
               <div class="text-xl font-black text-accent-green" id="funnelLeads">0</div>
               <div class="w-full bg-accent-green/20 h-1 rounded-full mt-2"><div class="bg-accent-green h-1" id="barLeads" style="width:0%"></div></div>
             </div>
+
             <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
-              <span class="text-[10px] font-bold uppercase text-text-muted block">7. Taxa de Conv.</span>
+              <span class="text-[10px] font-bold uppercase text-text-muted block">8. Taxa Conv. (Real)</span>
               <div class="text-xl font-black text-accent-green" id="funnelConv">0.0%</div>
               <div class="w-full bg-accent-green/20 h-1 rounded-full mt-2"><div class="bg-accent-green h-1" id="barConv" style="width:0%"></div></div>
             </div>
@@ -437,15 +450,15 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
             <h3 class="text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-2"><span class="p-1 rounded bg-accent-blue/10 text-accent-blue">👥</span> Top 5 Públicos</h3>
-            <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-2.5">Rank</th><th class="p-2.5">Público</th><th class="p-2.5">Leads</th><th class="p-2.5">CPL</th><th class="p-2.5">Conv %</th></tr></thead><tbody id="top5PublicosBody" class="divide-y divide-border-custom text-text-primary"></tbody></table>
+            <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-2.5">Rank</th><th class="p-2.5">Público</th><th class="p-2.5">Leads</th><th class="p-2.5">CPL</th><th class="p-2.5">Conv % (Real)</th></tr></thead><tbody id="top5PublicosBody" class="divide-y divide-border-custom text-text-primary"></tbody></table>
           </div>
           <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
             <h3 class="text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-2"><span class="p-1 rounded bg-accent-green/10 text-accent-green">🎬</span> Top 5 Criativos</h3>
-            <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-2.5">Rank</th><th class="p-2.5">Criativo</th><th class="p-2.5">Leads</th><th class="p-2.5">CPL</th><th class="p-2.5">Conv %</th></tr></thead><tbody id="top5CriativosBody" class="divide-y divide-border-custom text-text-primary"></tbody></table>
+            <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-2.5">Rank</th><th class="p-2.5">Criativo</th><th class="p-2.5">Leads</th><th class="p-2.5">CPL</th><th class="p-2.5">Conv % (Real)</th></tr></thead><tbody id="top5CriativosBody" class="divide-y divide-border-custom text-text-primary"></tbody></table>
           </div>
         </div>
         
-        <!-- NOVO GRÁFICO: VOLUME VS CPL -->
+        <!-- GRÁFICO (COMBO: BARRAS + LINHA) -->
         <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
           <div class="flex items-center justify-between">
             <h3 class="text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-2">
@@ -461,11 +474,11 @@
         <h2 class="text-xl font-extrabold text-white">🎬 Análise de Criativos</h2>
         <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
           <h3 class="text-xs font-extrabold text-accent-red uppercase tracking-wider">🔴 Google Ads (YouTube)</h3>
-          <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-3">Criativo</th><th class="p-3">Investido</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3">Conv %</th><th class="p-3">Destaque</th></tr></thead><tbody id="googleCriativosTable" class="divide-y divide-border-custom text-text-primary"></tbody></table>
+          <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-3">Criativo</th><th class="p-3">Investido</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3">Conv % (Real)</th><th class="p-3">Destaque</th></tr></thead><tbody id="googleCriativosTable" class="divide-y divide-border-custom text-text-primary"></tbody></table>
         </div>
         <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
           <h3 class="text-xs font-extrabold text-accent-blue uppercase tracking-wider">🔷 Meta Ads (Facebook / Instagram)</h3>
-          <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-3">Criativo</th><th class="p-3">Investido</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3">Conv %</th><th class="p-3">Destaque</th></tr></thead><tbody id="metaCriativosTable" class="divide-y divide-border-custom text-text-primary"></tbody></table>
+          <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-3">Criativo</th><th class="p-3">Investido</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3">Conv % (Real)</th><th class="p-3">Destaque</th></tr></thead><tbody id="metaCriativosTable" class="divide-y divide-border-custom text-text-primary"></tbody></table>
         </div>
       </section>
 
@@ -474,11 +487,11 @@
         <h2 class="text-xl font-extrabold text-white">👥 Análise de Públicos</h2>
         <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
           <h3 class="text-xs font-extrabold text-accent-red uppercase tracking-wider">🔴 Google Ads — Públicos e Grupos</h3>
-          <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-3">Público</th><th class="p-3">Investido</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3">Conv %</th><th class="p-3">Destaque</th></tr></thead><tbody id="googlePublicosTable" class="divide-y divide-border-custom text-text-primary"></tbody></table>
+          <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-3">Público</th><th class="p-3">Investido</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3">Conv % (Real)</th><th class="p-3">Destaque</th></tr></thead><tbody id="googlePublicosTable" class="divide-y divide-border-custom text-text-primary"></tbody></table>
         </div>
         <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
           <h3 class="text-xs font-extrabold text-accent-blue uppercase tracking-wider">🔷 Meta Ads — Conjuntos de Anúncios</h3>
-          <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-3">Conjunto</th><th class="p-3">Investido</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3">Conv %</th><th class="p-3">Destaque</th></tr></thead><tbody id="metaPublicosTable" class="divide-y divide-border-custom text-text-primary"></tbody></table>
+          <table class="w-full text-left text-xs"><thead class="bg-bg-input text-text-muted uppercase text-[10px]"><tr><th class="p-3">Conjunto</th><th class="p-3">Investido</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3">Conv % (Real)</th><th class="p-3">Destaque</th></tr></thead><tbody id="metaPublicosTable" class="divide-y divide-border-custom text-text-primary"></tbody></table>
         </div>
       </section>
     </div>
@@ -535,7 +548,6 @@ function closeDatePicker(){
   document.getElementById('dpTrigger').classList.remove('active');
 }
 
-// Fechar ao clicar fora
 document.addEventListener('click',e=>{
   const wrap=document.getElementById('dpWrap');
   if(wrap && !wrap.contains(e.target)) closeDatePicker();
@@ -585,7 +597,7 @@ function dpClickDay(y,m,d){
     if(dt<dpState.selStart){ dpState.selEnd=dpState.selStart; dpState.selStart=dt; }
     else { dpState.selEnd=dt; }
     dpState.picking='start';
-    applyDateRange(); // Aplica automaticamente
+    applyDateRange();
     return;
   }
   dpState.activeShortcut=null;
@@ -905,7 +917,7 @@ function renderFunnelAndTimeline(){
   const meta=filterByDate(launchState.dataMeta);
   const google=filterByDate(launchState.dataGoogle);
   
-  let totalImp=0,totalClicks=0,totalLPV=0,totalLeads=0;
+  let totalImp=0,totalClicks=0,totalLPV=0,totalLeads=0,totalGasto=0;
   const dayStats={};
   
   const pacing = {
@@ -915,54 +927,57 @@ function renderFunnelAndTimeline(){
     gf: { nome: "Google Frio", pct: launchState.pctGF, gasto: 0 },
   };
 
-  meta.forEach(r=>{
-    const i=parseNum(getCol(r,['Impressions','Impressões']));
-    const c=parseNum(getCol(r,['Unique Link Clicks','Link clicks','Clicks']));
-    const lpv=parseNum(getCol(r,['Website landing page views','Landing Page Views']));
-    const l=parseNum(getCol(r,['Leads','Conversions','Resultados']));
-    const sp=parseNum(getCol(r,['Amount Spent','Cost (Spend)','Valor gasto']));
-    const day=getCol(r,['Day','Dia'])||'';
-    const nomeConjunto=getCol(r,['Ad Set Name','Nome do conjunto de anúncios'])||'';
+  const audMap={};
+  const adMap={};
+
+  const processRow = (r, isMeta) => {
+    const i = parseNum(getCol(r,['Impressions','Impressões']));
+    const c = parseNum(getCol(r,['Unique Link Clicks','Link clicks','Clicks','Cliques']));
+    let lpv = parseNum(getCol(r,['Website landing page views','Landing Page Views','Visualizações de página']));
+    if (!lpv && c > 0) lpv = c * 0.85; 
     
-    totalImp+=i; totalClicks+=c; totalLPV+=lpv; totalLeads+=l;
+    const l = parseNum(getCol(r,['Leads','Conversions','Resultados']));
+    const sp = parseNum(getCol(r,['Amount Spent','Cost (Spend)','Valor gasto','Cost']));
+    const day = getCol(r,['Day','Dia'])||'';
     
-    if(isQuente(nomeConjunto)) pacing.mq.gasto+=sp; else pacing.mf.gasto+=sp;
+    const pubName = getCol(r, isMeta ? ['Ad Set Name','Nome do conjunto de anúncios'] : ['Ad Group Name','Grupo de anúncios']) || 'Outros';
+    const adName = getCol(r, isMeta ? ['Ad Name','Nome do anúncio'] : ['Ad Name','Anúncio']) || 'Outros';
+
+    totalImp+=i; totalClicks+=c; totalLPV+=lpv; totalLeads+=l; totalGasto+=sp;
+    
+    if(isMeta) isQuente(pubName) ? pacing.mq.gasto+=sp : pacing.mf.gasto+=sp;
+    else isQuente(pubName) ? pacing.gq.gasto+=sp : pacing.gf.gasto+=sp;
 
     if(!dayStats[day]) dayStats[day]={leads:0,spent:0};
     dayStats[day].leads+=l; dayStats[day].spent+=sp;
-  });
-  
-  google.forEach(r=>{
-    const i=parseNum(getCol(r,['Impressions']));
-    const c=parseNum(getCol(r,['Clicks']));
-    const lpv=parseNum(getCol(r,['Landing Page Views', 'Clicks'])) * 0.85; 
-    const l=parseNum(getCol(r,['Conversions','Leads']));
-    const sp=parseNum(getCol(r,['Cost (Spend)','Cost']));
-    const day=getCol(r,['Day','Dia'])||'';
-    const nomeGrupo=getCol(r,['Ad Group Name','Grupo de anúncios'])||'';
 
-    totalImp+=i; totalClicks+=c; totalLPV+=lpv; totalLeads+=l;
-    
-    if(isQuente(nomeGrupo)) pacing.gq.gasto+=sp; else pacing.gf.gasto+=sp;
+    // Popula dados para o Top 5
+    if(!audMap[pubName]) audMap[pubName]={name:pubName, leads:0, spent:0, lpv:0};
+    audMap[pubName].leads+=l; audMap[pubName].spent+=sp; audMap[pubName].lpv+=lpv;
 
-    if(!dayStats[day]) dayStats[day]={leads:0,spent:0};
-    dayStats[day].leads+=l; dayStats[day].spent+=sp;
-  });
+    if(!adMap[adName]) adMap[adName]={name:adName, leads:0, spent:0, lpv:0};
+    adMap[adName].leads+=l; adMap[adName].spent+=sp; adMap[adName].lpv+=lpv;
+  };
+
+  meta.forEach(r => processRow(r, true));
+  google.forEach(r => processRow(r, false));
 
   // Atualiza Valores do Funil
   const ctr = totalImp > 0 ? (totalClicks/totalImp)*100 : 0;
   const cr = totalClicks > 0 ? (totalLPV/totalClicks)*100 : 0;
-  const cvr = totalLPV > 0 ? (totalLeads/totalLPV)*100 : 0;
+  const cvr = totalLPV > 0 ? (totalLeads/totalLPV)*100 : 0; // Fórmula Oficial: Leads / Visitas
 
+  document.getElementById('funnelSpent').innerText = 'R$ ' + totalGasto.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  
   document.getElementById('funnelImp').innerText = totalImp.toLocaleString('pt-BR');
   document.getElementById('funnelClick').innerText = totalClicks.toLocaleString('pt-BR');
-  document.getElementById('barClick').style.width = Math.min(100, (totalClicks/totalImp)*1000) + '%';
+  document.getElementById('barClick').style.width = Math.min(100, (totalClicks/(totalImp||1))*1000) + '%';
   
   document.getElementById('funnelCTR').innerText = ctr.toFixed(2) + '%';
   document.getElementById('barCTR').style.width = Math.min(100, ctr*5) + '%';
   
   document.getElementById('funnelLPV').innerText = Math.round(totalLPV).toLocaleString('pt-BR');
-  document.getElementById('barLPV').style.width = Math.min(100, (totalLPV/totalClicks)*100) + '%';
+  document.getElementById('barLPV').style.width = Math.min(100, cr) + '%';
   
   document.getElementById('funnelCR').innerText = cr.toFixed(2) + '%';
   document.getElementById('barCR').style.width = Math.min(100, cr) + '%';
@@ -1001,30 +1016,20 @@ function renderFunnelAndTimeline(){
     `;
   });
 
-  // Top 5 Publicos
-  const audMap={};
-  meta.forEach(r=>{
-    const name=getCol(r,['Ad Set Name','Nome do conjunto de anúncios'])||'Outros';
-    const l=parseNum(getCol(r,['Leads','Conversions'])); const sp=parseNum(getCol(r,['Amount Spent','Cost (Spend)']));
-    if(!audMap[name]) audMap[name]={name,leads:0,spent:0}; audMap[name].leads+=l; audMap[name].spent+=sp;
-  });
+  // Top 5 Publicos (Convertido para Taxa de Conversão Real)
   const pubBody=document.getElementById('top5PublicosBody'); pubBody.innerHTML='';
   Object.values(audMap).sort((a,b)=>b.leads-a.leads).slice(0,5).forEach((p,i)=>{
     const cpl=p.leads>0?(p.spent/p.leads).toFixed(2):'0.00';
-    pubBody.innerHTML+=`<tr class="hover:bg-bg-input/50 transition"><td class="p-2.5 font-bold text-accent-blue">#${i+1}</td><td class="p-2.5 font-medium text-white truncate max-w-[120px]">${p.name}</td><td class="p-2.5 font-bold text-accent-green">${p.leads}</td><td class="p-2.5 text-accent-yellow">R$ ${cpl}</td><td class="p-2.5">${(Math.random()*15+20).toFixed(1)}%</td></tr>`;
+    const conv=p.lpv>0?((p.leads/p.lpv)*100).toFixed(1):'0.0'; // Calculo Real
+    pubBody.innerHTML+=`<tr class="hover:bg-bg-input/50 transition"><td class="p-2.5 font-bold text-accent-blue">#${i+1}</td><td class="p-2.5 font-medium text-white truncate max-w-[120px]">${p.name}</td><td class="p-2.5 font-bold text-accent-green">${p.leads}</td><td class="p-2.5 text-accent-yellow">R$ ${cpl}</td><td class="p-2.5 text-accent-blue font-bold">${conv}%</td></tr>`;
   });
 
-  // Top 5 Criativos
-  const adMap={};
-  meta.forEach(r=>{
-    const name=getCol(r,['Ad Name','Nome do anúncio'])||'Outros';
-    const l=parseNum(getCol(r,['Leads','Conversions'])); const sp=parseNum(getCol(r,['Amount Spent','Cost (Spend)']));
-    if(!adMap[name]) adMap[name]={name,leads:0,spent:0}; adMap[name].leads+=l; adMap[name].spent+=sp;
-  });
+  // Top 5 Criativos (Convertido para Taxa de Conversão Real)
   const criBody=document.getElementById('top5CriativosBody'); criBody.innerHTML='';
   Object.values(adMap).sort((a,b)=>b.leads-a.leads).slice(0,5).forEach((c,i)=>{
     const cpl=c.leads>0?(c.spent/c.leads).toFixed(2):'0.00';
-    criBody.innerHTML+=`<tr class="hover:bg-bg-input/50 transition"><td class="p-2.5 font-bold text-accent-green">#${i+1}</td><td class="p-2.5 font-medium text-white truncate max-w-[120px]">${c.name}</td><td class="p-2.5 font-bold text-accent-green">${c.leads}</td><td class="p-2.5 text-accent-yellow">R$ ${cpl}</td><td class="p-2.5">${(Math.random()*12+18).toFixed(1)}%</td></tr>`;
+    const conv=c.lpv>0?((c.leads/c.lpv)*100).toFixed(1):'0.0'; // Calculo Real
+    criBody.innerHTML+=`<tr class="hover:bg-bg-input/50 transition"><td class="p-2.5 font-bold text-accent-green">#${i+1}</td><td class="p-2.5 font-medium text-white truncate max-w-[120px]">${c.name}</td><td class="p-2.5 font-bold text-accent-green">${c.leads}</td><td class="p-2.5 text-accent-yellow">R$ ${cpl}</td><td class="p-2.5 text-accent-blue font-bold">${conv}%</td></tr>`;
   });
 
   // ====== NOVO GRÁFICO (COMBO: BARRAS + LINHA) ======
@@ -1109,16 +1114,27 @@ function renderCriativos(){
   const meta=filterByDate(launchState.dataMeta);
   const google=filterByDate(launchState.dataGoogle);
   const gm={},mm={};
+  
   google.forEach(r=>{
     const n=getCol(r,['Ad Name','Anúncio'])||'G-ADS';
     const s=parseNum(getCol(r,['Cost (Spend)','Cost'])), l=parseNum(getCol(r,['Conversions','Leads']));
-    if(!gm[n]) gm[n]={name:n,spent:0,leads:0}; gm[n].spent+=s; gm[n].leads+=l;
+    let c=parseNum(getCol(r,['Clicks','Cliques'])), lpv=parseNum(getCol(r,['Landing Page Views','Visualizações de página']));
+    if(!lpv && c>0) lpv = c*0.85;
+
+    if(!gm[n]) gm[n]={name:n,spent:0,leads:0,lpv:0}; 
+    gm[n].spent+=s; gm[n].leads+=l; gm[n].lpv+=lpv;
   });
+  
   meta.forEach(r=>{
     const n=getCol(r,['Ad Name','Nome do anúncio'])||'M-ADS';
     const s=parseNum(getCol(r,['Amount Spent','Cost (Spend)'])), l=parseNum(getCol(r,['Leads','Conversions']));
-    if(!mm[n]) mm[n]={name:n,spent:0,leads:0}; mm[n].spent+=s; mm[n].leads+=l;
+    let c=parseNum(getCol(r,['Unique Link Clicks','Link clicks','Clicks'])), lpv=parseNum(getCol(r,['Website landing page views','Landing Page Views']));
+    if(!lpv && c>0) lpv = c*0.85;
+
+    if(!mm[n]) mm[n]={name:n,spent:0,leads:0,lpv:0}; 
+    mm[n].spent+=s; mm[n].leads+=l; mm[n].lpv+=lpv;
   });
+  
   renderTableWithBadges('googleCriativosTable',Object.values(gm));
   renderTableWithBadges('metaCriativosTable',Object.values(mm));
 }
@@ -1127,16 +1143,27 @@ function renderPublicos(){
   const meta=filterByDate(launchState.dataMeta);
   const google=filterByDate(launchState.dataGoogle);
   const gm={},mm={};
+  
   google.forEach(r=>{
     const n=getCol(r,['Ad Group Name','Grupo de anúncios'])||'Grupo G';
     const s=parseNum(getCol(r,['Cost (Spend)','Cost'])), l=parseNum(getCol(r,['Conversions','Leads']));
-    if(!gm[n]) gm[n]={name:n,spent:0,leads:0}; gm[n].spent+=s; gm[n].leads+=l;
+    let c=parseNum(getCol(r,['Clicks','Cliques'])), lpv=parseNum(getCol(r,['Landing Page Views','Visualizações de página']));
+    if(!lpv && c>0) lpv = c*0.85;
+
+    if(!gm[n]) gm[n]={name:n,spent:0,leads:0,lpv:0}; 
+    gm[n].spent+=s; gm[n].leads+=l; gm[n].lpv+=lpv;
   });
+  
   meta.forEach(r=>{
     const n=getCol(r,['Ad Set Name','Nome do conjunto de anúncios'])||'Conjunto M';
     const s=parseNum(getCol(r,['Amount Spent','Cost (Spend)'])), l=parseNum(getCol(r,['Leads','Conversions']));
-    if(!mm[n]) mm[n]={name:n,spent:0,leads:0}; mm[n].spent+=s; mm[n].leads+=l;
+    let c=parseNum(getCol(r,['Unique Link Clicks','Link clicks','Clicks'])), lpv=parseNum(getCol(r,['Website landing page views','Landing Page Views']));
+    if(!lpv && c>0) lpv = c*0.85;
+
+    if(!mm[n]) mm[n]={name:n,spent:0,leads:0,lpv:0}; 
+    mm[n].spent+=s; mm[n].leads+=l; mm[n].lpv+=lpv;
   });
+  
   renderTableWithBadges('googlePublicosTable',Object.values(gm));
   renderTableWithBadges('metaPublicosTable',Object.values(mm));
 }
@@ -1144,22 +1171,27 @@ function renderPublicos(){
 function renderTableWithBadges(id,items){
   const tbody=document.getElementById(id); tbody.innerHTML='';
   if(!items.length){tbody.innerHTML=`<tr><td colspan="6" class="p-4 text-center text-text-muted">Sem dados no período selecionado.</td></tr>`;return;}
+  
   let minCPL=items[0],maxConv=items[0],maxVol=items[0],maxInv=items[0];
+  
   items.forEach(it=>{
     it.cpl=it.leads>0?it.spent/it.leads:999;
-    it.conv=(Math.random()*10+15).toFixed(1);
+    it.conv=it.lpv>0?(it.leads/it.lpv)*100:0; // Matematica Real (Leads/Visitas)
+    
     if(it.cpl<minCPL.cpl)minCPL=it;
-    if(parseFloat(it.conv)>parseFloat(maxConv.conv))maxConv=it;
+    if(it.conv>maxConv.conv)maxConv=it;
     if(it.leads>maxVol.leads)maxVol=it;
     if(it.spent>maxInv.spent)maxInv=it;
   });
+  
   items.sort((a,b)=>b.leads-a.leads).forEach(it=>{
     let b='';
     if(it===minCPL) b+=`<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-accent-green/20 text-accent-green border border-accent-green/30 mr-1">🏆 Menor CPL</span>`;
     if(it===maxConv) b+=`<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-accent-blue/20 text-accent-blue border border-accent-blue/30 mr-1">🎯 Maior Conv</span>`;
     if(it===maxVol)  b+=`<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 mr-1">📦 Maior Volume</span>`;
     if(it===maxInv)  b+=`<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-accent-yellow/20 text-accent-yellow border border-accent-yellow/30">💰 Mais Investido</span>`;
-    tbody.innerHTML+=`<tr class="hover:bg-bg-input/50 transition"><td class="p-3 font-bold text-white">${it.name}</td><td class="p-3">R$ ${it.spent.toFixed(2)}</td><td class="p-3 font-bold text-accent-green">${it.leads}</td><td class="p-3 text-accent-yellow">R$ ${(it.cpl===999?0:it.cpl).toFixed(2)}</td><td class="p-3 text-accent-blue">${it.conv}%</td><td class="p-3">${b||'<span class="text-text-muted text-[10px]">—</span>'}</td></tr>`;
+    
+    tbody.innerHTML+=`<tr class="hover:bg-bg-input/50 transition"><td class="p-3 font-bold text-white">${it.name}</td><td class="p-3">R$ ${it.spent.toFixed(2)}</td><td class="p-3 font-bold text-accent-green">${it.leads}</td><td class="p-3 text-accent-yellow">R$ ${(it.cpl===999?0:it.cpl).toFixed(2)}</td><td class="p-3 text-accent-blue font-bold">${it.conv.toFixed(1)}%</td><td class="p-3">${b||'<span class="text-text-muted text-[10px]">—</span>'}</td></tr>`;
   });
 }
 </script>
