@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>AION Consultoria - War Room</title>
   
-  <!-- Tipografia Oficial AION: Montserrat (Títulos) e Lato (Corpo) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -13,7 +12,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   
-  <!-- Firebase (Opcional se for usar BD real) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   
@@ -23,7 +21,6 @@
       theme: { 
         extend: { 
           colors: {
-            /* Paleta Oficial AION Consultoria */
             'brand-dark': '#1D1D1B',
             'brand-card': '#232323',
             'brand-border': '#2D2D2D',
@@ -31,7 +28,6 @@
             'brand-blue-dark': '#0D64A0',
             'brand-light': '#E8E8EA',
             'brand-muted': '#9CA3AF',
-            /* Cores de Feedback */
             'accent-green': '#10B981',
             'accent-red': '#EF4444',
             'accent-yellow': '#F59E0B'
@@ -53,7 +49,6 @@
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #2D2D2D; border-radius: 4px; }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #1D71B8; }
 
-    /* SCROLL HORIZONTAL MOBILE SNAP */
     .snap-x-mand { scroll-snap-type: x mandatory; }
     .snap-center { scroll-snap-align: center; }
 
@@ -64,28 +59,39 @@
     .login-input:focus { border-color: #1D71B8; }
     .login-btn { width: 100%; background: linear-gradient(135deg, #1D71B8, #0D64A0); color: white; border: none; border-radius: 8px; padding: 0.875rem; font-family: 'Montserrat', sans-serif; font-weight: 700; cursor: pointer; transition: opacity 0.2s; letter-spacing: 0.05em; }
     .login-btn:hover { opacity: 0.9; }
+    .login-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+    .shake { animation: shake .4s ease; }
+    @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    .fade-in { animation: fadeIn .35s ease forwards; }
 
-    /* DATE PICKER ROXO (Mantido conforme pedido anterior) */
+    /* DATE PICKER ROXO E RESPONSIVO */
     .dp-wrap { position: relative; display: inline-block; }
     .dp-trigger { display: flex; align-items: center; gap: 8px; background: transparent; border: 1px solid #2D2D2D; border-radius: 6px; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: 600; color: #E8E8EA; transition: 0.2s; }
     .dp-trigger:hover, .dp-trigger.active { border-color: #9333ea; background: rgba(147, 51, 234, 0.1); color: #fff; }
-    .dp-dropdown { position: absolute; top: calc(100% + 8px); right: 0; z-index: 500; background: #232323; border: 1px solid #2D2D2D; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,.8); min-width: 340px; display: none; }
+    /* Limite responsivo para não vazar a tela no celular */
+    .dp-dropdown { position: absolute; top: calc(100% + 8px); right: 0; z-index: 500; background: #232323; border: 1px solid #2D2D2D; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,.8); min-width: 300px; max-width: calc(100vw - 2rem); display: none; }
     .dp-dropdown.open { display: block; }
-    .dp-shortcuts { padding: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; background: #1D1D1B; border-bottom: 1px solid #2D2D2D; }
-    .dp-shortcut { background: transparent; border: none; font-size: 12px; font-weight: 600; color: #9CA3AF; cursor: pointer; transition: 0.15s; }
+    .dp-shortcuts { padding: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 12px; background: #1D1D1B; border-bottom: 1px solid #2D2D2D; }
+    .dp-shortcut { background: transparent; border: none; font-size: 11px; font-weight: 600; color: #9CA3AF; cursor: pointer; transition: 0.15s; }
     .dp-shortcut:hover { color: #fff; }
     .dp-shortcut.active { color: #9333ea; }
-    .dp-calendar-wrap { padding: 20px; }
+    .dp-calendar-wrap { padding: 16px; }
     .dp-cal-header { display: flex; justify-content: space-between; margin-bottom: 16px; }
     .dp-cal-nav { background: #1D1D1B; border: 1px solid #2D2D2D; border-radius: 6px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #9CA3AF; }
-    .dp-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 8px; text-align: center; font-size: 11px; color: #9CA3AF; }
+    .dp-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 8px; text-align: center; font-size: 11px; color: #9CA3AF; }
     .dp-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px 0; }
     .dp-day-wrapper { display: flex; justify-content: center; position: relative; }
-    .dp-day { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 6px; border: 1px solid transparent; }
+    .dp-day { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; cursor: pointer; border-radius: 6px; border: 1px solid transparent; }
     .dp-day:hover:not(.dp-day-empty) { border-color: #9CA3AF; }
     .dp-day.dp-day-selected { background: #9333ea !important; color: #ffffff; border-color: #9333ea !important; }
     .dp-day.dp-day-range-end { background: #232323 !important; border-color: #9333ea !important; }
     .dp-day.dp-day-in-range { background: rgba(147, 51, 234, 0.15); color: #c084fc; border-radius: 6px; }
+
+    /* TOOLTIP APEXCHARTS */
+    .apexcharts-tooltip { background: #1D1D1B !important; border: 1px solid #2D2D2D !important; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5) !important; color: #E8E8EA !important; }
+    .apexcharts-tooltip-title { background: #232323 !important; border-bottom: 1px solid #2D2D2D !important; font-weight: 700 !important; padding: 6px 10px !important; font-size: 11px !important; }
   </style>
 </head>
 <body class="bg-brand-dark text-brand-light antialiased min-h-screen flex flex-col md:flex-row overflow-x-hidden">
@@ -100,11 +106,11 @@
     </div>
     <div class="space-y-4">
       <div>
-        <label class="block text-[11px] font-semibold text-brand-muted uppercase mb-1.5 tracking-wider">Usuário ou E-mail</label>
+        <label class="block text-[11px] font-bold text-brand-muted uppercase mb-1.5 tracking-wider">Usuário ou E-mail</label>
         <input type="text" id="loginUser" class="login-input" placeholder="seu@email.com" onkeydown="if(event.key==='Enter') document.getElementById('loginPass').focus()"/>
       </div>
-      <div>
-        <label class="block text-[11px] font-semibold text-brand-muted uppercase mb-1.5 tracking-wider">Senha</label>
+      <div class="relative">
+        <label class="block text-[11px] font-bold text-brand-muted uppercase mb-1.5 tracking-wider">Senha</label>
         <input type="password" id="loginPass" class="login-input" placeholder="••••••••••" onkeydown="if(event.key==='Enter') doLogin()"/>
       </div>
       <div id="loginError" class="hidden text-xs text-accent-red bg-accent-red/10 border border-accent-red/20 rounded-md px-3 py-2.5 font-medium"></div>
@@ -168,14 +174,14 @@
     <header class="h-16 md:h-20 border-b border-brand-border bg-brand-card px-4 md:px-8 flex items-center justify-between sticky top-0 z-30 shrink-0">
       
       <div class="flex items-center gap-3">
-        <!-- Hambuguer Mobile -->
         <button class="md:hidden text-brand-light p-1" onclick="toggleMobileMenu()">
           <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
-        <!-- Nome Lançamento (Dinâmico) -->
         <div class="hidden sm:block">
           <h2 class="text-sm md:text-base font-display font-black text-white tracking-wide" id="headerLaunchName">AION - PROJETO ALPHA</h2>
-          <span class="text-[10px] text-accent-green flex items-center gap-1.5 mt-0.5"><span class="w-1.5 h-1.5 rounded-full bg-accent-green animate-pulse"></span> Sistema Operante</span>
+          <span class="text-[10px] text-brand-muted flex items-center gap-1.5 mt-0.5" id="syncStatus">
+            <span class="w-1.5 h-1.5 rounded-full bg-brand-muted"></span> Aguardando...
+          </span>
         </div>
       </div>
 
@@ -226,16 +232,14 @@
         </div>
 
         <div id="readerWarning" class="hidden bg-brand-blue/10 border border-brand-blue/20 rounded-lg p-4 flex items-center gap-3">
-          <p class="text-xs text-brand-blue font-bold">Modo Leitura — Apenas o Administrador pode editar configurações.</p>
+          <p class="text-xs text-brand-blue font-bold">Modo Leitura — Apenas o Administrador pode editar as configurações de orçamento.</p>
         </div>
 
         <form id="adminForm" onsubmit="event.preventDefault();saveAdminConfig();" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          <!-- Bloco 1 -->
           <div class="bg-brand-card p-6 rounded-xl border border-brand-border space-y-5">
             <h3 class="text-sm font-display font-bold text-white border-b border-brand-border pb-3 text-brand-blue">Identidade & Período</h3>
             <div>
-              <label class="block text-[11px] font-bold text-brand-muted uppercase mb-1.5">Nome do Projeto/Lançamento</label>
+              <label class="block text-[11px] font-bold text-brand-muted uppercase mb-1.5">Nome do Lançamento</label>
               <input type="text" id="admNomeLancamento" value="AION - PROJETO ALPHA" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2.5 text-xs text-white focus:border-brand-blue outline-none"/>
             </div>
             <div class="grid grid-cols-2 gap-4">
@@ -260,7 +264,6 @@
             </div>
           </div>
 
-          <!-- Bloco 2 -->
           <div class="bg-brand-card p-6 rounded-xl border border-brand-border space-y-5">
             <div class="flex justify-between items-center border-b border-brand-border pb-3">
               <h3 class="text-sm font-display font-bold text-brand-blue">Distribuição de Verba</h3>
@@ -279,10 +282,11 @@
             <div id="pctErrorMsg" class="text-[11px] text-accent-red font-bold hidden">⚠️ A soma deve ser exatamente 100%.</div>
           </div>
 
-          <!-- Bloco 3 -->
           <div class="bg-brand-card p-6 rounded-xl border border-brand-border flex flex-col justify-between">
             <div class="space-y-4">
-              <h3 class="text-sm font-display font-bold text-brand-blue border-b border-brand-border pb-3">Data Source (Adveronix)</h3>
+              <h3 class="text-sm font-display font-bold text-brand-blue border-b border-brand-border pb-3 flex justify-between items-center">
+                Data Source (Adveronix)
+              </h3>
               <div>
                 <label class="block text-[11px] font-bold text-brand-muted uppercase mb-1.5">URL Google Sheets</label>
                 <input type="url" id="admSheetUrl" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2.5 text-[10px] text-white outline-none"/>
@@ -298,62 +302,56 @@
         </form>
       </section>
 
-      <!-- TELA 2 — WAR ROOM (FUNIL E PACING) -->
+      <!-- TELA 2 — WAR ROOM -->
       <section id="screen-t2" class="screen-view space-y-6 hidden">
-        
         <h2 class="text-xl md:text-2xl font-display font-black text-white">🎯 War Room</h2>
         
-        <!-- FUNIL 9 ETAPAS COM SCROLL HORIZONTAL MOBILE -->
         <div class="bg-brand-card p-4 md:p-6 rounded-xl border border-brand-border">
           <h3 class="text-xs font-display font-bold text-white uppercase tracking-wider mb-4">Jornada de Tráfego Completa</h3>
           
           <div class="flex overflow-x-auto snap-x-mand custom-scrollbar pb-4 gap-3 md:gap-4 md:grid md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9 md:overflow-visible">
-            
             <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1">
               <span class="text-[10px] font-bold uppercase text-brand-muted">1. Impressões</span>
               <div class="text-lg font-black text-white" id="funnelImp">0</div>
             </div>
-            
             <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1">
               <span class="text-[10px] font-bold uppercase text-brand-muted">2. CPM Médio</span>
               <div class="text-lg font-black text-brand-blue" id="funnelCPM">R$ 0,00</div>
             </div>
-
             <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1">
               <span class="text-[10px] font-bold uppercase text-brand-muted">3. Cliques</span>
               <div class="text-lg font-black text-white" id="funnelClick">0</div>
+              <div class="w-full bg-brand-blue/20 h-1 rounded-full mt-2"><div class="bg-brand-blue h-1 rounded-full" id="barClick" style="width:0%"></div></div>
             </div>
-
             <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1">
               <span class="text-[10px] font-bold uppercase text-brand-muted">4. CTR</span>
               <div class="text-lg font-black text-brand-blue" id="funnelCTR">0.0%</div>
+              <div class="w-full bg-brand-blue/20 h-1 rounded-full mt-2"><div class="bg-brand-blue h-1 rounded-full" id="barCTR" style="width:0%"></div></div>
             </div>
-
             <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1">
               <span class="text-[10px] font-bold uppercase text-brand-muted">5. Visitas (LPV)</span>
               <div class="text-lg font-black text-white" id="funnelLPV">0</div>
+              <div class="w-full bg-accent-yellow/20 h-1 rounded-full mt-2"><div class="bg-accent-yellow h-1 rounded-full" id="barLPV" style="width:0%"></div></div>
             </div>
-
             <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1">
               <span class="text-[10px] font-bold uppercase text-brand-muted">6. Connect Rate</span>
               <div class="text-lg font-black text-accent-yellow" id="funnelCR">0.0%</div>
+              <div class="w-full bg-accent-yellow/20 h-1 rounded-full mt-2"><div class="bg-accent-yellow h-1 rounded-full" id="barCR" style="width:0%"></div></div>
             </div>
-
             <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1 border-l-2 border-l-accent-green/50">
               <span class="text-[10px] font-bold uppercase text-brand-muted">7. Leads</span>
               <div class="text-lg font-black text-accent-green" id="funnelLeads">0</div>
+              <div class="w-full bg-accent-green/20 h-1 rounded-full mt-2"><div class="bg-accent-green h-1 rounded-full" id="barLeads" style="width:0%"></div></div>
             </div>
-
             <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1">
               <span class="text-[10px] font-bold uppercase text-brand-muted">8. CPL Geral</span>
               <div class="text-lg font-black text-accent-yellow" id="funnelCPL">R$ 0,00</div>
             </div>
-
             <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1">
               <span class="text-[10px] font-bold uppercase text-brand-muted">9. Tx Conv. (Pág)</span>
               <div class="text-lg font-black text-accent-green" id="funnelConv">0.0%</div>
+              <div class="w-full bg-accent-green/20 h-1 rounded-full mt-2"><div class="bg-accent-green h-1 rounded-full" id="barConv" style="width:0%"></div></div>
             </div>
-
           </div>
         </div>
 
@@ -379,7 +377,7 @@
           </div>
         </div>
         
-        <!-- COMBO CHART (VOLUME VS CPL) -->
+        <!-- COMBO CHART -->
         <div class="bg-brand-card p-4 md:p-6 rounded-xl border border-brand-border">
           <h3 class="text-xs font-display font-bold text-white uppercase tracking-wider mb-4">📊 Volume vs Eficiência Diária (Leads x CPL)</h3>
           <div id="comboChart" class="w-full h-[280px]"></div>
@@ -429,8 +427,11 @@
 // STATE & USERS
 // ============================================================
 const LOCAL_USERS = {
-  'admin': { email:'admin@aion.com', password:'admin', role:'admin', name:'AION Admin' },
-  'souandrenunes@gmail.com': { email:'souandrenunes@gmail.com', password:'aion2026', role:'reader', name:'André Nunes' }
+  'admin':                          { email:'andreluizbastosnunes@gmail.com', password:'axds220955', role:'admin',  name:'André Luiz' },
+  'andreluizbastosnunes@gmail.com': { email:'andreluizbastosnunes@gmail.com', password:'axds220955', role:'admin',  name:'André Luiz' },
+  'madri':                          { email:'contatomjunior@gmail.com',       password:'madri@45702',role:'reader', name:'Madri' },
+  'contatomjunior@gmail.com':       { email:'contatomjunior@gmail.com',       password:'madri@45702',role:'reader', name:'Madri' },
+  'souandrenunes@gmail.com':        { email:'souandrenunes@gmail.com',        password:'aion2026',   role:'reader', name:'André Nunes' }
 };
 let currentUser = null;
 
@@ -447,7 +448,7 @@ let launchState = {
 let comboChartInstance = null;
 
 // ============================================================
-// UI HELPERS (MOBILE & LOGIN)
+// UI HELPERS
 // ============================================================
 function toggleMobileMenu() {
   const sidebar = document.getElementById('sidebar');
@@ -464,7 +465,15 @@ function toggleMobileMenu() {
 function doLogin(){
   const u=document.getElementById('loginUser').value.trim().toLowerCase();
   const p=document.getElementById('loginPass').value;
-  if(!u||!p)return;
+  const errEl=document.getElementById('loginError');
+  const btn=document.getElementById('loginBtn');
+  
+  errEl.classList.add('hidden'); 
+  btn.disabled=true; 
+  btn.textContent='Verificando...';
+  
+  if(!u||!p){ showLoginError('Preencha usuário e senha.'); return; }
+  
   const local=LOCAL_USERS[u];
   if(local && local.password===p) {
     currentUser = local;
@@ -472,7 +481,6 @@ function doLogin(){
     document.getElementById('appShell').classList.remove('hidden');
     document.getElementById('appShell').classList.add('flex');
     
-    // Set UI by Role
     document.getElementById('userDisplayName').textContent = currentUser.name;
     document.getElementById('userRoleBadge').textContent = currentUser.role.toUpperCase();
     if(currentUser.role === 'reader') {
@@ -480,22 +488,33 @@ function doLogin(){
       document.getElementById('btnSaveAdmin').classList.add('hidden');
       document.querySelectorAll('#adminForm input').forEach(i=>i.disabled=true);
       document.getElementById('readerWarning').classList.remove('hidden');
-      navTo('t2'); // Força ir pro funil
+      navTo('t2'); 
     }
 
-    // Inicializa Filtros
     dpState.selStart = isoToDate(launchState.dataInicio);
     dpState.selEnd = isoToDate(launchState.dataFim);
     document.getElementById('dpTriggerLabel').textContent = `${fmtShort(dpState.selStart)} - ${fmtShort(dpState.selEnd)}`;
     document.getElementById('headerLaunchName').textContent = launchState.nomeLancamento;
     document.getElementById('admNomeLancamento').value = launchState.nomeLancamento;
+    document.getElementById('admSheetUrl').value = launchState.sheetUrl;
     
     syncDataFromSheets();
   } else {
-    const err = document.getElementById('loginError');
-    err.textContent = "Acesso negado. Verifique as credenciais.";
-    err.classList.remove('hidden');
+    showLoginError('Usuário ou senha incorretos.');
+    document.getElementById('loginPass').value='';
+    ['loginUser','loginPass'].forEach(id=>{
+      const el = document.getElementById(id);
+      el.classList.add('shake');
+      setTimeout(()=>el.classList.remove('shake'),400);
+    });
   }
+}
+
+function showLoginError(msg){
+  const e=document.getElementById('loginError'); 
+  e.textContent=msg; e.classList.remove('hidden');
+  const btn=document.getElementById('loginBtn');
+  btn.disabled=false; btn.textContent='Acessar Plataforma';
 }
 
 function doLogout(){
@@ -619,6 +638,7 @@ function saveAdminConfig(){
   launchState.pctGF = parseFloat(document.getElementById('admPctGF').value)||0;
   launchState.pctMQ = parseFloat(document.getElementById('admPctMQ').value)||0;
   launchState.pctMF = parseFloat(document.getElementById('admPctMF').value)||0;
+  launchState.sheetUrl = document.getElementById('admSheetUrl').value.trim();
   
   document.getElementById('headerLaunchName').textContent = launchState.nomeLancamento.toUpperCase();
   document.getElementById('admTargetSummary').innerHTML=`Verba: <b class="text-accent-green">R$ ${launchState.verbaTotal.toLocaleString('pt-BR')}</b> · Leads: <b class="text-brand-blue">${launchState.metaLeads.toLocaleString('pt-BR')}</b> · CPL Ideal: <b class="text-accent-yellow">R$ ${(launchState.verbaTotal/launchState.metaLeads).toFixed(2)}</b>`;
@@ -628,19 +648,69 @@ function saveAdminConfig(){
 }
 
 // ============================================================
-// DATA MOCK & RENDER
+// DATA ENGINE (API ADVERONIX GVIZ)
 // ============================================================
+function parseGvizTable(g){
+  if(!g||!g.table||!g.table.rows) return[];
+  const cols=(g.table.cols||[]).map(c=>(c?(c.label||c.id||''):'').trim());
+  const rows=[];
+  g.table.rows.forEach(r=>{
+    if(!r||!r.c)return;
+    const o={}; let hv=false;
+    r.c.forEach((cell,i)=>{
+      const cn=cols[i]||`col_${i}`;
+      if(cell&&cell.v!==null&&cell.v!==undefined){o[cn]=(cell.f!==undefined&&cell.f!==null)?cell.f:cell.v;hv=true;}
+      else o[cn]='';
+    });
+    if(hv)rows.push(o);
+  });
+  return rows;
+}
+
+function fetchGvizJSONP(url,sheet){
+  return new Promise(resolve=>{
+    const m=url.match(/\/d\/([^\/]+)/); if(!m)return resolve(null);
+    const docId=m[1], cb='gviz_'+Math.random().toString(36).slice(2);
+    let done=false;
+    const t=setTimeout(()=>{
+      if(!done){ done=true; delete window[cb]; resolve(null); }
+    },8000); 
+    
+    const s=document.createElement('script');
+    
+    window[cb]=data=>{
+      if(done)return; done=true; clearTimeout(t); delete window[cb]; s.remove(); resolve(parseGvizTable(data));
+    };
+    
+    s.src=`https://docs.google.com/spreadsheets/d/${docId}/gviz/tq?tqx=responseHandler:${cb}&sheet=${encodeURIComponent(sheet)}`;
+    s.onerror=()=>{
+      if(done)return; done=true; clearTimeout(t); delete window[cb]; s.remove(); resolve(null);
+    };
+    document.body.appendChild(s);
+  });
+}
+
 async function syncDataFromSheets(){
-  // Simulando loading
-  document.getElementById('syncStatus').innerHTML=`<span class="w-1.5 h-1.5 rounded-full bg-accent-yellow animate-ping"></span><span>Conectando...</span>`;
+  const st = document.getElementById('syncStatus');
+  st.innerHTML=`<span class="w-1.5 h-1.5 rounded-full bg-accent-yellow animate-ping"></span><span class="font-bold text-accent-yellow">Conectando...</span>`;
   
-  // Em produção, você usaria fetchGvizJSONP. Aqui usamos o Mock aprimorado com LPV.
-  setTimeout(() => {
-    launchState.dataMeta = generateMockMeta();
-    launchState.dataGoogle = generateMockGoogle();
-    document.getElementById('syncStatus').innerHTML=`<span class="w-1.5 h-1.5 rounded-full bg-accent-green"></span><span>Online</span>`;
-    renderAllScreens();
-  }, 600);
+  let isMock = false;
+  let meta = await fetchGvizJSONP(launchState.sheetUrl, 'Meta Ads');
+  let google = await fetchGvizJSONP(launchState.sheetUrl, 'Google Ads');
+  
+  if(!meta || !meta.length) { meta = generateMockMeta(); isMock = true; }
+  if(!google || !google.length) { google = generateMockGoogle(); isMock = true; }
+  
+  launchState.dataMeta = meta; 
+  launchState.dataGoogle = google;
+  
+  if(isMock) {
+    st.innerHTML=`<span class="w-1.5 h-1.5 rounded-full bg-accent-yellow shadow-[0_0_8px_#F59E0B]"></span><span class="font-bold text-accent-yellow">Simulador Ativo</span>`;
+  } else {
+    st.innerHTML=`<span class="w-1.5 h-1.5 rounded-full bg-accent-green shadow-[0_0_8px_#10B981]"></span><span class="font-bold text-accent-green">Conectado</span>`;
+  }
+  
+  renderAllScreens();
 }
 
 function generateMockMeta(){
@@ -653,7 +723,7 @@ function generateMockMeta(){
         'Day':iso,'Ad Set Name':st,'Ad Name':a,
         'Impressions': Math.floor(Math.random()*800)+200,
         'Clicks': c,
-        'Landing Page Views': Math.floor(c * (0.6 + Math.random()*0.3)), // 60 a 90% dos cliques chegam
+        'Landing Page Views': Math.floor(c * (0.6 + Math.random()*0.3)), 
         'Leads': Math.floor(Math.random()*15)+1,
         'Cost (Spend)': (Math.random()*50+10).toFixed(2)
       });
@@ -680,12 +750,29 @@ function generateMockGoogle(){
   return rows;
 }
 
-function filterByDate(rows){
-  const fs=launchState.filterStart, fe=launchState.filterEnd;
-  return rows.filter(r => r.Day>=fs && r.Day<=fe);
+function getCol(row,aliases){
+  const keys=Object.keys(row);
+  for(const a of aliases){const f=keys.find(k=>k.toLowerCase()===a.toLowerCase());if(f)return row[f];}
+  return null;
+}
+function parseNum(v){
+  if(!v)return 0;
+  let s=String(v).replace(/[R$\s%"']/g,'');
+  if(s.includes(',')&&s.includes('.')){s=s.indexOf(',')>s.indexOf('.')?s.replace(/\./g,'').replace(',','.'):s.replace(/,/g,'');}
+  else if(s.includes(','))s=s.replace(',','.');
+  return parseFloat(s)||0;
 }
 
-function isQuente(nome) { return /quente|remarketing|envolvimento|lista|30d/i.test(nome); }
+function filterByDate(rows){
+  const fs=launchState.filterStart, fe=launchState.filterEnd;
+  if(!fs||!fe) return rows;
+  return rows.filter(r => {
+    const day=getCol(r,['Day','Dia'])||'';
+    return day>=fs && day<=fe;
+  });
+}
+
+function isQuente(nome) { return /quente|remarketing|envolvimento|lista|30d|180|personalizado/i.test(nome); }
 
 function renderAllScreens(){
   renderFunnelAndTimeline();
@@ -707,17 +794,25 @@ function renderFunnelAndTimeline(){
   };
 
   const processRow = (r, plat) => {
-    const i = r.Impressions||0, c = r.Clicks||0, lpv = r['Landing Page Views']||0;
-    const l = (plat==='M'?r.Leads:r.Conversions)||0, sp = parseFloat(r['Cost (Spend)']||0);
-    const catNome = plat==='M' ? r['Ad Set Name'] : r['Ad Group Name'];
+    const i = parseNum(getCol(r,['Impressions','Impressões']));
+    const c = parseNum(getCol(r,['Unique Link Clicks','Link clicks','Clicks','Cliques']));
+    
+    let lpv = parseNum(getCol(r,['Website landing page views','Landing Page Views','Visualizações de página']));
+    if (!lpv && c > 0) lpv = c * 0.85; 
+    
+    const l = parseNum(getCol(r,['Leads','Conversions','Resultados','Conversões']));
+    const sp = parseNum(getCol(r,['Amount Spent','Cost (Spend)','Valor gasto','Custo']));
+    
+    const catNome = plat==='M' ? (getCol(r,['Ad Set Name','Nome do conjunto de anúncios'])||'') : (getCol(r,['Ad Group Name','Grupo de anúncios'])||'');
+    const day = getCol(r,['Day','Dia'])||'';
     
     totalImp+=i; totalClicks+=c; totalLPV+=lpv; totalLeads+=l; totalGasto+=sp;
     
     if(plat==='M') isQuente(catNome) ? pacing.mq.gasto+=sp : pacing.mf.gasto+=sp;
     else isQuente(catNome) ? pacing.gq.gasto+=sp : pacing.gf.gasto+=sp;
 
-    if(!dayStats[r.Day]) dayStats[r.Day]={leads:0, spent:0};
-    dayStats[r.Day].leads+=l; dayStats[r.Day].spent+=sp;
+    if(!dayStats[day]) dayStats[day]={leads:0, spent:0};
+    dayStats[day].leads+=l; dayStats[day].spent+=sp;
   };
 
   meta.forEach(r => processRow(r, 'M'));
@@ -728,7 +823,7 @@ function renderFunnelAndTimeline(){
   const ctr = totalImp > 0 ? (totalClicks / totalImp) * 100 : 0;
   const cr = totalClicks > 0 ? (totalLPV / totalClicks) * 100 : 0;
   const cpl = totalLeads > 0 ? (totalGasto / totalLeads) : 0;
-  const cvr = totalLPV > 0 ? (totalLeads / totalLPV) * 100 : 0; // Taxa de Conv REAL (Leads/Visitas)
+  const cvr = totalLPV > 0 ? (totalLeads / totalLPV) * 100 : 0; 
 
   document.getElementById('funnelImp').innerText = totalImp.toLocaleString('pt-BR');
   document.getElementById('funnelCPM').innerText = 'R$ ' + cpm.toFixed(2);
@@ -740,20 +835,29 @@ function renderFunnelAndTimeline(){
   document.getElementById('funnelCPL').innerText = 'R$ ' + cpl.toFixed(2);
   document.getElementById('funnelConv').innerText = cvr.toFixed(2) + '%';
 
+  // Barras Limitadas Logicamente (Max 100% css width)
+  document.getElementById('barClick').style.width = Math.min(100, (totalClicks/(totalImp||1))*1000) + '%';
+  document.getElementById('barCTR').style.width = Math.min(100, ctr*5) + '%';
+  document.getElementById('barLPV').style.width = Math.min(100, cr) + '%';
+  document.getElementById('barCR').style.width = Math.min(100, cr) + '%';
+  document.getElementById('barLeads').style.width = Math.min(100, (totalLeads/(launchState.metaLeads||1))*100) + '%';
+  document.getElementById('barConv').style.width = Math.min(100, cvr*3) + '%';
+
   // Pacing
   const t = today(), launchEnd = isoToDate(launchState.dataFim);
   let daysLeft = Math.round((launchEnd - t) / 86400000) + 1;
   if(t > launchEnd) daysLeft = 0;
   
   document.getElementById('pacingDaysLeft').innerText = `${daysLeft} Dia${daysLeft!==1?'s':''} p/ o Fim`;
-  const pacingBody = document.getElementById('pacingTableBody'); pacingBody.innerHTML = '';
+  const pacingBody = document.getElementById('pacingTableBody'); 
   
+  let htmlPacing = '';
   Object.values(pacing).forEach(cat => {
     const previsto = launchState.verbaTotal * (cat.pct / 100);
     const restante = Math.max(0, previsto - cat.gasto);
     const metaDiaria = daysLeft > 0 ? restante / daysLeft : 0;
     
-    pacingBody.innerHTML += `
+    htmlPacing += `
       <tr class="hover:bg-brand-dark/50 transition">
         <td class="p-3 font-bold text-white">${cat.nome}</td>
         <td class="p-3 text-right">R$ ${previsto.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
@@ -763,8 +867,9 @@ function renderFunnelAndTimeline(){
       </tr>
     `;
   });
+  pacingBody.innerHTML = htmlPacing;
 
-  // Combo Chart (Leads vs CPL)
+  // Combo Chart
   const startDate = isoToDate(launchState.filterStart);
   const endDate = isoToDate(launchState.filterEnd);
   const dayDiff = Math.round((endDate-startDate)/86400000) + 1;
@@ -814,29 +919,32 @@ function renderCriativosEPublicos(){
   const meta = filterByDate(launchState.dataMeta);
   const google = filterByDate(launchState.dataGoogle);
   
-  // Agregação de Criativos e Públicos garantindo LPV para a nova conta de conversão
-  const agrupa = (data, nameKey, leadKey) => {
+  const agrupa = (data, nameKey, leadKey, plat) => {
     const map = {};
     data.forEach(r => {
-      const n = r[nameKey]||'Geral', sp = parseFloat(r['Cost (Spend)']||0);
-      const cl = r.Clicks||0, lpv = r['Landing Page Views']||0, l = r[leadKey]||0;
+      const n = getCol(r, [nameKey]) || 'Geral';
+      const sp = parseNum(getCol(r,['Amount Spent','Cost (Spend)','Valor gasto','Custo']));
+      const cl = parseNum(getCol(r,['Unique Link Clicks','Link clicks','Clicks','Cliques']));
+      let lpv = parseNum(getCol(r,['Website landing page views','Landing Page Views','Visualizações de página']));
+      if (!lpv && cl > 0) lpv = cl * 0.85; 
+      const l = parseNum(getCol(r,[leadKey, 'Conversions', 'Resultados', 'Conversões']));
+      
       if(!map[n]) map[n] = {name: n, spent: 0, clicks: 0, lpv: 0, leads: 0};
       map[n].spent += sp; map[n].clicks += cl; map[n].lpv += lpv; map[n].leads += l;
     });
     return Object.values(map);
   };
 
-  const gCr = agrupa(google, 'Ad Name', 'Conversions');
-  const mCr = agrupa(meta, 'Ad Name', 'Leads');
-  const gPb = agrupa(google, 'Ad Group Name', 'Conversions');
-  const mPb = agrupa(meta, 'Ad Set Name', 'Leads');
+  const gCr = agrupa(google, 'Ad Name', 'Conversions', 'G');
+  const mCr = agrupa(meta, 'Ad Name', 'Leads', 'M');
+  const gPb = agrupa(google, 'Ad Group Name', 'Conversions', 'G');
+  const mPb = agrupa(meta, 'Ad Set Name', 'Leads', 'M');
 
   renderTable('googleCriativosTable', gCr);
   renderTable('metaCriativosTable', mCr);
   renderTable('googlePublicosTable', gPb);
   renderTable('metaPublicosTable', mPb);
   
-  // Top 5 na Tela 2 (Usando as funções acima, pegando os Top 5 de Publicos Mistos e Criativos Mistos)
   const todosPb = [...gPb, ...mPb].sort((a,b)=>b.leads - a.leads).slice(0,5);
   const todosCr = [...gCr, ...mCr].sort((a,b)=>b.leads - a.leads).slice(0,5);
   renderTableMini('top5PublicosBody', todosPb);
@@ -844,20 +952,19 @@ function renderCriativosEPublicos(){
 }
 
 function renderTable(id, items){
-  const tbody=document.getElementById(id); tbody.innerHTML='';
+  const tbody=document.getElementById(id);
   if(!items.length) { tbody.innerHTML=`<tr><td colspan="7" class="p-4 text-center text-brand-muted">Sem dados.</td></tr>`; return; }
   
+  let html = '';
   items.sort((a,b) => b.leads - a.leads).forEach(it => {
     const cpl = it.leads > 0 ? (it.spent / it.leads) : 0;
-    // Conversão REAL DA PÁGINA (Leads / LPV * 100)
     const conv = it.lpv > 0 ? ((it.leads / it.lpv) * 100) : 0; 
     
-    // Badges visuais simples
     let badges = '';
     if(cpl > 0 && cpl <= 1.5) badges += `<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-accent-green/20 text-accent-green mr-1 border border-accent-green/30">🏆 Barato</span>`;
     if(conv >= 20) badges += `<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-brand-blue/20 text-brand-blue border border-brand-blue/30">🎯 Alta Conv</span>`;
     
-    tbody.innerHTML += `
+    html += `
       <tr class="hover:bg-brand-dark/50 transition">
         <td class="p-3 font-bold text-white whitespace-nowrap">${it.name}</td>
         <td class="p-3 whitespace-nowrap">R$ ${it.spent.toFixed(2)}</td>
@@ -869,14 +976,16 @@ function renderTable(id, items){
       </tr>
     `;
   });
+  tbody.innerHTML = html;
 }
 
 function renderTableMini(id, items){
-  const tbody=document.getElementById(id); tbody.innerHTML='';
+  const tbody=document.getElementById(id);
+  let html = '';
   items.forEach((it, idx) => {
     const cpl = it.leads > 0 ? (it.spent / it.leads) : 0;
     const conv = it.lpv > 0 ? ((it.leads / it.lpv) * 100) : 0;
-    tbody.innerHTML += `
+    html += `
       <tr class="hover:bg-brand-dark/50 transition">
         <td class="p-2.5 font-black text-brand-blue">#${idx+1}</td>
         <td class="p-2.5 font-bold text-white truncate max-w-[120px]">${it.name}</td>
@@ -886,6 +995,7 @@ function renderTableMini(id, items){
       </tr>
     `;
   });
+  tbody.innerHTML = html;
 }
 </script>
 </body>
