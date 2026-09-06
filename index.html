@@ -12,9 +12,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-  
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -41,6 +38,13 @@
     }
   </script>
   <style>
+    /* =======================================================
+       CURSOR CUSTOMIZADO & SCROLL
+       ======================================================= */
+    body, a, button, input, .dp-day, .dp-shortcut, .cursor-pointer { 
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%231D71B8"><path d="M5.5 2L19 12.5 12 14l3.5 6.5-2.5 1-3.5-6.5L4.5 18z" stroke="white" stroke-width="1.2"/></svg>'), auto !important; 
+    }
+    
     body { background: #1D1D1B; color: #E8E8EA; overflow-x: hidden; }
     h1, h2, h3, h4, h5, h6, .font-display { font-family: 'Montserrat', sans-serif; }
     
@@ -53,48 +57,48 @@
     .snap-center { scroll-snap-align: center; }
 
     /* LOGIN SCREEN */
-    #loginScreen { position: fixed; inset: 0; z-index: 9999; background: radial-gradient(ellipse at center, #232323 0%, #1D1D1B 80%); display: flex; align-items: center; justify-content: center; padding: 1rem; }
-    .login-card { background: #232323; border: 1px solid #2D2D2D; border-radius: 16px; width: 100%; max-width: 420px; padding: 2.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+    #loginScreen { position: fixed; inset: 0; z-index: 9999; background: radial-gradient(ellipse at center, #232323 0%, #1D1D1B 80%); display: flex; align-items: center; justify-content: center; padding: 1rem; transition: opacity 0.4s ease; }
+    .login-card { background: #232323; border: 1px solid #2D2D2D; border-radius: 16px; width: 100%; max-width: 400px; padding: 2.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
     .login-input { width: 100%; background: #1D1D1B; border: 1px solid #2D2D2D; border-radius: 8px; padding: 0.875rem 1rem; color: #E8E8EA; transition: border-color 0.2s; outline: none; font-family: 'Lato', sans-serif; }
     .login-input:focus { border-color: #1D71B8; }
-    .login-btn { width: 100%; background: linear-gradient(135deg, #1D71B8, #0D64A0); color: white; border: none; border-radius: 8px; padding: 0.875rem; font-family: 'Montserrat', sans-serif; font-weight: 700; cursor: pointer; transition: opacity 0.2s; letter-spacing: 0.05em; }
+    .login-btn { width: 100%; background: linear-gradient(135deg, #1D71B8, #0D64A0); color: white; border: none; border-radius: 8px; padding: 0.875rem; font-family: 'Montserrat', sans-serif; font-weight: 700; transition: opacity 0.2s; letter-spacing: 0.05em; }
     .login-btn:hover { opacity: 0.9; }
-    .login-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     
-    @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+    @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(6px)} }
     .shake { animation: shake .4s ease; }
-    @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
     .fade-in { animation: fadeIn .35s ease forwards; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
-    /* DATE PICKER ROXO E RESPONSIVO */
+    /* DATE PICKER */
     .dp-wrap { position: relative; display: inline-block; }
-    .dp-trigger { display: flex; align-items: center; gap: 8px; background: transparent; border: 1px solid #2D2D2D; border-radius: 6px; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: 600; color: #E8E8EA; transition: 0.2s; }
+    .dp-trigger { display: flex; align-items: center; gap: 8px; background: transparent; border: 1px solid #2D2D2D; border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 600; color: #E8E8EA; transition: 0.2s; }
     .dp-trigger:hover, .dp-trigger.active { border-color: #9333ea; background: rgba(147, 51, 234, 0.1); color: #fff; }
-    /* Limite responsivo para não vazar a tela no celular */
     .dp-dropdown { position: absolute; top: calc(100% + 8px); right: 0; z-index: 500; background: #232323; border: 1px solid #2D2D2D; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,.8); min-width: 300px; max-width: calc(100vw - 2rem); display: none; }
     .dp-dropdown.open { display: block; }
     .dp-shortcuts { padding: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 12px; background: #1D1D1B; border-bottom: 1px solid #2D2D2D; }
-    .dp-shortcut { background: transparent; border: none; font-size: 11px; font-weight: 600; color: #9CA3AF; cursor: pointer; transition: 0.15s; }
+    .dp-shortcut { background: transparent; border: none; font-size: 11px; font-weight: 600; color: #9CA3AF; transition: 0.15s; }
     .dp-shortcut:hover { color: #fff; }
     .dp-shortcut.active { color: #9333ea; }
     .dp-calendar-wrap { padding: 16px; }
     .dp-cal-header { display: flex; justify-content: space-between; margin-bottom: 16px; }
-    .dp-cal-nav { background: #1D1D1B; border: 1px solid #2D2D2D; border-radius: 6px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #9CA3AF; }
+    .dp-cal-nav { background: #1D1D1B; border: 1px solid #2D2D2D; border-radius: 6px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; color: #9CA3AF; }
     .dp-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 8px; text-align: center; font-size: 11px; color: #9CA3AF; }
     .dp-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px 0; }
     .dp-day-wrapper { display: flex; justify-content: center; position: relative; }
-    .dp-day { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; cursor: pointer; border-radius: 6px; border: 1px solid transparent; }
+    .dp-day { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
     .dp-day:hover:not(.dp-day-empty) { border-color: #9CA3AF; }
     .dp-day.dp-day-selected { background: #9333ea !important; color: #ffffff; border-color: #9333ea !important; }
     .dp-day.dp-day-range-end { background: #232323 !important; border-color: #9333ea !important; }
     .dp-day.dp-day-in-range { background: rgba(147, 51, 234, 0.15); color: #c084fc; border-radius: 6px; }
 
-    /* TOOLTIP APEXCHARTS */
     .apexcharts-tooltip { background: #1D1D1B !important; border: 1px solid #2D2D2D !important; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5) !important; color: #E8E8EA !important; }
-    .apexcharts-tooltip-title { background: #232323 !important; border-bottom: 1px solid #2D2D2D !important; font-weight: 700 !important; padding: 6px 10px !important; font-size: 11px !important; }
+    .apexcharts-tooltip-title { background: #232323 !important; border-bottom: 1px solid #2D2D2D !important; font-weight: 700 !important; }
+    
+    /* Efeito de interatividade visual rápida para som */
+    .snd-hover:hover { transform: translateY(-2px); transition: transform 0.2s; }
   </style>
 </head>
-<body class="bg-brand-dark text-brand-light antialiased min-h-screen flex flex-col md:flex-row overflow-x-hidden">
+<body class="bg-brand-dark text-brand-light antialiased min-h-screen flex flex-col md:flex-row overflow-x-hidden pb-16 md:pb-0">
 
 <!-- ======= LOGIN ======= -->
 <div id="loginScreen">
@@ -106,18 +110,18 @@
     </div>
     <div class="space-y-4">
       <div>
-        <label class="block text-[11px] font-bold text-brand-muted uppercase mb-1.5 tracking-wider">Usuário ou E-mail</label>
+        <label class="block text-[11px] font-bold text-brand-muted uppercase mb-1.5 tracking-wider">E-mail de Acesso</label>
         <input type="text" id="loginUser" class="login-input" placeholder="seu@email.com" onkeydown="if(event.key==='Enter') document.getElementById('loginPass').focus()"/>
       </div>
-      <div class="relative">
-        <label class="block text-[11px] font-bold text-brand-muted uppercase mb-1.5 tracking-wider">Senha</label>
+      <div>
+        <label class="block text-[11px] font-bold text-brand-muted uppercase mb-1.5 tracking-wider">Senha de Segurança</label>
         <input type="password" id="loginPass" class="login-input" placeholder="••••••••••" onkeydown="if(event.key==='Enter') doLogin()"/>
       </div>
       <div id="loginError" class="hidden text-xs text-accent-red bg-accent-red/10 border border-accent-red/20 rounded-md px-3 py-2.5 font-medium"></div>
-      <button id="loginBtn" class="login-btn mt-2" onclick="doLogin()">Acessar Plataforma</button>
+      <button id="loginBtn" class="login-btn mt-2 snd-hover" onclick="doLogin()">Acessar Plataforma</button>
     </div>
     <div class="mt-8 pt-5 border-t border-brand-border text-center">
-      <p class="text-[10px] text-brand-muted">Conectamos marcas a pessoas, negócios a resultados.</p>
+      <p class="text-[10px] text-brand-muted font-bold">Conectamos marcas a pessoas, negócios a resultados.</p>
     </div>
   </div>
 </div>
@@ -125,27 +129,23 @@
 <!-- ======= APP SHELL ======= -->
 <div id="appShell" class="hidden w-full flex-col md:flex-row min-h-screen">
 
-  <!-- OVERLAY MOBILE -->
-  <div id="mobileOverlay" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden" onclick="toggleMobileMenu()"></div>
-
-  <!-- SIDEBAR -->
-  <aside id="sidebar" class="fixed md:sticky top-0 left-0 h-screen w-64 bg-brand-card border-r border-brand-border flex flex-col justify-between z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 shrink-0">
+  <!-- SIDEBAR (DESKTOP ONLY) -->
+  <aside id="sidebar" class="hidden md:flex sticky top-0 left-0 h-screen w-64 bg-brand-card border-r border-brand-border flex-col justify-between shrink-0 z-40 shadow-xl">
     <div>
-      <div class="p-6 border-b border-brand-border flex items-center justify-between">
+      <div class="p-6 border-b border-brand-border flex items-center justify-center">
         <img src="Etiqueta-02.png" alt="AION Logo" class="h-8 object-contain" onerror="this.outerHTML='<span class=\'font-display font-black text-brand-blue text-xl\'>AION</span>'"/>
-        <button class="md:hidden text-brand-muted hover:text-white" onclick="toggleMobileMenu()">✕</button>
       </div>
       <nav class="p-4 space-y-2">
-        <button id="nav-t1" onclick="navTo('t1')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-display font-bold transition-all bg-brand-blue text-white shadow-lg shadow-brand-blue/20">
+        <button id="nav-t1" onclick="navTo('t1')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-display font-bold transition-all bg-brand-blue text-white shadow-lg shadow-brand-blue/20 snd-hover">
           ⚙️ Setup Estratégico
         </button>
-        <button id="nav-t2" onclick="navTo('t2')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-display font-bold transition-all text-brand-muted hover:text-white hover:bg-brand-dark">
+        <button id="nav-t2" onclick="navTo('t2')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-display font-bold transition-all text-brand-muted hover:text-white hover:bg-brand-dark snd-hover">
           🎯 War Room (Funil)
         </button>
-        <button id="nav-t3" onclick="navTo('t3')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-display font-bold transition-all text-brand-muted hover:text-white hover:bg-brand-dark">
+        <button id="nav-t3" onclick="navTo('t3')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-display font-bold transition-all text-brand-muted hover:text-white hover:bg-brand-dark snd-hover">
           🎬 Arsenal Criativo
         </button>
-        <button id="nav-t4" onclick="navTo('t4')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-display font-bold transition-all text-brand-muted hover:text-white hover:bg-brand-dark">
+        <button id="nav-t4" onclick="navTo('t4')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-display font-bold transition-all text-brand-muted hover:text-white hover:bg-brand-dark snd-hover">
           👥 Radar de Públicos
         </button>
       </nav>
@@ -153,71 +153,87 @@
     <div class="p-4 border-t border-brand-border space-y-3">
       <div class="flex items-center gap-3 px-1">
         <div class="w-8 h-8 rounded-full bg-brand-blue-dark flex items-center justify-center text-white font-black text-xs shrink-0" id="userAvatar">A</div>
-        <div class="min-w-0">
+        <div class="min-w-0 flex-grow">
           <p class="text-xs font-bold text-white truncate font-display" id="userDisplayName">Usuário</p>
           <span id="userRoleBadge" class="text-[9px] font-bold text-brand-blue bg-brand-blue/10 px-2 py-0.5 rounded border border-brand-blue/20">ADMIN</span>
         </div>
       </div>
-      <button onclick="syncDataFromSheets()" class="w-full bg-brand-dark hover:bg-brand-border text-white py-2.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 border border-brand-border">
-        🔄 Sincronizar Dados
-      </button>
-      <button onclick="doLogout()" class="w-full text-accent-red hover:bg-accent-red/10 py-2 rounded-lg text-xs font-bold transition">
+      <button onclick="doLogout()" class="w-full text-accent-red hover:bg-accent-red/10 py-2 rounded-lg text-xs font-bold transition snd-hover border border-transparent hover:border-accent-red/20">
         Sair da Plataforma
       </button>
     </div>
   </aside>
 
-  <!-- MAIN CONTENT -->
-  <main class="flex-grow flex flex-col min-w-0 h-screen overflow-y-auto">
+  <!-- BOTTOM NAV (MOBILE ONLY) -->
+  <nav id="bottomNav" class="md:hidden fixed bottom-0 w-full bg-brand-card border-t border-brand-border flex justify-around items-center z-50 pb-2 pt-2 px-2 shadow-[0_-4px_10px_rgba(0,0,0,0.5)]">
+    <button id="mob-nav-t1" onclick="navTo('t1')" class="flex flex-col items-center gap-1 text-brand-muted transition-colors flex-1 p-1">
+      <span class="text-lg">⚙️</span><span class="text-[9px] font-bold font-display">Setup</span>
+    </button>
+    <button id="mob-nav-t2" onclick="navTo('t2')" class="flex flex-col items-center gap-1 text-brand-blue transition-colors flex-1 p-1 scale-110">
+      <span class="text-lg">🎯</span><span class="text-[9px] font-bold font-display">War Room</span>
+    </button>
+    <button id="mob-nav-t3" onclick="navTo('t3')" class="flex flex-col items-center gap-1 text-brand-muted transition-colors flex-1 p-1">
+      <span class="text-lg">🎬</span><span class="text-[9px] font-bold font-display">Criativos</span>
+    </button>
+    <button id="mob-nav-t4" onclick="navTo('t4')" class="flex flex-col items-center gap-1 text-brand-muted transition-colors flex-1 p-1">
+      <span class="text-lg">👥</span><span class="text-[9px] font-bold font-display">Públicos</span>
+    </button>
+  </nav>
 
-    <!-- HEADER MOBILE & DATE PICKER -->
-    <header class="h-16 md:h-20 border-b border-brand-border bg-brand-card px-4 md:px-8 flex items-center justify-between sticky top-0 z-30 shrink-0">
+  <!-- MAIN CONTENT -->
+  <main class="flex-grow flex flex-col min-w-0 min-h-screen overflow-y-auto">
+
+    <!-- HEADER & DATE PICKER -->
+    <header class="h-16 md:h-20 border-b border-brand-border bg-brand-card px-4 md:px-8 flex items-center justify-between sticky top-0 z-30 shrink-0 shadow-sm">
       
       <div class="flex items-center gap-3">
-        <button class="md:hidden text-brand-light p-1" onclick="toggleMobileMenu()">
-          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
-        </button>
-        <div class="hidden sm:block">
-          <h2 class="text-sm md:text-base font-display font-black text-white tracking-wide" id="headerLaunchName">AION - PROJETO ALPHA</h2>
+        <!-- Lançamento Nome e Status -->
+        <div>
+          <h2 class="text-sm md:text-base font-display font-black text-white tracking-wide truncate max-w-[200px] md:max-w-md" id="headerLaunchName">AION - PROJETO ALPHA</h2>
           <span class="text-[10px] text-brand-muted flex items-center gap-1.5 mt-0.5" id="syncStatus">
             <span class="w-1.5 h-1.5 rounded-full bg-brand-muted"></span> Aguardando...
           </span>
         </div>
       </div>
 
-      <!-- DATE PICKER -->
-      <div class="dp-wrap" id="dpWrap">
-        <button class="dp-trigger" id="dpTrigger" onclick="toggleDatePicker()">
-          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-          <span id="dpTriggerLabel">02/09/26 - 02/09/26</span>
-        </button>
+      <div class="flex items-center gap-3 md:gap-4">
+        <!-- BOTÃO DE MUTAR SOM -->
+        <button id="btnSound" onclick="toggleSound()" class="w-8 h-8 rounded-full bg-brand-dark border border-brand-border flex items-center justify-center text-sm hover:border-brand-blue transition" title="Mutar/Desmutar Efeitos">🔊</button>
+        
+        <!-- DATE PICKER -->
+        <div class="dp-wrap" id="dpWrap">
+          <button class="dp-trigger snd-hover" id="dpTrigger" onclick="toggleDatePicker()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            <span id="dpTriggerLabel">02/09/26 - 02/09/26</span>
+          </button>
 
-        <div class="dp-dropdown" id="dpDropdown">
-          <div class="dp-shortcuts">
-            <button class="dp-shortcut" onclick="applyShortcut('today')">Hoje</button>
-            <button class="dp-shortcut" onclick="applyShortcut('yesterday')">Ontem</button>
-            <button class="dp-shortcut" onclick="applyShortcut('last7')">7 dias</button>
-            <button class="dp-shortcut" onclick="applyShortcut('last30')">30 dias</button>
-            <button class="dp-shortcut" onclick="applyShortcut('thisMonth')">Este Mês</button>
-            <button class="dp-shortcut" onclick="applyShortcut('launch')">Lançamento</button>
-          </div>
-          <div class="dp-calendar-wrap">
-            <div class="dp-cal-header">
-              <button class="dp-cal-nav" onclick="dpNavMonth(-1)">❮</button>
-              <span class="dp-cal-title font-display" id="dpCalTitle">setembro 2026</span>
-              <button class="dp-cal-nav" onclick="dpNavMonth(1)">❯</button>
+          <div class="dp-dropdown" id="dpDropdown">
+            <div class="dp-shortcuts">
+              <button class="dp-shortcut" onclick="applyShortcut('today')">Hoje</button>
+              <button class="dp-shortcut" onclick="applyShortcut('yesterday')">Ontem</button>
+              <button class="dp-shortcut" onclick="applyShortcut('last7')">7 dias</button>
+              <button class="dp-shortcut" onclick="applyShortcut('last30')">30 dias</button>
+              <button class="dp-shortcut" onclick="applyShortcut('thisMonth')">Este Mês</button>
+              <button class="dp-shortcut" onclick="applyShortcut('launch')">Lançamento</button>
             </div>
-            <div class="dp-weekdays">
-              <div>dom</div><div>seg</div><div>ter</div><div>qua</div><div>qui</div><div>sex</div><div>sab</div>
+            <div class="dp-calendar-wrap">
+              <div class="dp-cal-header">
+                <button class="dp-cal-nav" onclick="dpNavMonth(-1)">❮</button>
+                <span class="dp-cal-title font-display" id="dpCalTitle">setembro 2026</span>
+                <button class="dp-cal-nav" onclick="dpNavMonth(1)">❯</button>
+              </div>
+              <div class="dp-weekdays">
+                <div>dom</div><div>seg</div><div>ter</div><div>qua</div><div>qui</div><div>sex</div><div>sab</div>
+              </div>
+              <div class="dp-days" id="dpDays"></div>
             </div>
-            <div class="dp-days" id="dpDays"></div>
           </div>
         </div>
       </div>
     </header>
 
     <!-- CONTEÚDO DAS TELAS -->
-    <div class="p-4 md:p-8 space-y-8 max-w-7xl mx-auto w-full">
+    <div class="p-4 md:p-8 space-y-6 md:space-y-8 max-w-7xl mx-auto w-full">
       
       <!-- TELA 1 — ADMIN -->
       <section id="screen-t1" class="screen-view space-y-6">
@@ -226,13 +242,9 @@
             <h2 class="text-xl md:text-2xl font-display font-black text-white">⚙️ Setup Estratégico</h2>
             <p class="text-xs text-brand-muted mt-1">Configure as variáveis globais do projeto.</p>
           </div>
-          <button id="btnSaveAdmin" onclick="saveAdminConfig()" class="w-full sm:w-auto px-6 py-3 rounded-lg bg-brand-blue hover:bg-brand-blue-dark text-white text-xs font-bold transition shadow-lg shadow-brand-blue/20">
+          <button id="btnSaveAdmin" onclick="saveAdminConfig()" class="w-full sm:w-auto px-6 py-3 rounded-lg bg-brand-blue hover:bg-brand-blue-dark text-white text-xs font-bold transition shadow-lg shadow-brand-blue/20 snd-hover">
             💾 Salvar Parâmetros
           </button>
-        </div>
-
-        <div id="readerWarning" class="hidden bg-brand-blue/10 border border-brand-blue/20 rounded-lg p-4 flex items-center gap-3">
-          <p class="text-xs text-brand-blue font-bold">Modo Leitura — Apenas o Administrador pode editar as configurações de orçamento.</p>
         </div>
 
         <form id="adminForm" onsubmit="event.preventDefault();saveAdminConfig();" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -307,51 +319,61 @@
         <h2 class="text-xl md:text-2xl font-display font-black text-white">🎯 War Room</h2>
         
         <div class="bg-brand-card p-4 md:p-6 rounded-xl border border-brand-border">
-          <h3 class="text-xs font-display font-bold text-white uppercase tracking-wider mb-4">Jornada de Tráfego Completa</h3>
+          <h3 class="text-xs font-display font-bold text-white uppercase tracking-wider mb-4">Jornada de Tráfego</h3>
           
           <div class="flex overflow-x-auto snap-x-mand custom-scrollbar pb-4 gap-3 md:gap-4 md:grid md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9 md:overflow-visible">
-            <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1">
-              <span class="text-[10px] font-bold uppercase text-brand-muted">1. Impressões</span>
+            
+            <div class="min-w-[130px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1 snd-hover">
+              <span class="text-[10px] font-bold uppercase text-brand-muted">Investimento</span>
+              <div class="text-lg font-black text-accent-red" id="funnelSpent">R$ 0,00</div>
+            </div>
+            
+            <div class="min-w-[130px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1 snd-hover">
+              <span class="text-[10px] font-bold uppercase text-brand-muted">Impressões</span>
               <div class="text-lg font-black text-white" id="funnelImp">0</div>
             </div>
-            <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1">
-              <span class="text-[10px] font-bold uppercase text-brand-muted">2. CPM Médio</span>
+            
+            <div class="min-w-[130px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1 snd-hover">
+              <span class="text-[10px] font-bold uppercase text-brand-muted">CPM Médio</span>
               <div class="text-lg font-black text-brand-blue" id="funnelCPM">R$ 0,00</div>
             </div>
-            <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1">
-              <span class="text-[10px] font-bold uppercase text-brand-muted">3. Cliques</span>
+            
+            <div class="min-w-[130px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1 snd-hover">
+              <span class="text-[10px] font-bold uppercase text-brand-muted">Cliques</span>
               <div class="text-lg font-black text-white" id="funnelClick">0</div>
               <div class="w-full bg-brand-blue/20 h-1 rounded-full mt-2"><div class="bg-brand-blue h-1 rounded-full" id="barClick" style="width:0%"></div></div>
             </div>
-            <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1">
-              <span class="text-[10px] font-bold uppercase text-brand-muted">4. CTR</span>
+            
+            <div class="min-w-[130px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1 snd-hover">
+              <span class="text-[10px] font-bold uppercase text-brand-muted">CTR</span>
               <div class="text-lg font-black text-brand-blue" id="funnelCTR">0.0%</div>
               <div class="w-full bg-brand-blue/20 h-1 rounded-full mt-2"><div class="bg-brand-blue h-1 rounded-full" id="barCTR" style="width:0%"></div></div>
             </div>
-            <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1">
-              <span class="text-[10px] font-bold uppercase text-brand-muted">5. Visitas (LPV)</span>
+            
+            <div class="min-w-[130px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1 snd-hover">
+              <span class="text-[10px] font-bold uppercase text-brand-muted">Visitas (LPV)</span>
               <div class="text-lg font-black text-white" id="funnelLPV">0</div>
               <div class="w-full bg-accent-yellow/20 h-1 rounded-full mt-2"><div class="bg-accent-yellow h-1 rounded-full" id="barLPV" style="width:0%"></div></div>
             </div>
-            <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1">
-              <span class="text-[10px] font-bold uppercase text-brand-muted">6. Connect Rate</span>
+            
+            <div class="min-w-[130px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1 snd-hover">
+              <span class="text-[10px] font-bold uppercase text-brand-muted">Connect Rate</span>
               <div class="text-lg font-black text-accent-yellow" id="funnelCR">0.0%</div>
               <div class="w-full bg-accent-yellow/20 h-1 rounded-full mt-2"><div class="bg-accent-yellow h-1 rounded-full" id="barCR" style="width:0%"></div></div>
             </div>
-            <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1 border-l-2 border-l-accent-green/50">
-              <span class="text-[10px] font-bold uppercase text-brand-muted">7. Leads</span>
+            
+            <div class="min-w-[130px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1 border-l-2 border-l-accent-green/50 snd-hover">
+              <span class="text-[10px] font-bold uppercase text-brand-muted">Leads</span>
               <div class="text-lg font-black text-accent-green" id="funnelLeads">0</div>
               <div class="w-full bg-accent-green/20 h-1 rounded-full mt-2"><div class="bg-accent-green h-1 rounded-full" id="barLeads" style="width:0%"></div></div>
             </div>
-            <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1">
-              <span class="text-[10px] font-bold uppercase text-brand-muted">8. CPL Geral</span>
-              <div class="text-lg font-black text-accent-yellow" id="funnelCPL">R$ 0,00</div>
-            </div>
-            <div class="min-w-[140px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1">
-              <span class="text-[10px] font-bold uppercase text-brand-muted">9. Tx Conv. (Pág)</span>
-              <div class="text-lg font-black text-accent-green" id="funnelConv">0.0%</div>
+            
+            <div class="min-w-[130px] snap-center bg-brand-dark p-4 rounded-lg border border-brand-border space-y-1 snd-hover">
+              <span class="text-[10px] font-bold uppercase text-brand-muted text-center block w-full truncate">Taxa Conversão</span>
+              <div class="text-lg font-black text-accent-green text-center" id="funnelConv">0.0%</div>
               <div class="w-full bg-accent-green/20 h-1 rounded-full mt-2"><div class="bg-accent-green h-1 rounded-full" id="barConv" style="width:0%"></div></div>
             </div>
+
           </div>
         </div>
 
@@ -390,13 +412,13 @@
         <div class="bg-brand-card p-4 md:p-6 rounded-xl border border-brand-border">
           <h3 class="text-xs font-display font-bold text-accent-red uppercase tracking-wider mb-4">Google Ads (YouTube / Display)</h3>
           <div class="overflow-x-auto custom-scrollbar pb-2">
-            <table class="w-full text-left text-xs min-w-[700px]"><thead class="bg-brand-dark text-brand-muted uppercase text-[9px] font-bold border-b border-brand-border"><tr><th class="p-3">Criativo</th><th class="p-3">Investido</th><th class="p-3">Cliques</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3 text-accent-blue">Conv (Pág) %</th><th class="p-3">Badges</th></tr></thead><tbody id="googleCriativosTable" class="divide-y divide-brand-border"></tbody></table>
+            <table class="w-full text-left text-xs min-w-[700px]"><thead class="bg-brand-dark text-brand-muted uppercase text-[9px] font-bold border-b border-brand-border"><tr><th class="p-3">Criativo</th><th class="p-3">Investido</th><th class="p-3">Cliques</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3 text-accent-blue">Conv %</th><th class="p-3">Badges</th></tr></thead><tbody id="googleCriativosTable" class="divide-y divide-brand-border"></tbody></table>
           </div>
         </div>
         <div class="bg-brand-card p-4 md:p-6 rounded-xl border border-brand-border">
           <h3 class="text-xs font-display font-bold text-brand-blue uppercase tracking-wider mb-4">Meta Ads (Facebook / Instagram)</h3>
           <div class="overflow-x-auto custom-scrollbar pb-2">
-            <table class="w-full text-left text-xs min-w-[700px]"><thead class="bg-brand-dark text-brand-muted uppercase text-[9px] font-bold border-b border-brand-border"><tr><th class="p-3">Criativo</th><th class="p-3">Investido</th><th class="p-3">Cliques</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3 text-accent-blue">Conv (Pág) %</th><th class="p-3">Badges</th></tr></thead><tbody id="metaCriativosTable" class="divide-y divide-brand-border"></tbody></table>
+            <table class="w-full text-left text-xs min-w-[700px]"><thead class="bg-brand-dark text-brand-muted uppercase text-[9px] font-bold border-b border-brand-border"><tr><th class="p-3">Criativo</th><th class="p-3">Investido</th><th class="p-3">Cliques</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3 text-accent-blue">Conv %</th><th class="p-3">Badges</th></tr></thead><tbody id="metaCriativosTable" class="divide-y divide-brand-border"></tbody></table>
           </div>
         </div>
       </section>
@@ -407,13 +429,13 @@
         <div class="bg-brand-card p-4 md:p-6 rounded-xl border border-brand-border">
           <h3 class="text-xs font-display font-bold text-accent-red uppercase tracking-wider mb-4">Google Ads — Grupos</h3>
           <div class="overflow-x-auto custom-scrollbar pb-2">
-            <table class="w-full text-left text-xs min-w-[700px]"><thead class="bg-brand-dark text-brand-muted uppercase text-[9px] font-bold border-b border-brand-border"><tr><th class="p-3">Público</th><th class="p-3">Investido</th><th class="p-3">Cliques</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3 text-accent-blue">Conv (Pág) %</th><th class="p-3">Badges</th></tr></thead><tbody id="googlePublicosTable" class="divide-y divide-brand-border"></tbody></table>
+            <table class="w-full text-left text-xs min-w-[700px]"><thead class="bg-brand-dark text-brand-muted uppercase text-[9px] font-bold border-b border-brand-border"><tr><th class="p-3">Público</th><th class="p-3">Investido</th><th class="p-3">Cliques</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3 text-accent-blue">Conv %</th><th class="p-3">Badges</th></tr></thead><tbody id="googlePublicosTable" class="divide-y divide-brand-border"></tbody></table>
           </div>
         </div>
         <div class="bg-brand-card p-4 md:p-6 rounded-xl border border-brand-border">
           <h3 class="text-xs font-display font-bold text-brand-blue uppercase tracking-wider mb-4">Meta Ads — Conjuntos</h3>
           <div class="overflow-x-auto custom-scrollbar pb-2">
-            <table class="w-full text-left text-xs min-w-[700px]"><thead class="bg-brand-dark text-brand-muted uppercase text-[9px] font-bold border-b border-brand-border"><tr><th class="p-3">Conjunto</th><th class="p-3">Investido</th><th class="p-3">Cliques</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3 text-accent-blue">Conv (Pág) %</th><th class="p-3">Badges</th></tr></thead><tbody id="metaPublicosTable" class="divide-y divide-brand-border"></tbody></table>
+            <table class="w-full text-left text-xs min-w-[700px]"><thead class="bg-brand-dark text-brand-muted uppercase text-[9px] font-bold border-b border-brand-border"><tr><th class="p-3">Conjunto</th><th class="p-3">Investido</th><th class="p-3">Cliques</th><th class="p-3">Leads</th><th class="p-3">CPL</th><th class="p-3 text-accent-blue">Conv %</th><th class="p-3">Badges</th></tr></thead><tbody id="metaPublicosTable" class="divide-y divide-brand-border"></tbody></table>
           </div>
         </div>
       </section>
@@ -424,7 +446,37 @@
 
 <script>
 // ============================================================
-// STATE & USERS
+// AUDIO FX ENGINE (Web Audio API - Super leve)
+// ============================================================
+let audioCtx = null;
+let soundEnabled = true;
+
+function initAudio() {
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+}
+function playTick() {
+  if(!soundEnabled || !audioCtx) return;
+  const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.05);
+  gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+}
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  document.getElementById('btnSound').textContent = soundEnabled ? '🔊' : '🔇';
+}
+// Vincula o som a todos os elementos com classe .snd-hover
+document.addEventListener('mouseover', e => {
+  if(e.target.closest('.snd-hover')) playTick();
+});
+
+// ============================================================
+// STATE & USERS (PERSISTÊNCIA)
 // ============================================================
 const LOCAL_USERS = {
   'admin':                          { email:'andreluizbastosnunes@gmail.com', password:'axds220955', role:'admin',  name:'André Luiz' },
@@ -448,21 +500,18 @@ let launchState = {
 let comboChartInstance = null;
 
 // ============================================================
-// UI HELPERS
+// INIT & LOGIN (COM LOCALSTORAGE)
 // ============================================================
-function toggleMobileMenu() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('mobileOverlay');
-  if(sidebar.classList.contains('-translate-x-full')) {
-    sidebar.classList.remove('-translate-x-full');
-    overlay.classList.remove('hidden');
-  } else {
-    sidebar.classList.add('-translate-x-full');
-    overlay.classList.add('hidden');
+window.onload = () => {
+  const savedUser = localStorage.getItem('aion_session');
+  if(savedUser) {
+    currentUser = JSON.parse(savedUser);
+    proceedEnterApp();
   }
-}
+};
 
 function doLogin(){
+  initAudio(); // Libera o áudio no primeiro clique do usuário
   const u=document.getElementById('loginUser').value.trim().toLowerCase();
   const p=document.getElementById('loginPass').value;
   const errEl=document.getElementById('loginError');
@@ -477,28 +526,8 @@ function doLogin(){
   const local=LOCAL_USERS[u];
   if(local && local.password===p) {
     currentUser = local;
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('appShell').classList.remove('hidden');
-    document.getElementById('appShell').classList.add('flex');
-    
-    document.getElementById('userDisplayName').textContent = currentUser.name;
-    document.getElementById('userRoleBadge').textContent = currentUser.role.toUpperCase();
-    if(currentUser.role === 'reader') {
-      document.getElementById('nav-t1').classList.add('hidden');
-      document.getElementById('btnSaveAdmin').classList.add('hidden');
-      document.querySelectorAll('#adminForm input').forEach(i=>i.disabled=true);
-      document.getElementById('readerWarning').classList.remove('hidden');
-      navTo('t2'); 
-    }
-
-    dpState.selStart = isoToDate(launchState.dataInicio);
-    dpState.selEnd = isoToDate(launchState.dataFim);
-    document.getElementById('dpTriggerLabel').textContent = `${fmtShort(dpState.selStart)} - ${fmtShort(dpState.selEnd)}`;
-    document.getElementById('headerLaunchName').textContent = launchState.nomeLancamento;
-    document.getElementById('admNomeLancamento').value = launchState.nomeLancamento;
-    document.getElementById('admSheetUrl').value = launchState.sheetUrl;
-    
-    syncDataFromSheets();
+    localStorage.setItem('aion_session', JSON.stringify(currentUser)); // SALVA A SESSÃO
+    proceedEnterApp();
   } else {
     showLoginError('Usuário ou senha incorretos.');
     document.getElementById('loginPass').value='';
@@ -510,6 +539,36 @@ function doLogin(){
   }
 }
 
+function proceedEnterApp() {
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appShell').classList.remove('hidden');
+  document.getElementById('appShell').classList.add('flex');
+  
+  document.getElementById('userDisplayName').textContent = currentUser.name;
+  document.getElementById('userRoleBadge').textContent = currentUser.role.toUpperCase();
+  
+  // Controle Rigoroso de Leitor vs Admin
+  if(currentUser.role === 'reader') {
+    document.getElementById('nav-t1').style.display = 'none';
+    document.getElementById('mob-nav-t1').style.display = 'none';
+    document.getElementById('btnSaveAdmin').style.display = 'none';
+    document.querySelectorAll('#adminForm input').forEach(i=>i.disabled=true);
+    document.getElementById('readerWarning').classList.remove('hidden');
+    navTo('t2'); 
+  } else {
+    navTo('t1');
+  }
+
+  dpState.selStart = isoToDate(launchState.dataInicio);
+  dpState.selEnd = isoToDate(launchState.dataFim);
+  document.getElementById('dpTriggerLabel').textContent = `${fmtShort(dpState.selStart)} - ${fmtShort(dpState.selEnd)}`;
+  document.getElementById('headerLaunchName').textContent = launchState.nomeLancamento;
+  document.getElementById('admNomeLancamento').value = launchState.nomeLancamento;
+  document.getElementById('admSheetUrl').value = launchState.sheetUrl;
+  
+  syncDataFromSheets();
+}
+
 function showLoginError(msg){
   const e=document.getElementById('loginError'); 
   e.textContent=msg; e.classList.remove('hidden');
@@ -518,22 +577,39 @@ function showLoginError(msg){
 }
 
 function doLogout(){
-  if(confirm('Encerrar sessão?')) location.reload();
+  if(confirm('Encerrar sessão?')) {
+    localStorage.removeItem('aion_session');
+    location.reload();
+  }
 }
 
+// ============================================================
+// NAVEGAÇÃO
+// ============================================================
 function navTo(id){
   if(id==='t1' && currentUser.role==='reader') return;
   document.querySelectorAll('.screen-view').forEach(el=>el.classList.add('hidden'));
   document.getElementById('screen-'+id).classList.remove('hidden');
   
+  // Atualiza Desktop Nav
   ['t1','t2','t3','t4'].forEach(i=>{
     const btn = document.getElementById('nav-'+i);
     if(!btn) return;
-    if(i===id) btn.className = 'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-display font-bold transition-all bg-brand-blue text-white shadow-lg shadow-brand-blue/20';
-    else btn.className = 'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-display font-bold transition-all text-brand-muted hover:text-white hover:bg-brand-dark';
+    if(i===id) btn.className = 'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-display font-bold transition-all bg-brand-blue text-white shadow-lg shadow-brand-blue/20 snd-hover';
+    else btn.className = 'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-display font-bold transition-all text-brand-muted hover:text-white hover:bg-brand-dark snd-hover';
+  });
+
+  // Atualiza Mobile Nav
+  ['t1','t2','t3','t4'].forEach(i=>{
+    const mBtn = document.getElementById('mob-nav-'+i);
+    if(!mBtn) return;
+    if(i===id) {
+      mBtn.classList.remove('text-brand-muted'); mBtn.classList.add('text-brand-blue', 'scale-110');
+    } else {
+      mBtn.classList.add('text-brand-muted'); mBtn.classList.remove('text-brand-blue', 'scale-110');
+    }
   });
   
-  if(window.innerWidth < 768) toggleMobileMenu();
   if(id==='t2') setTimeout(()=>renderFunnelAndTimeline(), 100);
 }
 
@@ -541,7 +617,6 @@ function navTo(id){
 // DATE PICKER
 // ============================================================
 const MONTHS_PT=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-let dpState={ viewYear:2026, viewMonth:8, selStart:null, selEnd:null, picking:'start' };
 
 function isoToDate(s){ const[y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
 function dateToIso(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
@@ -574,7 +649,7 @@ function renderDpCalendar(){
   for(let i=0;i<firstDay;i++) html+=`<div class="dp-day-wrapper"><div class="dp-day dp-day-empty"></div></div>`;
   for(let day=1;day<=daysInMonth;day++){
     const dt=new Date(dpState.viewYear,dpState.viewMonth,day);
-    let cls='dp-day';
+    let cls='dp-day snd-hover';
     const s=dpState.selStart, e=dpState.selEnd;
     if(s && e){
       const lo=s<e?s:e, hi=s<e?e:s;
@@ -648,7 +723,7 @@ function saveAdminConfig(){
 }
 
 // ============================================================
-// DATA ENGINE (API ADVERONIX GVIZ)
+// DATA ENGINE (API ADVERONIX GVIZ) COM LIMPEZA DE MEMÓRIA
 // ============================================================
 function parseGvizTable(g){
   if(!g||!g.table||!g.table.rows) return[];
@@ -672,11 +747,11 @@ function fetchGvizJSONP(url,sheet){
     const m=url.match(/\/d\/([^\/]+)/); if(!m)return resolve(null);
     const docId=m[1], cb='gviz_'+Math.random().toString(36).slice(2);
     let done=false;
-    const t=setTimeout(()=>{
-      if(!done){ done=true; delete window[cb]; resolve(null); }
-    },8000); 
-    
     const s=document.createElement('script');
+    
+    const t=setTimeout(()=>{
+      if(!done){ done=true; delete window[cb]; s.remove(); resolve(null); }
+    }, 8000); 
     
     window[cb]=data=>{
       if(done)return; done=true; clearTimeout(t); delete window[cb]; s.remove(); resolve(parseGvizTable(data));
@@ -705,7 +780,7 @@ async function syncDataFromSheets(){
   launchState.dataGoogle = google;
   
   if(isMock) {
-    st.innerHTML=`<span class="w-1.5 h-1.5 rounded-full bg-accent-yellow shadow-[0_0_8px_#F59E0B]"></span><span class="font-bold text-accent-yellow">Simulador Ativo</span>`;
+    st.innerHTML=`<span class="w-1.5 h-1.5 rounded-full bg-accent-yellow shadow-[0_0_8px_#F59E0B]"></span><span class="font-bold text-accent-yellow">⚠️ Simulador Ativo</span>`;
   } else {
     st.innerHTML=`<span class="w-1.5 h-1.5 rounded-full bg-accent-green shadow-[0_0_8px_#10B981]"></span><span class="font-bold text-accent-green">Conectado</span>`;
   }
@@ -818,13 +893,14 @@ function renderFunnelAndTimeline(){
   meta.forEach(r => processRow(r, 'M'));
   google.forEach(r => processRow(r, 'G'));
 
-  // Métricas do Funil
+  // Cálculos do Funil
   const cpm = totalImp > 0 ? (totalGasto / totalImp) * 1000 : 0;
   const ctr = totalImp > 0 ? (totalClicks / totalImp) * 100 : 0;
   const cr = totalClicks > 0 ? (totalLPV / totalClicks) * 100 : 0;
   const cpl = totalLeads > 0 ? (totalGasto / totalLeads) : 0;
   const cvr = totalLPV > 0 ? (totalLeads / totalLPV) * 100 : 0; 
 
+  document.getElementById('funnelSpent').innerText = 'R$ ' + totalGasto.toLocaleString('pt-BR', {minimumFractionDigits:2});
   document.getElementById('funnelImp').innerText = totalImp.toLocaleString('pt-BR');
   document.getElementById('funnelCPM').innerText = 'R$ ' + cpm.toFixed(2);
   document.getElementById('funnelClick').innerText = totalClicks.toLocaleString('pt-BR');
@@ -835,7 +911,6 @@ function renderFunnelAndTimeline(){
   document.getElementById('funnelCPL').innerText = 'R$ ' + cpl.toFixed(2);
   document.getElementById('funnelConv').innerText = cvr.toFixed(2) + '%';
 
-  // Barras Limitadas Logicamente (Max 100% css width)
   document.getElementById('barClick').style.width = Math.min(100, (totalClicks/(totalImp||1))*1000) + '%';
   document.getElementById('barCTR').style.width = Math.min(100, ctr*5) + '%';
   document.getElementById('barLPV').style.width = Math.min(100, cr) + '%';
@@ -843,13 +918,12 @@ function renderFunnelAndTimeline(){
   document.getElementById('barLeads').style.width = Math.min(100, (totalLeads/(launchState.metaLeads||1))*100) + '%';
   document.getElementById('barConv').style.width = Math.min(100, cvr*3) + '%';
 
-  // Pacing
+  // Pacing HTML Building
   const t = today(), launchEnd = isoToDate(launchState.dataFim);
   let daysLeft = Math.round((launchEnd - t) / 86400000) + 1;
   if(t > launchEnd) daysLeft = 0;
   
   document.getElementById('pacingDaysLeft').innerText = `${daysLeft} Dia${daysLeft!==1?'s':''} p/ o Fim`;
-  const pacingBody = document.getElementById('pacingTableBody'); 
   
   let htmlPacing = '';
   Object.values(pacing).forEach(cat => {
@@ -858,7 +932,7 @@ function renderFunnelAndTimeline(){
     const metaDiaria = daysLeft > 0 ? restante / daysLeft : 0;
     
     htmlPacing += `
-      <tr class="hover:bg-brand-dark/50 transition">
+      <tr class="hover:bg-brand-dark/50 transition snd-hover">
         <td class="p-3 font-bold text-white">${cat.nome}</td>
         <td class="p-3 text-right">R$ ${previsto.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
         <td class="p-3 text-right text-accent-red font-bold">R$ ${cat.gasto.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
@@ -867,7 +941,7 @@ function renderFunnelAndTimeline(){
       </tr>
     `;
   });
-  pacingBody.innerHTML = htmlPacing;
+  document.getElementById('pacingTableBody').innerHTML = htmlPacing;
 
   // Combo Chart
   const startDate = isoToDate(launchState.filterStart);
@@ -944,11 +1018,6 @@ function renderCriativosEPublicos(){
   renderTable('metaCriativosTable', mCr);
   renderTable('googlePublicosTable', gPb);
   renderTable('metaPublicosTable', mPb);
-  
-  const todosPb = [...gPb, ...mPb].sort((a,b)=>b.leads - a.leads).slice(0,5);
-  const todosCr = [...gCr, ...mCr].sort((a,b)=>b.leads - a.leads).slice(0,5);
-  renderTableMini('top5PublicosBody', todosPb);
-  renderTableMini('top5CriativosBody', todosCr);
 }
 
 function renderTable(id, items){
@@ -965,7 +1034,7 @@ function renderTable(id, items){
     if(conv >= 20) badges += `<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-brand-blue/20 text-brand-blue border border-brand-blue/30">🎯 Alta Conv</span>`;
     
     html += `
-      <tr class="hover:bg-brand-dark/50 transition">
+      <tr class="hover:bg-brand-dark/50 transition snd-hover">
         <td class="p-3 font-bold text-white whitespace-nowrap">${it.name}</td>
         <td class="p-3 whitespace-nowrap">R$ ${it.spent.toFixed(2)}</td>
         <td class="p-3">${it.clicks}</td>
@@ -973,25 +1042,6 @@ function renderTable(id, items){
         <td class="p-3 text-accent-yellow whitespace-nowrap">R$ ${cpl.toFixed(2)}</td>
         <td class="p-3 font-bold text-brand-blue">${conv.toFixed(1)}%</td>
         <td class="p-3">${badges || '-'}</td>
-      </tr>
-    `;
-  });
-  tbody.innerHTML = html;
-}
-
-function renderTableMini(id, items){
-  const tbody=document.getElementById(id);
-  let html = '';
-  items.forEach((it, idx) => {
-    const cpl = it.leads > 0 ? (it.spent / it.leads) : 0;
-    const conv = it.lpv > 0 ? ((it.leads / it.lpv) * 100) : 0;
-    html += `
-      <tr class="hover:bg-brand-dark/50 transition">
-        <td class="p-2.5 font-black text-brand-blue">#${idx+1}</td>
-        <td class="p-2.5 font-bold text-white truncate max-w-[120px]">${it.name}</td>
-        <td class="p-2.5 font-bold text-accent-green">${it.leads}</td>
-        <td class="p-2.5 text-accent-yellow whitespace-nowrap">R$ ${cpl.toFixed(2)}</td>
-        <td class="p-2.5 font-bold text-brand-blue">${conv.toFixed(1)}%</td>
       </tr>
     `;
   });
