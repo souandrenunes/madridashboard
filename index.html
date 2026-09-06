@@ -12,6 +12,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   
+  <!-- FIREBASE SCRIPTS -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -38,9 +43,7 @@
     }
   </script>
   <style>
-    /* =======================================================
-       CURSOR CUSTOMIZADO & SCROLL
-       ======================================================= */
+    /* CURSOR CUSTOMIZADO */
     body, a, button, input, .dp-day, .dp-shortcut, .cursor-pointer { 
       cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%231D71B8"><path d="M5.5 2L19 12.5 12 14l3.5 6.5-2.5 1-3.5-6.5L4.5 18z" stroke="white" stroke-width="1.2"/></svg>'), auto !important; 
     }
@@ -63,13 +66,14 @@
     .login-input:focus { border-color: #1D71B8; }
     .login-btn { width: 100%; background: linear-gradient(135deg, #1D71B8, #0D64A0); color: white; border: none; border-radius: 8px; padding: 0.875rem; font-family: 'Montserrat', sans-serif; font-weight: 700; transition: opacity 0.2s; letter-spacing: 0.05em; }
     .login-btn:hover { opacity: 0.9; }
+    .login-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     
     @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(6px)} }
     .shake { animation: shake .4s ease; }
     .fade-in { animation: fadeIn .35s ease forwards; }
     @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
-    /* DATE PICKER */
+    /* DATE PICKER ROXO E RESPONSIVO */
     .dp-wrap { position: relative; display: inline-block; }
     .dp-trigger { display: flex; align-items: center; gap: 8px; background: transparent; border: 1px solid #2D2D2D; border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 600; color: #E8E8EA; transition: 0.2s; }
     .dp-trigger:hover, .dp-trigger.active { border-color: #9333ea; background: rgba(147, 51, 234, 0.1); color: #fff; }
@@ -91,10 +95,10 @@
     .dp-day.dp-day-range-end { background: #232323 !important; border-color: #9333ea !important; }
     .dp-day.dp-day-in-range { background: rgba(147, 51, 234, 0.15); color: #c084fc; border-radius: 6px; }
 
+    /* TOOLTIP APEXCHARTS */
     .apexcharts-tooltip { background: #1D1D1B !important; border: 1px solid #2D2D2D !important; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5) !important; color: #E8E8EA !important; }
-    .apexcharts-tooltip-title { background: #232323 !important; border-bottom: 1px solid #2D2D2D !important; font-weight: 700 !important; }
+    .apexcharts-tooltip-title { background: #232323 !important; border-bottom: 1px solid #2D2D2D !important; font-weight: 700 !important; padding: 6px 10px !important; font-size: 11px !important; }
     
-    /* Efeito de interatividade visual rápida para som */
     .snd-hover:hover { transform: translateY(-2px); transition: transform 0.2s; }
   </style>
 </head>
@@ -113,7 +117,7 @@
         <label class="block text-[11px] font-bold text-brand-muted uppercase mb-1.5 tracking-wider">E-mail de Acesso</label>
         <input type="text" id="loginUser" class="login-input" placeholder="seu@email.com" onkeydown="if(event.key==='Enter') document.getElementById('loginPass').focus()"/>
       </div>
-      <div>
+      <div class="relative">
         <label class="block text-[11px] font-bold text-brand-muted uppercase mb-1.5 tracking-wider">Senha de Segurança</label>
         <input type="password" id="loginPass" class="login-input" placeholder="••••••••••" onkeydown="if(event.key==='Enter') doLogin()"/>
       </div>
@@ -129,7 +133,9 @@
 <!-- ======= APP SHELL ======= -->
 <div id="appShell" class="hidden w-full flex-col md:flex-row min-h-screen">
 
-  <!-- SIDEBAR (DESKTOP ONLY) -->
+  <div id="mobileOverlay" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden" onclick="toggleMobileMenu()"></div>
+
+  <!-- SIDEBAR (DESKTOP) -->
   <aside id="sidebar" class="hidden md:flex sticky top-0 left-0 h-screen w-64 bg-brand-card border-r border-brand-border flex-col justify-between shrink-0 z-40 shadow-xl">
     <div>
       <div class="p-6 border-b border-brand-border flex items-center justify-center">
@@ -164,7 +170,7 @@
     </div>
   </aside>
 
-  <!-- BOTTOM NAV (MOBILE ONLY) -->
+  <!-- BOTTOM NAV (MOBILE) -->
   <nav id="bottomNav" class="md:hidden fixed bottom-0 w-full bg-brand-card border-t border-brand-border flex justify-around items-center z-50 pb-2 pt-2 px-2 shadow-[0_-4px_10px_rgba(0,0,0,0.5)]">
     <button id="mob-nav-t1" onclick="navTo('t1')" class="flex flex-col items-center gap-1 text-brand-muted transition-colors flex-1 p-1">
       <span class="text-lg">⚙️</span><span class="text-[9px] font-bold font-display">Setup</span>
@@ -185,10 +191,11 @@
 
     <!-- HEADER & DATE PICKER -->
     <header class="h-16 md:h-20 border-b border-brand-border bg-brand-card px-4 md:px-8 flex items-center justify-between sticky top-0 z-30 shrink-0 shadow-sm">
-      
       <div class="flex items-center gap-3">
-        <!-- Lançamento Nome e Status -->
-        <div>
+        <button class="md:hidden text-brand-light p-1" onclick="toggleMobileMenu()">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="hidden sm:block">
           <h2 class="text-sm md:text-base font-display font-black text-white tracking-wide truncate max-w-[200px] md:max-w-md" id="headerLaunchName">AION - PROJETO ALPHA</h2>
           <span class="text-[10px] text-brand-muted flex items-center gap-1.5 mt-0.5" id="syncStatus">
             <span class="w-1.5 h-1.5 rounded-full bg-brand-muted"></span> Aguardando...
@@ -197,10 +204,8 @@
       </div>
 
       <div class="flex items-center gap-3 md:gap-4">
-        <!-- BOTÃO DE MUTAR SOM -->
         <button id="btnSound" onclick="toggleSound()" class="w-8 h-8 rounded-full bg-brand-dark border border-brand-border flex items-center justify-center text-sm hover:border-brand-blue transition" title="Mutar/Desmutar Efeitos">🔊</button>
         
-        <!-- DATE PICKER -->
         <div class="dp-wrap" id="dpWrap">
           <button class="dp-trigger snd-hover" id="dpTrigger" onclick="toggleDatePicker()">
             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
@@ -240,7 +245,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 class="text-xl md:text-2xl font-display font-black text-white">⚙️ Setup Estratégico</h2>
-            <p class="text-xs text-brand-muted mt-1">Configure as variáveis globais do projeto.</p>
+            <p class="text-xs text-brand-muted mt-1">Configure as variáveis globais do projeto. (Salvas na Nuvem)</p>
           </div>
           <button id="btnSaveAdmin" onclick="saveAdminConfig()" class="w-full sm:w-auto px-6 py-3 rounded-lg bg-brand-blue hover:bg-brand-blue-dark text-white text-xs font-bold transition shadow-lg shadow-brand-blue/20 snd-hover">
             💾 Salvar Parâmetros
@@ -252,26 +257,26 @@
             <h3 class="text-sm font-display font-bold text-white border-b border-brand-border pb-3 text-brand-blue">Identidade & Período</h3>
             <div>
               <label class="block text-[11px] font-bold text-brand-muted uppercase mb-1.5">Nome do Lançamento</label>
-              <input type="text" id="admNomeLancamento" value="AION - PROJETO ALPHA" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2.5 text-xs text-white focus:border-brand-blue outline-none"/>
+              <input type="text" id="admNomeLancamento" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2.5 text-xs text-white focus:border-brand-blue outline-none"/>
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-[11px] font-bold text-brand-muted uppercase mb-1.5">Início</label>
-                <input type="date" id="admDataInicio" value="2026-09-01" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2.5 text-xs text-white outline-none"/>
+                <input type="date" id="admDataInicio" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2.5 text-xs text-white outline-none"/>
               </div>
               <div>
                 <label class="block text-[11px] font-bold text-brand-muted uppercase mb-1.5">Fim</label>
-                <input type="date" id="admDataFim" value="2026-09-13" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2.5 text-xs text-white outline-none"/>
+                <input type="date" id="admDataFim" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2.5 text-xs text-white outline-none"/>
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-[11px] font-bold text-brand-muted uppercase mb-1.5">Verba Total (R$)</label>
-                <input type="number" id="admVerbaTotal" value="20000" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2.5 text-sm font-bold text-accent-green outline-none"/>
+                <input type="number" id="admVerbaTotal" step="100" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2.5 text-sm font-bold text-accent-green outline-none"/>
               </div>
               <div>
                 <label class="block text-[11px] font-bold text-brand-muted uppercase mb-1.5">Meta Leads</label>
-                <input type="number" id="admMetaLeads" value="10000" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2.5 text-sm font-bold text-white outline-none"/>
+                <input type="number" id="admMetaLeads" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2.5 text-sm font-bold text-white outline-none"/>
               </div>
             </div>
           </div>
@@ -283,13 +288,13 @@
             </div>
             <div class="grid grid-cols-2 gap-x-4 gap-y-5">
               <div><label class="block text-[11px] font-bold text-accent-red uppercase mb-1.5">Google Quente (%)</label>
-                <input type="number" id="admPctGQ" value="12" step="0.1" oninput="validatePercentages()" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-xs text-white outline-none"/></div>
+                <input type="number" id="admPctGQ" step="0.1" oninput="validatePercentages()" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-xs text-white outline-none"/></div>
               <div><label class="block text-[11px] font-bold text-accent-red uppercase mb-1.5">Google Frio (%)</label>
-                <input type="number" id="admPctGF" value="20" step="0.1" oninput="validatePercentages()" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-xs text-white outline-none"/></div>
+                <input type="number" id="admPctGF" step="0.1" oninput="validatePercentages()" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-xs text-white outline-none"/></div>
               <div><label class="block text-[11px] font-bold text-brand-blue uppercase mb-1.5">Meta Quente (%)</label>
-                <input type="number" id="admPctMQ" value="28" step="0.1" oninput="validatePercentages()" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-xs text-white outline-none"/></div>
+                <input type="number" id="admPctMQ" step="0.1" oninput="validatePercentages()" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-xs text-white outline-none"/></div>
               <div><label class="block text-[11px] font-bold text-brand-blue uppercase mb-1.5">Meta Frio (%)</label>
-                <input type="number" id="admPctMF" value="40" step="0.1" oninput="validatePercentages()" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-xs text-white outline-none"/></div>
+                <input type="number" id="admPctMF" step="0.1" oninput="validatePercentages()" class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-xs text-white outline-none"/></div>
             </div>
             <div id="pctErrorMsg" class="text-[11px] text-accent-red font-bold hidden">⚠️ A soma deve ser exatamente 100%.</div>
           </div>
@@ -306,9 +311,7 @@
             </div>
             <div class="mt-6 p-4 bg-brand-dark rounded-lg border border-brand-border space-y-2">
               <span class="text-[10px] font-black uppercase text-brand-blue tracking-widest block">Projeção Alvo</span>
-              <p class="text-xs leading-relaxed" id="admTargetSummary">
-                Verba: <b class="text-accent-green">R$ 20.000</b> · Leads: <b class="text-brand-blue">10.000</b> · CPL Ideal: <b class="text-accent-yellow">R$ 2,00</b>
-              </p>
+              <p class="text-xs leading-relaxed" id="admTargetSummary">Aguardando dados...</p>
             </div>
           </div>
         </form>
@@ -377,7 +380,6 @@
           </div>
         </div>
 
-        <!-- CONTROLE DE VERBA (PACING) -->
         <div class="bg-brand-card p-4 md:p-6 rounded-xl border border-brand-border">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
             <h3 class="text-xs font-display font-bold text-white uppercase tracking-wider">💰 Gestão Financeira (Pacing)</h3>
@@ -399,7 +401,6 @@
           </div>
         </div>
         
-        <!-- COMBO CHART -->
         <div class="bg-brand-card p-4 md:p-6 rounded-xl border border-brand-border">
           <h3 class="text-xs font-display font-bold text-white uppercase tracking-wider mb-4">📊 Volume vs Eficiência Diária (Leads x CPL)</h3>
           <div id="comboChart" class="w-full h-[280px]"></div>
@@ -442,11 +443,11 @@
       
     </div>
   </main>
-</div><!-- fim appShell -->
+</div>
 
 <script>
 // ============================================================
-// AUDIO FX ENGINE (Web Audio API - Super leve)
+// AUDIO FX ENGINE 
 // ============================================================
 let audioCtx = null;
 let soundEnabled = true;
@@ -470,13 +471,30 @@ function toggleSound() {
   soundEnabled = !soundEnabled;
   document.getElementById('btnSound').textContent = soundEnabled ? '🔊' : '🔇';
 }
-// Vincula o som a todos os elementos com classe .snd-hover
 document.addEventListener('mouseover', e => {
   if(e.target.closest('.snd-hover')) playTick();
 });
 
 // ============================================================
-// STATE & USERS (PERSISTÊNCIA)
+// FIREBASE FIRESTORE CLOUD SETUP
+// ============================================================
+// Configure as chaves de produção reais do Firebase depois para ativar o BD em Nuvem oficial.
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID"
+};
+
+let db = null;
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+} catch(e) {
+  console.warn("Firebase não inicializado ou chaves inválidas. Usando fallback (LocalStorage).");
+}
+
+// ============================================================
+// STATE & USERS
 // ============================================================
 const LOCAL_USERS = {
   'admin':                          { email:'andreluizbastosnunes@gmail.com', password:'axds220955', role:'admin',  name:'André Luiz' },
@@ -500,9 +518,30 @@ let launchState = {
 let comboChartInstance = null;
 
 // ============================================================
-// INIT & LOGIN (COM LOCALSTORAGE)
+// CARREGAMENTO DA NUVEM (OU LOCAL) E LOGIN
 // ============================================================
-window.onload = () => {
+async function loadGlobalConfig() {
+  if (db) {
+    try {
+      const doc = await db.collection('launchConfig').doc('global').get();
+      if (doc.exists) {
+        launchState = { ...launchState, ...doc.data() };
+        console.log("Configurações carregadas do Firestore Nuvem!");
+        return;
+      }
+    } catch (e) {
+      console.warn("Nuvem indisponível. Lendo cache local.");
+    }
+  }
+  // Fallback seguro caso Firestore não esteja configurado ainda
+  const savedConfig = localStorage.getItem('aion_config');
+  if(savedConfig) {
+    launchState = { ...launchState, ...JSON.parse(savedConfig) };
+  }
+}
+
+window.onload = async () => {
+  await loadGlobalConfig();
   const savedUser = localStorage.getItem('aion_session');
   if(savedUser) {
     currentUser = JSON.parse(savedUser);
@@ -511,22 +550,20 @@ window.onload = () => {
 };
 
 function doLogin(){
-  initAudio(); // Libera o áudio no primeiro clique do usuário
+  initAudio(); 
   const u=document.getElementById('loginUser').value.trim().toLowerCase();
   const p=document.getElementById('loginPass').value;
   const errEl=document.getElementById('loginError');
   const btn=document.getElementById('loginBtn');
   
-  errEl.classList.add('hidden'); 
-  btn.disabled=true; 
-  btn.textContent='Verificando...';
+  errEl.classList.add('hidden'); btn.disabled=true; btn.textContent='Verificando...';
   
   if(!u||!p){ showLoginError('Preencha usuário e senha.'); return; }
   
   const local=LOCAL_USERS[u];
   if(local && local.password===p) {
     currentUser = local;
-    localStorage.setItem('aion_session', JSON.stringify(currentUser)); // SALVA A SESSÃO
+    localStorage.setItem('aion_session', JSON.stringify(currentUser)); 
     proceedEnterApp();
   } else {
     showLoginError('Usuário ou senha incorretos.');
@@ -540,14 +577,14 @@ function doLogin(){
 }
 
 function proceedEnterApp() {
-  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('loginScreen').style.opacity='0';
+  setTimeout(()=> document.getElementById('loginScreen').style.display='none', 400);
+  
   document.getElementById('appShell').classList.remove('hidden');
   document.getElementById('appShell').classList.add('flex');
   
   document.getElementById('userDisplayName').textContent = currentUser.name;
-  document.getElementById('userRoleBadge').textContent = currentUser.role.toUpperCase();
   
-  // Controle Rigoroso de Leitor vs Admin
   if(currentUser.role === 'reader') {
     document.getElementById('nav-t1').style.display = 'none';
     document.getElementById('mob-nav-t1').style.display = 'none';
@@ -559,21 +596,31 @@ function proceedEnterApp() {
     navTo('t1');
   }
 
-  dpState.selStart = isoToDate(launchState.dataInicio);
-  dpState.selEnd = isoToDate(launchState.dataFim);
-  document.getElementById('dpTriggerLabel').textContent = `${fmtShort(dpState.selStart)} - ${fmtShort(dpState.selEnd)}`;
-  document.getElementById('headerLaunchName').textContent = launchState.nomeLancamento;
+  // Preenche a tela de Admin
   document.getElementById('admNomeLancamento').value = launchState.nomeLancamento;
+  document.getElementById('admDataInicio').value = launchState.dataInicio;
+  document.getElementById('admDataFim').value = launchState.dataFim;
+  document.getElementById('admVerbaTotal').value = launchState.verbaTotal;
+  document.getElementById('admMetaLeads').value = launchState.metaLeads;
+  document.getElementById('admPctGQ').value = launchState.pctGQ;
+  document.getElementById('admPctGF').value = launchState.pctGF;
+  document.getElementById('admPctMQ').value = launchState.pctMQ;
+  document.getElementById('admPctMF').value = launchState.pctMF;
   document.getElementById('admSheetUrl').value = launchState.sheetUrl;
+
+  dpState.selStart = isoToDate(launchState.filterStart);
+  dpState.selEnd = isoToDate(launchState.filterEnd);
   
+  document.getElementById('dpTriggerLabel').textContent = `${fmtShort(dpState.selStart)} - ${fmtShort(dpState.selEnd)}`;
+  document.getElementById('headerLaunchName').textContent = launchState.nomeLancamento.toUpperCase();
+  
+  updateTargetSummary();
   syncDataFromSheets();
 }
 
 function showLoginError(msg){
-  const e=document.getElementById('loginError'); 
-  e.textContent=msg; e.classList.remove('hidden');
-  const btn=document.getElementById('loginBtn');
-  btn.disabled=false; btn.textContent='Acessar Plataforma';
+  const e=document.getElementById('loginError'); e.textContent=msg; e.classList.remove('hidden');
+  const btn=document.getElementById('loginBtn'); btn.disabled=false; btn.textContent='Acessar Plataforma';
 }
 
 function doLogout(){
@@ -586,12 +633,23 @@ function doLogout(){
 // ============================================================
 // NAVEGAÇÃO
 // ============================================================
+function toggleMobileMenu() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('mobileOverlay');
+  if(sidebar.classList.contains('-translate-x-full')) {
+    sidebar.classList.remove('-translate-x-full');
+    overlay.classList.remove('hidden');
+  } else {
+    sidebar.classList.add('-translate-x-full');
+    overlay.classList.add('hidden');
+  }
+}
+
 function navTo(id){
   if(id==='t1' && currentUser.role==='reader') return;
   document.querySelectorAll('.screen-view').forEach(el=>el.classList.add('hidden'));
   document.getElementById('screen-'+id).classList.remove('hidden');
   
-  // Atualiza Desktop Nav
   ['t1','t2','t3','t4'].forEach(i=>{
     const btn = document.getElementById('nav-'+i);
     if(!btn) return;
@@ -599,7 +657,6 @@ function navTo(id){
     else btn.className = 'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-display font-bold transition-all text-brand-muted hover:text-white hover:bg-brand-dark snd-hover';
   });
 
-  // Atualiza Mobile Nav
   ['t1','t2','t3','t4'].forEach(i=>{
     const mBtn = document.getElementById('mob-nav-'+i);
     if(!mBtn) return;
@@ -614,15 +671,42 @@ function navTo(id){
 }
 
 // ============================================================
-// DATE PICKER
+// DATE PICKER ANTI-CRASH E NORMALIZADOR
 // ============================================================
 const MONTHS_PT=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 
-function isoToDate(s){ const[y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
-function dateToIso(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-function fmtShort(d){ return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getFullYear()).slice(-2)}`; }
 function stripTime(d){ return new Date(d.getFullYear(),d.getMonth(),d.getDate()); }
 function today(){ return stripTime(new Date()); }
+
+// Proteção Anti-Crash caso a data da planilha seja bizarra.
+function isoToDate(s){ 
+  if(!s) return today();
+  const parts = String(s).split('-');
+  if(parts.length !== 3) return today();
+  const d = new Date(Number(parts[0]), Number(parts[1])-1, Number(parts[2]));
+  return isNaN(d.getTime()) ? today() : d;
+}
+
+function dateToIso(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function fmtShort(d){ return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getFullYear()).slice(-2)}`; }
+
+// O segredo do filtro: Transforma 02/09/26 ou 02/09/2026 para 2026-09-02 garantido
+function normalizeDate(val) {
+  if(!val) return '';
+  let s = String(val).trim();
+  if(s.includes('/')) {
+    let parts = s.split('/');
+    if(parts.length >= 3) {
+      let d = parts[0].padStart(2, '0');
+      let m = parts[1].padStart(2, '0');
+      let y = parts[2];
+      if(y.length === 2) y = '20' + y;
+      return `${y}-${m}-${d}`;
+    }
+  }
+  if(s.length > 10) s = s.substring(0, 10);
+  return s;
+}
 
 function toggleDatePicker(){
   const dd=document.getElementById('dpDropdown');
@@ -640,7 +724,10 @@ function dpNavMonth(dir){
   if(dpState.viewMonth<0){dpState.viewMonth=11;dpState.viewYear--;}
   renderDpCalendar();
 }
+
 function renderDpCalendar(){
+  if(isNaN(dpState.viewYear)) { dpState.viewYear = today().getFullYear(); dpState.viewMonth = today().getMonth(); }
+  
   document.getElementById('dpCalTitle').textContent=`${MONTHS_PT[dpState.viewMonth]} ${dpState.viewYear}`;
   const firstDay=new Date(dpState.viewYear,dpState.viewMonth,1).getDay();
   const daysInMonth=new Date(dpState.viewYear,dpState.viewMonth+1,0).getDate();
@@ -661,6 +748,7 @@ function renderDpCalendar(){
   }
   document.getElementById('dpDays').innerHTML=html;
 }
+
 function dpClickDay(y,m,d){
   const dt=new Date(y,m,d);
   if(dpState.picking==='start'||!dpState.selStart){
@@ -672,6 +760,7 @@ function dpClickDay(y,m,d){
   }
   renderDpCalendar();
 }
+
 function applyShortcut(key){
   const t=today(); let s,e;
   if(key==='today'){s=t;e=t;} else if(key==='yesterday'){s=new Date(t.getFullYear(),t.getMonth(),t.getDate()-1);e=s;}
@@ -682,17 +771,23 @@ function applyShortcut(key){
   dpState.selStart=s; dpState.selEnd=e; dpState.viewYear=e.getFullYear(); dpState.viewMonth=e.getMonth();
   applyDateRange();
 }
+
 function applyDateRange(){
   if(!dpState.selStart) return;
   const s=dpState.selStart, e=dpState.selEnd||dpState.selStart;
   launchState.filterStart=dateToIso(s<e?s:e); launchState.filterEnd=dateToIso(s<e?e:s);
+  
+  // Atualiza Local + Nuvem com as novas datas
+  saveConfigToCloud();
+  
   document.getElementById('dpTriggerLabel').textContent=`${fmtShort(s<e?s:e)} - ${fmtShort(s<e?e:s)}`;
   document.getElementById('dpDropdown').classList.remove('open');
+  
   renderAllScreens();
 }
 
 // ============================================================
-// ADMIN SETTINGS
+// ADMIN SETTINGS & SAVING CLOUD
 // ============================================================
 function validatePercentages(){
   const s=(parseFloat(document.getElementById('admPctGQ').value)||0)+(parseFloat(document.getElementById('admPctGF').value)||0)+(parseFloat(document.getElementById('admPctMQ').value)||0)+(parseFloat(document.getElementById('admPctMF').value)||0);
@@ -700,6 +795,32 @@ function validatePercentages(){
   badge.innerText=`${s.toFixed(1)}%`;
   if(Math.abs(s-100)<0.1){badge.className="text-[10px] font-black px-2 py-0.5 rounded bg-accent-green/10 text-accent-green border border-accent-green/20";err.classList.add('hidden');return true;}
   else{badge.className="text-[10px] font-black px-2 py-0.5 rounded bg-accent-red/10 text-accent-red border border-accent-red/20";err.classList.remove('hidden');return false;}
+}
+
+function updateTargetSummary() {
+  const cpl = launchState.metaLeads > 0 ? (launchState.verbaTotal / launchState.metaLeads).toFixed(2) : '0.00';
+  document.getElementById('admTargetSummary').innerHTML=`Verba: <b class="text-accent-green">R$ ${launchState.verbaTotal.toLocaleString('pt-BR')}</b> · Leads: <b class="text-brand-blue">${launchState.metaLeads.toLocaleString('pt-BR')}</b> · CPL Ideal: <b class="text-accent-yellow">R$ ${cpl}</b>`;
+}
+
+async function saveConfigToCloud() {
+  localStorage.setItem('aion_config', JSON.stringify(launchState));
+  if (db) {
+    try {
+      await db.collection('launchConfig').doc('global').set({
+        nomeLancamento: launchState.nomeLancamento,
+        dataInicio: launchState.dataInicio,
+        dataFim: launchState.dataFim,
+        filterStart: launchState.filterStart,
+        filterEnd: launchState.filterEnd,
+        verbaTotal: launchState.verbaTotal,
+        metaLeads: launchState.metaLeads,
+        pctGQ: launchState.pctGQ, pctGF: launchState.pctGF,
+        pctMQ: launchState.pctMQ, pctMF: launchState.pctMF,
+        sheetUrl: launchState.sheetUrl
+      });
+      console.log('Salvo na nuvem com sucesso!');
+    } catch(e) { console.warn('Erro ao salvar na nuvem.', e); }
+  }
 }
 
 function saveAdminConfig(){
@@ -716,14 +837,15 @@ function saveAdminConfig(){
   launchState.sheetUrl = document.getElementById('admSheetUrl').value.trim();
   
   document.getElementById('headerLaunchName').textContent = launchState.nomeLancamento.toUpperCase();
-  document.getElementById('admTargetSummary').innerHTML=`Verba: <b class="text-accent-green">R$ ${launchState.verbaTotal.toLocaleString('pt-BR')}</b> · Leads: <b class="text-brand-blue">${launchState.metaLeads.toLocaleString('pt-BR')}</b> · CPL Ideal: <b class="text-accent-yellow">R$ ${(launchState.verbaTotal/launchState.metaLeads).toFixed(2)}</b>`;
+  updateTargetSummary();
   
   applyShortcut('launch');
+  saveConfigToCloud();
   syncDataFromSheets();
 }
 
 // ============================================================
-// DATA ENGINE (API ADVERONIX GVIZ) COM LIMPEZA DE MEMÓRIA
+// DATA ENGINE (API ADVERONIX GVIZ BLINDADA)
 // ============================================================
 function parseGvizTable(g){
   if(!g||!g.table||!g.table.rows) return[];
@@ -744,7 +866,10 @@ function parseGvizTable(g){
 
 function fetchGvizJSONP(url,sheet){
   return new Promise(resolve=>{
-    const m=url.match(/\/d\/([^\/]+)/); if(!m)return resolve(null);
+    if(!url || !url.includes('/d/')) return resolve(null); // Anti-Crash da URL
+    const m = url.match(/\/d\/([^\/]+)/); 
+    if(!m) return resolve(null); 
+    
     const docId=m[1], cb='gviz_'+Math.random().toString(36).slice(2);
     let done=false;
     const s=document.createElement('script');
@@ -770,8 +895,14 @@ async function syncDataFromSheets(){
   st.innerHTML=`<span class="w-1.5 h-1.5 rounded-full bg-accent-yellow animate-ping"></span><span class="font-bold text-accent-yellow">Conectando...</span>`;
   
   let isMock = false;
-  let meta = await fetchGvizJSONP(launchState.sheetUrl, 'Meta Ads');
-  let google = await fetchGvizJSONP(launchState.sheetUrl, 'Google Ads');
+  let meta = null;
+  let google = null;
+
+  // Só tenta puxar se a URL for minimamente válida para não travar no Aguardando...
+  if (launchState.sheetUrl && launchState.sheetUrl.includes('/d/')) {
+    meta = await fetchGvizJSONP(launchState.sheetUrl, 'Meta Ads');
+    google = await fetchGvizJSONP(launchState.sheetUrl, 'Google Ads');
+  }
   
   if(!meta || !meta.length) { meta = generateMockMeta(); isMock = true; }
   if(!google || !google.length) { google = generateMockGoogle(); isMock = true; }
@@ -780,7 +911,7 @@ async function syncDataFromSheets(){
   launchState.dataGoogle = google;
   
   if(isMock) {
-    st.innerHTML=`<span class="w-1.5 h-1.5 rounded-full bg-accent-yellow shadow-[0_0_8px_#F59E0B]"></span><span class="font-bold text-accent-yellow">⚠️ Simulador Ativo</span>`;
+    st.innerHTML=`<span class="w-1.5 h-1.5 rounded-full bg-accent-yellow shadow-[0_0_8px_#F59E0B]"></span><span class="font-bold text-accent-yellow">⚠️ Simulador Ativo (Link Inválido/Vazio)</span>`;
   } else {
     st.innerHTML=`<span class="w-1.5 h-1.5 rounded-full bg-accent-green shadow-[0_0_8px_#10B981]"></span><span class="font-bold text-accent-green">Conectado</span>`;
   }
@@ -839,11 +970,12 @@ function parseNum(v){
 }
 
 function filterByDate(rows){
-  const fs=launchState.filterStart, fe=launchState.filterEnd;
+  const fs = launchState.filterStart, fe = launchState.filterEnd;
   if(!fs||!fe) return rows;
   return rows.filter(r => {
-    const day=getCol(r,['Day','Dia'])||'';
-    return day>=fs && day<=fe;
+    const rawDay = getCol(r,['Day','Dia','Date','Data'])||'';
+    const normDay = normalizeDate(rawDay); // Ponto de salvação contra erro na formatação do Sheets
+    return normDay >= fs && normDay <= fe;
   });
 }
 
@@ -879,7 +1011,8 @@ function renderFunnelAndTimeline(){
     const sp = parseNum(getCol(r,['Amount Spent','Cost (Spend)','Valor gasto','Custo']));
     
     const catNome = plat==='M' ? (getCol(r,['Ad Set Name','Nome do conjunto de anúncios'])||'') : (getCol(r,['Ad Group Name','Grupo de anúncios'])||'');
-    const day = getCol(r,['Day','Dia'])||'';
+    const rawDay = getCol(r,['Day','Dia','Date','Data'])||'';
+    const day = normalizeDate(rawDay);
     
     totalImp+=i; totalClicks+=c; totalLPV+=lpv; totalLeads+=l; totalGasto+=sp;
     
@@ -893,7 +1026,7 @@ function renderFunnelAndTimeline(){
   meta.forEach(r => processRow(r, 'M'));
   google.forEach(r => processRow(r, 'G'));
 
-  // Cálculos do Funil
+  // Métricas do Funil
   const cpm = totalImp > 0 ? (totalGasto / totalImp) * 1000 : 0;
   const ctr = totalImp > 0 ? (totalClicks / totalImp) * 100 : 0;
   const cr = totalClicks > 0 ? (totalLPV / totalClicks) * 100 : 0;
@@ -918,7 +1051,7 @@ function renderFunnelAndTimeline(){
   document.getElementById('barLeads').style.width = Math.min(100, (totalLeads/(launchState.metaLeads||1))*100) + '%';
   document.getElementById('barConv').style.width = Math.min(100, cvr*3) + '%';
 
-  // Pacing HTML Building
+  // Pacing
   const t = today(), launchEnd = isoToDate(launchState.dataFim);
   let daysLeft = Math.round((launchEnd - t) / 86400000) + 1;
   if(t > launchEnd) daysLeft = 0;
@@ -943,13 +1076,14 @@ function renderFunnelAndTimeline(){
   });
   document.getElementById('pacingTableBody').innerHTML = htmlPacing;
 
-  // Combo Chart
+  // Combo Chart Dinâmico & Anti-Crash
   const startDate = isoToDate(launchState.filterStart);
   const endDate = isoToDate(launchState.filterEnd);
-  const dayDiff = Math.round((endDate-startDate)/86400000) + 1;
+  let dayDiff = Math.round((endDate-startDate)/86400000) + 1;
+  if(isNaN(dayDiff) || dayDiff < 1) dayDiff = 1; // Proteção para não crachar array
   
   const categories = [], seriesLeads = [], seriesCPL = [];
-  for(let i=0; i<Math.max(1,dayDiff); i++){
+  for(let i=0; i<dayDiff; i++){
     const d=new Date(startDate); d.setDate(d.getDate()+i);
     const iso=dateToIso(d);
     
