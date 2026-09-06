@@ -51,7 +51,7 @@
     @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
     .fade-in{animation:fadeIn .35s ease forwards}
 
-    /* ===== DATE PICKER CUSTOMIZADO (ROXO & AUTOMÁTICO) ===== */
+    /* DATE PICKER */
     .dp-wrap { position: relative; display: inline-block; }
     .dp-trigger { display: flex; align-items: center; gap: 8px; background: transparent; border: 1px solid #2D3148; border-radius: 6px; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: 600; color: #e2e8f0; white-space: nowrap; transition: border-color 0.2s, background 0.2s; user-select: none; }
     .dp-trigger:hover, .dp-trigger.active { border-color: #475569; background: rgba(30, 41, 59, 0.5); }
@@ -84,23 +84,19 @@
     .dp-day.dp-day-in-range { background: rgba(147, 51, 234, 0.15); color: #c084fc; border-radius: 6px; }
     .dp-day.dp-day-selected.dp-day-range-end { background: #9333ea !important; color: #ffffff; }
 
-    /* Estilo Personalizado do Tooltip do ApexCharts */
-    .apexcharts-tooltip {
-      background: #0F121A !important;
-      border: 1px solid #2D3148 !important;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3) !important;
-      color: #F1F5F9 !important;
-    }
-    .apexcharts-tooltip-title {
-      background: #1A1D27 !important;
-      border-bottom: 1px solid #2D3148 !important;
-      font-weight: 700 !important;
-      padding: 6px 10px !important;
-      font-size: 11px !important;
-    }
-    .apexcharts-tooltip-series-group {
-      padding: 4px 10px !important;
-    }
+    /* TOOLTIP APEXCHARTS */
+    .apexcharts-tooltip { background: #0F121A !important; border: 1px solid #2D3148 !important; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3) !important; color: #F1F5F9 !important; }
+    .apexcharts-tooltip-title { background: #1A1D27 !important; border-bottom: 1px solid #2D3148 !important; font-weight: 700 !important; padding: 6px 10px !important; font-size: 11px !important; }
+    .apexcharts-tooltip-series-group { padding: 4px 10px !important; }
+
+    /* ESTILOS DO SIDEBAR COLLAPSE */
+    #sidebar { transition: width 0.3s ease; }
+    #sidebar.collapsed { width: 5.5rem; /* w-22 equivalente */ }
+    #sidebar.collapsed .sb-text { display: none; }
+    #sidebar.collapsed .p-6 { padding: 1.5rem 0; justify-content: center; }
+    #sidebar.collapsed .sb-nav-btn { justify-content: center; padding-left: 0; padding-right: 0; }
+    #sidebar.collapsed .sb-profile { justify-content: center; padding-left: 0; padding-right: 0; }
+    #sidebar.collapsed .sb-sync-info { justify-content: center; }
   </style>
 </head>
 <body class="bg-bg-base text-text-primary antialiased min-h-screen flex overflow-x-hidden">
@@ -170,53 +166,59 @@
 <!-- ======= APP SHELL ======= -->
 <div id="appShell" class="hidden w-full flex">
 
-  <!-- SIDEBAR -->
-  <aside class="w-64 bg-bg-card border-r border-border-custom flex flex-col justify-between h-screen sticky top-0 z-40 shrink-0">
+  <!-- SIDEBAR COM COLLAPSE -->
+  <aside id="sidebar" class="w-64 bg-bg-card border-r border-border-custom flex flex-col justify-between h-screen sticky top-0 z-40 shrink-0 relative">
+    
+    <!-- BOTÃO DE RECOLHER/EXPANDIR -->
+    <button onclick="toggleSidebar()" class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-bg-card border border-border-custom rounded-full flex items-center justify-center text-text-muted hover:text-white hover:border-accent-blue transition z-50 shadow-md">
+      <svg id="sb-toggle-icon" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    </button>
+
     <div>
       <div class="p-6 border-b border-border-custom flex items-center gap-3">
-        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-600 to-emerald-500 flex items-center justify-center font-black text-white text-lg shadow-lg">A</div>
-        <div>
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-600 to-emerald-500 flex items-center justify-center font-black text-white text-lg shadow-lg shrink-0">A</div>
+        <div class="sb-text">
           <h1 class="font-extrabold text-sm text-white tracking-wider uppercase">AION WAR ROOM</h1>
           <p class="text-[10px] text-text-muted font-medium">Lançamento Digital</p>
         </div>
       </div>
       <nav class="p-4 space-y-1.5">
-        <button id="nav-t1" onclick="navTo('t1')" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all bg-accent-blue text-white shadow-md">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          Painel Admin
+        <button id="nav-t1" onclick="navTo('t1')" title="Painel Admin" class="sb-nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all bg-accent-blue text-white shadow-md">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span class="sb-text truncate">Painel Admin</span>
         </button>
-        <button id="nav-t2" onclick="navTo('t2')" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all text-text-muted hover:text-text-primary hover:bg-bg-input">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-          Funil & Timeline
+        <button id="nav-t2" onclick="navTo('t2')" title="Centro de Comando" class="sb-nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all text-text-muted hover:text-text-primary hover:bg-bg-input">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          <span class="sb-text truncate">Funil & Timeline</span>
         </button>
-        <button id="nav-t3" onclick="navTo('t3')" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all text-text-muted hover:text-text-primary hover:bg-bg-input">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-          Criativos
+        <button id="nav-t3" onclick="navTo('t3')" title="Análise de Criativos" class="sb-nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all text-text-muted hover:text-text-primary hover:bg-bg-input">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <span class="sb-text truncate">Criativos</span>
         </button>
-        <button id="nav-t4" onclick="navTo('t4')" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all text-text-muted hover:text-text-primary hover:bg-bg-input">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-          Públicos
+        <button id="nav-t4" onclick="navTo('t4')" title="Análise de Públicos" class="sb-nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all text-text-muted hover:text-text-primary hover:bg-bg-input">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          <span class="sb-text truncate">Públicos</span>
         </button>
       </nav>
     </div>
     <div class="p-4 border-t border-border-custom space-y-3">
-      <div class="flex items-center gap-2.5 px-1">
+      <div class="sb-profile flex items-center gap-2.5 px-1">
         <div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-600 to-emerald-500 flex items-center justify-center text-white font-black text-xs shrink-0" id="userAvatar">A</div>
-        <div class="min-w-0">
+        <div class="min-w-0 sb-text">
           <p class="text-xs font-semibold text-white truncate" id="userDisplayName">Usuário</p>
           <span id="userRoleBadge" class="role-admin">● ADMIN</span>
         </div>
       </div>
-      <div class="flex items-center gap-2 text-xs text-text-muted">
-        <span class="w-2 h-2 rounded-full bg-accent-green animate-pulse"></span>
-        <span class="truncate font-medium">Adveronix Reader Active</span>
+      <div class="sb-sync-info flex items-center gap-2 text-xs text-text-muted px-1">
+        <span class="w-2 h-2 rounded-full bg-accent-green animate-pulse shrink-0"></span>
+        <span class="truncate font-medium sb-text">Adveronix Reader Active</span>
       </div>
-      <button onclick="syncDataFromSheets()" class="w-full bg-bg-input hover:bg-border-custom text-text-primary py-2 rounded-md text-xs font-bold transition flex items-center justify-center gap-2 border border-border-custom">
-        <span>🔄</span> Recarregar Planilha
+      <button onclick="syncDataFromSheets()" title="Recarregar Planilha" class="sb-nav-btn w-full bg-bg-input hover:bg-border-custom text-text-primary py-2 rounded-md text-xs font-bold transition flex items-center gap-2 border border-border-custom px-3.5">
+        <span class="shrink-0">🔄</span> <span class="sb-text truncate">Recarregar Planilha</span>
       </button>
-      <button onclick="doLogout()" class="w-full bg-accent-red/10 hover:bg-accent-red/20 text-accent-red py-2 rounded-md text-xs font-bold transition flex items-center justify-center gap-2 border border-accent-red/20">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-        Sair
+      <button onclick="doLogout()" title="Sair do War Room" class="sb-nav-btn w-full bg-accent-red/10 hover:bg-accent-red/20 text-accent-red py-2 rounded-md text-xs font-bold transition flex items-center gap-2 border border-accent-red/20 px-3.5">
+        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        <span class="sb-text truncate">Sair</span>
       </button>
     </div>
   </aside>
@@ -227,28 +229,24 @@
     <!-- HEADER com Date Picker global -->
     <header class="h-16 border-b border-border-custom bg-bg-card px-6 flex items-center justify-between sticky top-0 z-30">
       <div class="flex items-center gap-3">
-        <h2 class="text-base font-extrabold text-white tracking-wide" id="headerLaunchName">NA FONTE CHINELOS - SETEMBRO2026</h2>
-        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-accent-green/10 text-accent-green border border-accent-green/20 flex items-center gap-1.5">
+        <h2 class="text-base font-extrabold text-white tracking-wide truncate" id="headerLaunchName">NOME DO CLIENTE | NOME DO LANÇAMENTO</h2>
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-accent-green/10 text-accent-green border border-accent-green/20 hidden sm:flex items-center gap-1.5 shrink-0">
           <span class="w-1.5 h-1.5 rounded-full bg-accent-green"></span> Ativo
         </span>
       </div>
-      <div class="flex items-center gap-4">
-        <!-- STATUS SYNC -->
-        <div id="syncStatus" class="flex items-center gap-1.5 text-xs font-medium text-accent-blue">
+      <div class="flex items-center gap-4 shrink-0">
+        <div id="syncStatus" class="hidden sm:flex items-center gap-1.5 text-xs font-medium text-accent-blue">
           <span class="inline-block w-2 h-2 rounded-full bg-accent-blue animate-ping"></span>
           <span>Adveronix Conectado</span>
         </div>
 
-        <!-- DATE PICKER GLOBAL -->
         <div class="dp-wrap" id="dpWrap">
           <button class="dp-trigger" id="dpTrigger" onclick="toggleDatePicker()">
             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
             <span id="dpTriggerLabel">02/09/26 - 02/09/26</span>
           </button>
 
-          <!-- DROPDOWN -->
           <div class="dp-dropdown" id="dpDropdown">
-            <!-- Atalhos rápidos em Grid -->
             <div class="dp-shortcuts">
               <button class="dp-shortcut" onclick="applyShortcut('today')">Hoje</button>
               <button class="dp-shortcut" onclick="applyShortcut('yesterday')">Ontem</button>
@@ -259,7 +257,6 @@
               <button class="dp-shortcut" onclick="applyShortcut('thisYear')">Este Ano</button>
             </div>
             
-            <!-- Calendário -->
             <div class="dp-calendar-wrap">
               <div class="dp-cal-header">
                 <button class="dp-cal-nav" onclick="dpNavMonth(-1)">
@@ -282,14 +279,14 @@
     </header>
 
     <!-- TELAS -->
-    <div class="p-8 space-y-8 flex-grow">
+    <div class="p-4 md:p-8 space-y-8 flex-grow">
       
       <!-- TELA 1 — ADMIN -->
       <section id="screen-t1" class="screen-view space-y-6">
         <div class="flex justify-between items-center">
           <div>
             <h2 class="text-xl font-extrabold text-white">⚙️ Painel de Administração</h2>
-            <p class="text-xs text-text-muted mt-1">Configure as metas e o período do lançamento.</p>
+            <p class="text-xs text-text-muted mt-1">Configure a origem, metas e o período do projeto.</p>
           </div>
           <button id="btnSaveAdmin" onclick="saveAdminConfig()" class="px-6 py-2.5 rounded-md bg-accent-blue hover:bg-blue-600 text-white text-xs font-bold transition shadow-lg shadow-blue-500/20">
             💾 Salvar & Recarregar
@@ -299,63 +296,90 @@
           <svg class="w-5 h-5 text-accent-blue shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           <p class="text-xs text-accent-blue font-medium">Modo <strong>Leitura</strong> — visualização somente. Apenas o Administrador pode editar.</p>
         </div>
+        
         <form id="adminForm" onsubmit="event.preventDefault();saveAdminConfig();" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- BLOCO 1: IDENTIDADE E ORIGEM -->
           <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
             <h3 class="text-sm font-bold text-white border-b border-border-custom pb-3 flex items-center gap-2">
-              <span class="text-accent-blue">1.</span> Período do Lançamento & Budget
+              <span class="text-accent-blue">1.</span> Identidade e Origem
             </h3>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">Início do Lançamento</label>
-                <input type="date" id="admDataInicio" value="2026-09-01" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
+                <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">Cliente</label>
+                <input type="text" id="admNomeCliente" placeholder="Ex: Na Fonte" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
               </div>
               <div>
-                <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">Fim do Lançamento</label>
-                <input type="date" id="admDataFim" value="2026-09-13" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
+                <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">Lançamento</label>
+                <input type="text" id="admNomeLancamento" placeholder="Ex: Setembro 2026" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
               </div>
             </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">Verba Total Prevista (R$)</label>
-                <input type="number" id="admVerbaTotal" value="20000" step="100" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-sm font-bold text-accent-green focus:outline-none focus:border-accent-blue"/>
-              </div>
-              <div>
-                <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">Meta de Leads</label>
-                <input type="number" id="admMetaLeads" value="10000" step="50" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-sm font-bold text-white focus:outline-none focus:border-accent-blue"/>
-              </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1 flex items-center justify-between">
+                Filtro Captação <span class="text-[9px] text-accent-blue font-normal normal-case">*(Opcional)*</span>
+              </label>
+              <input type="text" id="admFiltroCampanha" placeholder="Palavra na campanha (ex: CPL, [CAP])" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">URL da Planilha (Adveronix)</label>
+              <input type="url" id="admSheetUrl" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
             </div>
           </div>
-          <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
-            <div class="flex justify-between items-center border-b border-border-custom pb-3">
-              <h3 class="text-sm font-bold text-white flex items-center gap-2"><span class="text-accent-blue">2.</span> Distribuição de Budget (%)</h3>
-              <span id="pctSumBadge" class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-accent-green/20 text-accent-green">Soma: 100%</span>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div><label class="block text-[11px] font-semibold text-accent-red uppercase mb-1">Google Quente (%)</label>
-                <input type="number" id="admPctGQ" value="12" step="0.1" oninput="validatePercentages()" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/></div>
-              <div><label class="block text-[11px] font-semibold text-accent-red uppercase mb-1">Google Frio (%)</label>
-                <input type="number" id="admPctGF" value="20" step="0.1" oninput="validatePercentages()" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/></div>
-              <div><label class="block text-[11px] font-semibold text-accent-blue uppercase mb-1">Meta Quente (%)</label>
-                <input type="number" id="admPctMQ" value="28" step="0.1" oninput="validatePercentages()" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/></div>
-              <div><label class="block text-[11px] font-semibold text-accent-blue uppercase mb-1">Meta Frio (%)</label>
-                <input type="number" id="admPctMF" value="40" step="0.1" oninput="validatePercentages()" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/></div>
-            </div>
-            <div id="pctErrorMsg" class="text-[11px] text-accent-red font-semibold hidden">⚠️ A soma deve ser exatamente 100%.</div>
-          </div>
+
+          <!-- BLOCO 2: PERÍODO E METAS -->
           <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4 flex flex-col justify-between">
             <div>
-              <h3 class="text-sm font-bold text-white border-b border-border-custom pb-3 flex items-center gap-2"><span class="text-accent-blue">3.</span> Fonte de Dados Adveronix</h3>
+              <h3 class="text-sm font-bold text-white border-b border-border-custom pb-3 flex items-center gap-2">
+                <span class="text-accent-blue">2.</span> Período e Budget
+              </h3>
+              <div class="grid grid-cols-2 gap-4 mt-4">
+                <div>
+                  <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">Início</label>
+                  <input type="date" id="admDataInicio" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">Fim</label>
+                  <input type="date" id="admDataFim" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4 mt-4">
+                <div>
+                  <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">Previsto Meta (R$)</label>
+                  <input type="number" id="admVerbaMeta" step="100" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-sm font-bold text-accent-blue focus:outline-none focus:border-accent-blue"/>
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">Previsto Google (R$)</label>
+                  <input type="number" id="admVerbaGoogle" step="100" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-sm font-bold text-accent-red focus:outline-none focus:border-accent-blue"/>
+                </div>
+              </div>
               <div class="mt-4">
-                <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">URL da Planilha (Google Sheets)</label>
-                <input type="url" id="admSheetUrl" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
+                <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1">Meta de Leads (Total)</label>
+                <input type="number" id="admMetaLeads" step="50" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-sm font-bold text-white focus:outline-none focus:border-accent-blue"/>
               </div>
             </div>
-            <div class="p-4 bg-bg-input rounded-md border border-border-custom space-y-2">
+            <div class="p-4 bg-bg-input rounded-md border border-border-custom space-y-2 mt-4">
               <span class="text-[10px] font-bold uppercase tracking-wider text-accent-blue block">💡 Resumo Alvo</span>
-              <p class="text-xs text-text-primary leading-relaxed" id="admTargetSummary">
-                Verba de <b class="text-accent-green">R$ 20.000,00</b> · Meta de <b class="text-accent-blue">10.000 leads</b> · <b class="text-accent-yellow">CPL alvo: R$ 2,00</b>
-              </p>
+              <p class="text-xs text-text-primary leading-relaxed" id="admTargetSummary">Aguardando dados...</p>
             </div>
+          </div>
+
+          <!-- BLOCO 3: DISTRIBUIÇÃO -->
+          <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
+            <div class="flex justify-between items-center border-b border-border-custom pb-3">
+              <h3 class="text-sm font-bold text-white flex items-center gap-2"><span class="text-accent-blue">3.</span> Distribuição de Budget (%)</h3>
+              <span id="pctSumBadge" class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-accent-green/20 text-accent-green">Google: 100% | Meta: 100%</span>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-4">
+              <div><label class="block text-[11px] font-semibold text-accent-red uppercase mb-1">Google Quente (%)</label>
+                <input type="number" id="admPctGQ" step="0.1" oninput="validatePercentages()" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/></div>
+              <div><label class="block text-[11px] font-semibold text-accent-red uppercase mb-1">Google Frio (%)</label>
+                <input type="number" id="admPctGF" step="0.1" oninput="validatePercentages()" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/></div>
+              <div class="mt-2"><label class="block text-[11px] font-semibold text-accent-blue uppercase mb-1">Meta Quente (%)</label>
+                <input type="number" id="admPctMQ" step="0.1" oninput="validatePercentages()" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/></div>
+              <div class="mt-2"><label class="block text-[11px] font-semibold text-accent-blue uppercase mb-1">Meta Frio (%)</label>
+                <input type="number" id="admPctMF" step="0.1" oninput="validatePercentages()" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/></div>
+            </div>
+            <div id="pctErrorMsg" class="text-[11px] text-accent-red font-semibold hidden mt-4">⚠️ As somas individuais do Google e do Meta devem ser 100%.</div>
           </div>
         </form>
       </section>
@@ -366,57 +390,90 @@
           <h2 class="text-xl font-extrabold text-white">🎯 Centro de Comando</h2>
         </div>
         
-        <!-- NOVO FUNIL (8 ETAPAS - COM INVESTIMENTO NO INÍCIO) -->
+        <!-- PROGRESSO DA META -->
         <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
-          <h3 class="text-sm font-extrabold text-white uppercase tracking-wider">Jornada de Tráfego</h3>
-          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
-            
-            <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-red transition">
-              <span class="text-[10px] font-bold uppercase text-text-muted block">1. Investimento</span>
-              <div class="text-xl font-black text-accent-red" id="funnelSpent">R$ 0,00</div>
-              <div class="w-full bg-accent-red/20 h-1 rounded-full mt-2"><div class="bg-accent-red h-1" style="width:100%"></div></div>
+          <div class="flex justify-between items-end">
+            <div>
+              <h3 class="text-xs font-extrabold text-text-muted uppercase tracking-wider flex items-center gap-2">
+                <span class="text-lg">🎯</span> Progresso da Meta
+              </h3>
+              <div class="mt-1">
+                <span class="text-3xl font-black text-white" id="metaLeadsAtual">0</span> 
+                <span class="text-sm font-semibold text-text-muted" id="metaLeadsTotal">/ 10.000 Leads</span>
+              </div>
             </div>
+            <div class="text-2xl font-black text-accent-green" id="metaLeadsPct">0%</div>
+          </div>
+          <div class="w-full bg-bg-input h-3 rounded-full overflow-hidden border border-border-custom">
+            <div class="bg-gradient-to-r from-accent-blue to-accent-green h-full transition-all duration-500" id="metaLeadsBar" style="width:0%"></div>
+          </div>
+        </div>
 
-            <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
-              <span class="text-[10px] font-bold uppercase text-text-muted block">2. Impressões</span>
-              <div class="text-xl font-black text-white" id="funnelImp">0</div>
-              <div class="w-full bg-accent-blue/20 h-1 rounded-full mt-2"><div class="bg-accent-blue h-1" style="width:100%"></div></div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- VOLUME DO FUNIL -->
+          <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
+            <h3 class="text-xs font-extrabold text-text-muted uppercase tracking-wider flex items-center gap-2">
+              <span class="text-lg">🌊</span> Volume de Tráfego
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div class="bg-bg-input p-4 rounded-md border border-border-custom hover:border-accent-blue transition relative">
+                <span class="text-[10px] font-bold uppercase text-text-muted block mb-1">👁️ Impressões</span>
+                <div class="text-xl font-black text-white" id="funnelImp">0</div>
+                <div class="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-border-custom">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </div>
+              </div>
+              <div class="bg-bg-input p-4 rounded-md border border-border-custom hover:border-accent-blue transition relative">
+                <span class="text-[10px] font-bold uppercase text-text-muted block mb-1">🖱️ Cliques</span>
+                <div class="text-xl font-black text-white" id="funnelClick">0</div>
+                <div class="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-border-custom">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </div>
+              </div>
+              <div class="bg-bg-input p-4 rounded-md border border-border-custom hover:border-accent-yellow transition relative">
+                <span class="text-[10px] font-bold uppercase text-text-muted block mb-1">🌐 Visita Pág</span>
+                <div class="text-xl font-black text-white" id="funnelLPV">0</div>
+                <div class="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-border-custom">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </div>
+              </div>
+              <div class="bg-bg-input p-4 rounded-md border border-border-custom hover:border-accent-green transition">
+                <span class="text-[10px] font-bold uppercase text-text-muted block mb-1">✅ Leads</span>
+                <div class="text-xl font-black text-accent-green" id="funnelLeads">0</div>
+              </div>
             </div>
+          </div>
 
-            <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
-              <span class="text-[10px] font-bold uppercase text-text-muted block">3. Cliques</span>
-              <div class="text-xl font-black text-white" id="funnelClick">0</div>
-              <div class="w-full bg-accent-blue/20 h-1 rounded-full mt-2"><div class="bg-accent-blue h-1" id="barClick" style="width:0%"></div></div>
-            </div>
-
-            <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
-              <span class="text-[10px] font-bold uppercase text-text-muted block">4. CTR</span>
-              <div class="text-xl font-black text-accent-blue" id="funnelCTR">0.0%</div>
-              <div class="w-full bg-accent-blue/20 h-1 rounded-full mt-2"><div class="bg-accent-blue h-1" id="barCTR" style="width:0%"></div></div>
-            </div>
-
-            <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
-              <span class="text-[10px] font-bold uppercase text-text-muted block">5. Visitas (LPV)</span>
-              <div class="text-xl font-black text-white" id="funnelLPV">0</div>
-              <div class="w-full bg-accent-yellow/20 h-1 rounded-full mt-2"><div class="bg-accent-yellow h-1" id="barLPV" style="width:0%"></div></div>
-            </div>
-
-            <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
-              <span class="text-[10px] font-bold uppercase text-text-muted block">6. Connect Rate</span>
-              <div class="text-xl font-black text-accent-yellow" id="funnelCR">0.0%</div>
-              <div class="w-full bg-accent-yellow/20 h-1 rounded-full mt-2"><div class="bg-accent-yellow h-1" id="barCR" style="width:0%"></div></div>
-            </div>
-
-            <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
-              <span class="text-[10px] font-bold uppercase text-text-muted block">7. Leads</span>
-              <div class="text-xl font-black text-accent-green" id="funnelLeads">0</div>
-              <div class="w-full bg-accent-green/20 h-1 rounded-full mt-2"><div class="bg-accent-green h-1" id="barLeads" style="width:0%"></div></div>
-            </div>
-
-            <div class="bg-bg-input p-4 rounded-md border border-border-custom space-y-2 hover:border-accent-blue transition">
-              <span class="text-[10px] font-bold uppercase text-text-muted block">8. Taxa Conv. (Real)</span>
-              <div class="text-xl font-black text-accent-green" id="funnelConv">0.0%</div>
-              <div class="w-full bg-accent-green/20 h-1 rounded-full mt-2"><div class="bg-accent-green h-1" id="barConv" style="width:0%"></div></div>
+          <!-- CUSTOS E TAXAS -->
+          <div class="bg-bg-card p-6 rounded-lg border border-border-custom space-y-4">
+            <h3 class="text-xs font-extrabold text-text-muted uppercase tracking-wider flex items-center gap-2">
+              <span class="text-lg">⚡</span> Custos e Eficiência
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div class="bg-bg-input p-4 rounded-md border border-border-custom hover:border-accent-red transition">
+                <span class="text-[10px] font-bold uppercase text-text-muted block mb-1">💰 Investimento</span>
+                <div class="text-lg font-black text-accent-red truncate" id="funnelSpent">R$ 0</div>
+              </div>
+              <div class="bg-bg-input p-4 rounded-md border border-border-custom hover:border-accent-blue transition">
+                <span class="text-[10px] font-bold uppercase text-text-muted block mb-1">📢 CPM</span>
+                <div class="text-lg font-black text-accent-blue truncate" id="funnelCPM">R$ 0</div>
+              </div>
+              <div class="bg-bg-input p-4 rounded-md border border-border-custom hover:border-accent-blue transition">
+                <span class="text-[10px] font-bold uppercase text-text-muted block mb-1">📈 CTR</span>
+                <div class="text-lg font-black text-accent-blue truncate" id="funnelCTR">0%</div>
+              </div>
+              <div class="bg-bg-input p-4 rounded-md border border-border-custom hover:border-accent-yellow transition">
+                <span class="text-[10px] font-bold uppercase text-text-muted block mb-1">🔗 Connect Rate</span>
+                <div class="text-lg font-black text-accent-yellow truncate" id="funnelCR">0%</div>
+              </div>
+              <div class="bg-bg-input p-4 rounded-md border border-border-custom hover:border-accent-green transition">
+                <span class="text-[10px] font-bold uppercase text-text-muted block mb-1">💸 CPL</span>
+                <div class="text-lg font-black text-accent-green truncate" id="funnelCPL">R$ 0</div>
+              </div>
+              <div class="bg-bg-input p-4 rounded-md border border-border-custom hover:border-accent-green transition">
+                <span class="text-[10px] font-bold uppercase text-text-muted block mb-1">🎯 Tx. Conv</span>
+                <div class="text-lg font-black text-accent-green truncate" id="funnelConv">0%</div>
+              </div>
             </div>
           </div>
         </div>
@@ -499,6 +556,29 @@
 </div><!-- fim appShell -->
 
 <script>
+// ============================================================
+// LÓGICA DO SIDEBAR COLLAPSE
+// ============================================================
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const icon = document.getElementById('sb-toggle-icon');
+  
+  sb.classList.toggle('collapsed');
+  
+  if(sb.classList.contains('collapsed')) {
+    sb.classList.remove('w-64');
+    sb.classList.add('w-22'); // Equivalente a 5.5rem (88px) definidos no CSS
+    icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>';
+  } else {
+    sb.classList.remove('w-22');
+    sb.classList.add('w-64');
+    icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>';
+  }
+  
+  // Força o gráfico do ApexCharts a se redimensionar para preencher o novo espaço
+  setTimeout(() => window.dispatchEvent(new Event('resize')), 300);
+}
+
 // ============================================================
 // FIREBASE & USUÁRIOS
 // ============================================================
@@ -645,9 +725,13 @@ function applyDateRange(){
 // ============================================================
 const DEFAULT_SPREADSHEET_URL="https://docs.google.com/spreadsheets/d/1iY5TYTyFDIlQ_5N3MizfCpPVwj7I8_sEkyFBtVrzb_k/edit?usp=sharing";
 let launchState={
+  nomeCliente: "NA FONTE",
+  nomeLancamento: "CHINELOS",
+  filtroCampanha: "",
   dataInicio:"2026-09-01", dataFim:"2026-09-13",
   filterStart:"2026-09-01", filterEnd:"2026-09-13",
-  verbaTotal:20000,pctGQ:12,pctGF:20,pctMQ:28,pctMF:40,
+  verbaMeta:10000, verbaGoogle:10000,
+  pctGQ:40, pctGF:60, pctMQ:30, pctMF:70,
   metaLeads:10000,
   sheetUrl:DEFAULT_SPREADSHEET_URL,
   dataMeta:[],dataGoogle:[]
@@ -702,13 +786,24 @@ function enterApp(userData){
   document.getElementById('appShell').classList.remove('hidden');
   document.getElementById('appShell').classList.add('flex');
   applyPermissions();
+  
+  document.getElementById('admNomeCliente').value=launchState.nomeCliente||'';
+  document.getElementById('admNomeLancamento').value=launchState.nomeLancamento||'';
+  document.getElementById('admFiltroCampanha').value=launchState.filtroCampanha||'';
   document.getElementById('admSheetUrl').value=launchState.sheetUrl;
   
   dpState.selStart=isoToDate(launchState.dataInicio);
   dpState.selEnd=isoToDate(launchState.dataFim);
   document.getElementById('dpTriggerLabel').textContent=`${fmtShort(dpState.selStart)} - ${fmtShort(dpState.selEnd)}`;
   
+  updateHeaderName();
   syncDataFromSheets();
+}
+
+function updateHeaderName() {
+  const cliente = launchState.nomeCliente || "CLIENTE";
+  const lancamento = launchState.nomeLancamento || "LANÇAMENTO";
+  document.getElementById('headerLaunchName').textContent = `${cliente} | ${lancamento}`.toUpperCase();
 }
 
 function applyPermissions(){
@@ -759,33 +854,64 @@ function navTo(id){
   document.getElementById('screen-'+id).classList.remove('hidden');
   ['t1','t2','t3','t4'].forEach(i=>{
     const b=document.getElementById('nav-'+i); if(!b)return;
-    b.className=i===id?'w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all bg-accent-blue text-white shadow-md':'w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all text-text-muted hover:text-text-primary hover:bg-bg-input';
+    b.className=i===id?'sb-nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all bg-accent-blue text-white shadow-md':'sb-nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all text-text-muted hover:text-text-primary hover:bg-bg-input';
   });
   if(id==='t2') setTimeout(()=>renderFunnelAndTimeline(),100);
 }
 
 function validatePercentages(){
-  const s=(parseFloat(document.getElementById('admPctGQ').value)||0)+(parseFloat(document.getElementById('admPctGF').value)||0)+(parseFloat(document.getElementById('admPctMQ').value)||0)+(parseFloat(document.getElementById('admPctMF').value)||0);
+  const gq=(parseFloat(document.getElementById('admPctGQ').value)||0);
+  const gf=(parseFloat(document.getElementById('admPctGF').value)||0);
+  const mq=(parseFloat(document.getElementById('admPctMQ').value)||0);
+  const mf=(parseFloat(document.getElementById('admPctMF').value)||0);
+  
+  const sumG = gq + gf;
+  const sumM = mq + mf;
+
   const badge=document.getElementById('pctSumBadge'), err=document.getElementById('pctErrorMsg');
-  badge.innerText=`Soma: ${s.toFixed(1)}%`;
-  if(Math.abs(s-100)<0.1){badge.className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-accent-green/20 text-accent-green";err.classList.add('hidden');return true;}
-  else{badge.className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-accent-red/20 text-accent-red";err.classList.remove('hidden');return false;}
+  
+  let isValid = true;
+  let msg = [];
+
+  if(Math.abs(sumG - 100) > 0.1) { isValid = false; msg.push('Google ≠ 100%'); }
+  if(Math.abs(sumM - 100) > 0.1) { isValid = false; msg.push('Meta ≠ 100%'); }
+
+  if(isValid){
+    badge.innerText=`Google: 100% | Meta: 100%`;
+    badge.className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-accent-green/20 text-accent-green";
+    err.classList.add('hidden');
+    return true;
+  } else {
+    badge.innerText=msg.join(' - ');
+    badge.className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-accent-red/20 text-accent-red";
+    err.classList.remove('hidden');
+    return false;
+  }
 }
 
 function saveAdminConfig(){
   if(currentUser&&currentUser.role!=='admin'){alert('Acesso negado.');return;}
-  if(!validatePercentages()){alert('Soma dos % deve ser 100%.');return;}
+  if(!validatePercentages()){alert('As somas do Google e do Meta devem ser 100% individualmente.');return;}
+  
+  launchState.nomeCliente=document.getElementById('admNomeCliente').value.trim();
+  launchState.nomeLancamento=document.getElementById('admNomeLancamento').value.trim();
+  launchState.filtroCampanha=document.getElementById('admFiltroCampanha').value.trim();
+  
   launchState.dataInicio=document.getElementById('admDataInicio').value;
   launchState.dataFim=document.getElementById('admDataFim').value;
-  launchState.verbaTotal=parseFloat(document.getElementById('admVerbaTotal').value)||20000;
+  launchState.verbaMeta=parseFloat(document.getElementById('admVerbaMeta').value)||0;
+  launchState.verbaGoogle=parseFloat(document.getElementById('admVerbaGoogle').value)||0;
   launchState.metaLeads=parseFloat(document.getElementById('admMetaLeads').value)||10000;
+  
   launchState.pctGQ=parseFloat(document.getElementById('admPctGQ').value)||0;
   launchState.pctGF=parseFloat(document.getElementById('admPctGF').value)||0;
   launchState.pctMQ=parseFloat(document.getElementById('admPctMQ').value)||0;
   launchState.pctMF=parseFloat(document.getElementById('admPctMF').value)||0;
   launchState.sheetUrl=document.getElementById('admSheetUrl').value.trim()||DEFAULT_SPREADSHEET_URL;
-  const cpl=launchState.metaLeads>0?(launchState.verbaTotal/launchState.metaLeads).toFixed(2):'0.00';
-  document.getElementById('admTargetSummary').innerHTML=`Verba de <b class="text-accent-green">R$ ${launchState.verbaTotal.toLocaleString('pt-BR')}</b> · Meta de <b class="text-accent-blue">${launchState.metaLeads.toLocaleString('pt-BR')} leads</b> · <b class="text-accent-yellow">CPL alvo: R$ ${cpl}</b>`;
+  
+  const totalGeral = launchState.verbaMeta + launchState.verbaGoogle;
+  const cpl = launchState.metaLeads>0 ? (totalGeral/launchState.metaLeads).toFixed(2) : '0.00';
+  document.getElementById('admTargetSummary').innerHTML=`Verba Total <b class="text-accent-green">R$ ${totalGeral.toLocaleString('pt-BR')}</b> · Meta <b class="text-accent-blue">${launchState.metaLeads.toLocaleString('pt-BR')} leads</b> · <b class="text-accent-yellow">CPL alvo: R$ ${cpl}</b>`;
   
   launchState.filterStart=launchState.dataInicio;
   launchState.filterEnd=launchState.dataFim;
@@ -793,8 +919,9 @@ function saveAdminConfig(){
   dpState.selEnd=isoToDate(launchState.dataFim);
   document.getElementById('dpTriggerLabel').textContent=`${fmtShort(dpState.selStart)} - ${fmtShort(dpState.selEnd)}`;
   
+  updateHeaderName();
   syncDataFromSheets();
-  alert('Configurações salvas!');
+  alert('Configurações salvas com sucesso!');
 }
 
 // ============================================================
@@ -852,7 +979,7 @@ function generateMockMeta(){
   for(let d=new Date(s);d<=e;d.setDate(d.getDate()+1)){
     const iso=dateToIso(new Date(d));
     sets.forEach(st=>ads.forEach(a=>rows.push({
-      'Day':iso,'Ad Set Name':st,'Ad Name':a,
+      'Day':iso,'Campaign Name':'[CAP] Lançamento','Ad Set Name':st,'Ad Name':a,
       'Impressions':Math.floor(Math.random()*800)+200,
       'Unique Link Clicks':Math.floor(Math.random()*40)+10,
       'Website landing page views':Math.floor(Math.random()*35)+5,
@@ -870,7 +997,7 @@ function generateMockGoogle(){
   for(let d=new Date(s);d<=e;d.setDate(d.getDate()+1)){
     const iso=dateToIso(new Date(d));
     grps.forEach(g=>ads.forEach(a=>rows.push({
-      'Day':iso,'Ad Group Name':g,'Ad Name':a,
+      'Day':iso,'Campaign Name':'[CAP] Lançamento','Ad Group Name':g,'Ad Name':a,
       'Impressions':Math.floor(Math.random()*2000)+500,
       'Clicks':Math.floor(Math.random()*80)+15,
       'Landing Page Views':Math.floor(Math.random()*70)+10,
@@ -903,6 +1030,15 @@ function filterByDate(rows){
   });
 }
 
+function filterByCampaign(rows){
+  const keyword = (launchState.filtroCampanha || '').trim().toLowerCase();
+  if(!keyword) return rows;
+  return rows.filter(r => {
+    const campName = getCol(r, ['Campaign Name', 'Nome da campanha', 'Campaign', 'Campanha']) || '';
+    return campName.toLowerCase().includes(keyword);
+  });
+}
+
 function renderAllScreens(){
   renderFunnelAndTimeline();
   renderCriativos();
@@ -914,17 +1050,17 @@ function isQuente(nome) {
 }
 
 function renderFunnelAndTimeline(){
-  const meta=filterByDate(launchState.dataMeta);
-  const google=filterByDate(launchState.dataGoogle);
+  let meta=filterByCampaign(filterByDate(launchState.dataMeta));
+  let google=filterByCampaign(filterByDate(launchState.dataGoogle));
   
   let totalImp=0,totalClicks=0,totalLPV=0,totalLeads=0,totalGasto=0;
   const dayStats={};
   
   const pacing = {
-    mq: { nome: "Meta Quente", pct: launchState.pctMQ, gasto: 0 },
-    mf: { nome: "Meta Frio", pct: launchState.pctMF, gasto: 0 },
-    gq: { nome: "Google Quente", pct: launchState.pctGQ, gasto: 0 },
-    gf: { nome: "Google Frio", pct: launchState.pctGF, gasto: 0 },
+    mq: { nome: "Meta Quente", pct: launchState.pctMQ, gasto: 0, teto: launchState.verbaMeta },
+    mf: { nome: "Meta Frio", pct: launchState.pctMF, gasto: 0, teto: launchState.verbaMeta },
+    gq: { nome: "Google Quente", pct: launchState.pctGQ, gasto: 0, teto: launchState.verbaGoogle },
+    gf: { nome: "Google Frio", pct: launchState.pctGF, gasto: 0, teto: launchState.verbaGoogle },
   };
 
   const audMap={};
@@ -951,7 +1087,6 @@ function renderFunnelAndTimeline(){
     if(!dayStats[day]) dayStats[day]={leads:0,spent:0};
     dayStats[day].leads+=l; dayStats[day].spent+=sp;
 
-    // Popula dados para o Top 5
     if(!audMap[pubName]) audMap[pubName]={name:pubName, leads:0, spent:0, lpv:0};
     audMap[pubName].leads+=l; audMap[pubName].spent+=sp; audMap[pubName].lpv+=lpv;
 
@@ -962,31 +1097,34 @@ function renderFunnelAndTimeline(){
   meta.forEach(r => processRow(r, true));
   google.forEach(r => processRow(r, false));
 
-  // Atualiza Valores do Funil
-  const ctr = totalImp > 0 ? (totalClicks/totalImp)*100 : 0;
-  const cr = totalClicks > 0 ? (totalLPV/totalClicks)*100 : 0;
-  const cvr = totalLPV > 0 ? (totalLeads/totalLPV)*100 : 0; // Fórmula Oficial: Leads / Visitas
-
-  document.getElementById('funnelSpent').innerText = 'R$ ' + totalGasto.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  // 1. Progresso da Meta
+  const metaLeadsStr = launchState.metaLeads || 1;
+  const pctMeta = Math.min(100, (totalLeads / metaLeadsStr) * 100);
   
+  document.getElementById('metaLeadsAtual').innerText = totalLeads.toLocaleString('pt-BR');
+  document.getElementById('metaLeadsTotal').innerText = `/ ${Number(metaLeadsStr).toLocaleString('pt-BR')} Leads`;
+  document.getElementById('metaLeadsPct').innerText = pctMeta.toFixed(1) + '%';
+  document.getElementById('metaLeadsBar').style.width = pctMeta + '%';
+
+  // 2. Volume do Funil
   document.getElementById('funnelImp').innerText = totalImp.toLocaleString('pt-BR');
   document.getElementById('funnelClick').innerText = totalClicks.toLocaleString('pt-BR');
-  document.getElementById('barClick').style.width = Math.min(100, (totalClicks/(totalImp||1))*1000) + '%';
-  
-  document.getElementById('funnelCTR').innerText = ctr.toFixed(2) + '%';
-  document.getElementById('barCTR').style.width = Math.min(100, ctr*5) + '%';
-  
   document.getElementById('funnelLPV').innerText = Math.round(totalLPV).toLocaleString('pt-BR');
-  document.getElementById('barLPV').style.width = Math.min(100, cr) + '%';
-  
-  document.getElementById('funnelCR').innerText = cr.toFixed(2) + '%';
-  document.getElementById('barCR').style.width = Math.min(100, cr) + '%';
-  
   document.getElementById('funnelLeads').innerText = totalLeads.toLocaleString('pt-BR');
-  document.getElementById('barLeads').style.width = Math.min(100, (totalLeads/(launchState.metaLeads||1))*100) + '%';
-  
+
+  // 3. Eficiência e Custos
+  const cpm = totalImp > 0 ? (totalGasto / totalImp) * 1000 : 0;
+  const ctr = totalImp > 0 ? (totalClicks / totalImp) * 100 : 0;
+  const cr = totalClicks > 0 ? (totalLPV / totalClicks) * 100 : 0;
+  const cpl = totalLeads > 0 ? (totalGasto / totalLeads) : 0;
+  const cvr = totalLPV > 0 ? (totalLeads / totalLPV) * 100 : 0; 
+
+  document.getElementById('funnelSpent').innerText = 'R$ ' + totalGasto.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  document.getElementById('funnelCPM').innerText = 'R$ ' + cpm.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  document.getElementById('funnelCTR').innerText = ctr.toFixed(2) + '%';
+  document.getElementById('funnelCR').innerText = cr.toFixed(2) + '%';
+  document.getElementById('funnelCPL').innerText = 'R$ ' + cpl.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
   document.getElementById('funnelConv').innerText = cvr.toFixed(2) + '%';
-  document.getElementById('barConv').style.width = Math.min(100, cvr*2) + '%';
 
   // Lógica de Pacing
   const t = today();
@@ -1001,7 +1139,7 @@ function renderFunnelAndTimeline(){
   pacingBody.innerHTML = '';
   
   Object.values(pacing).forEach(cat => {
-    const previsto = launchState.verbaTotal * (cat.pct / 100);
+    const previsto = cat.teto * (cat.pct / 100);
     const restante = Math.max(0, previsto - cat.gasto);
     const metaDiaria = restante / divDays;
     
@@ -1016,23 +1154,23 @@ function renderFunnelAndTimeline(){
     `;
   });
 
-  // Top 5 Publicos (Convertido para Taxa de Conversão Real)
+  // Top 5 Publicos
   const pubBody=document.getElementById('top5PublicosBody'); pubBody.innerHTML='';
   Object.values(audMap).sort((a,b)=>b.leads-a.leads).slice(0,5).forEach((p,i)=>{
     const cpl=p.leads>0?(p.spent/p.leads).toFixed(2):'0.00';
-    const conv=p.lpv>0?((p.leads/p.lpv)*100).toFixed(1):'0.0'; // Calculo Real
+    const conv=p.lpv>0?((p.leads/p.lpv)*100).toFixed(1):'0.0';
     pubBody.innerHTML+=`<tr class="hover:bg-bg-input/50 transition"><td class="p-2.5 font-bold text-accent-blue">#${i+1}</td><td class="p-2.5 font-medium text-white truncate max-w-[120px]">${p.name}</td><td class="p-2.5 font-bold text-accent-green">${p.leads}</td><td class="p-2.5 text-accent-yellow">R$ ${cpl}</td><td class="p-2.5 text-accent-blue font-bold">${conv}%</td></tr>`;
   });
 
-  // Top 5 Criativos (Convertido para Taxa de Conversão Real)
+  // Top 5 Criativos
   const criBody=document.getElementById('top5CriativosBody'); criBody.innerHTML='';
   Object.values(adMap).sort((a,b)=>b.leads-a.leads).slice(0,5).forEach((c,i)=>{
     const cpl=c.leads>0?(c.spent/c.leads).toFixed(2):'0.00';
-    const conv=c.lpv>0?((c.leads/c.lpv)*100).toFixed(1):'0.0'; // Calculo Real
+    const conv=c.lpv>0?((c.leads/c.lpv)*100).toFixed(1):'0.0';
     criBody.innerHTML+=`<tr class="hover:bg-bg-input/50 transition"><td class="p-2.5 font-bold text-accent-green">#${i+1}</td><td class="p-2.5 font-medium text-white truncate max-w-[120px]">${c.name}</td><td class="p-2.5 font-bold text-accent-green">${c.leads}</td><td class="p-2.5 text-accent-yellow">R$ ${cpl}</td><td class="p-2.5 text-accent-blue font-bold">${conv}%</td></tr>`;
   });
 
-  // ====== NOVO GRÁFICO (COMBO: BARRAS + LINHA) ======
+  // ====== GRÁFICO ======
   const startDate=isoToDate(launchState.filterStart);
   const endDate=isoToDate(launchState.filterEnd);
   const dayDiff=Math.round((endDate-startDate)/(1000*60*60*24))+1;
@@ -1046,12 +1184,8 @@ function renderFunnelAndTimeline(){
     const iso=dateToIso(d);
     const dayLabel=`${String(d.getDate()).padStart(2,'0')}/${d.getMonth()+1}`;
     
-    // Fallback genérico caso não haja dados reais preenchidos ainda (para simulação realista)
-    const fallbackLeads = Math.floor(Math.random()*200)+50;
-    const fallbackSpent = 300+Math.random()*100;
-    
-    const finalLeads = dayStats[iso] ? dayStats[iso].leads : fallbackLeads;
-    const finalSpent = dayStats[iso] ? dayStats[iso].spent : fallbackSpent;
+    const finalLeads = dayStats[iso] ? dayStats[iso].leads : 0;
+    const finalSpent = dayStats[iso] ? dayStats[iso].spent : 0;
     const finalCpl = finalLeads > 0 ? (finalSpent / finalLeads) : 0;
 
     categories.push(dayLabel);
@@ -1069,8 +1203,8 @@ function renderFunnelAndTimeline(){
     ],
     chart: { height: 260, type: 'line', background: 'transparent', toolbar: { show: false } },
     theme: { mode: 'dark' },
-    colors: ['#3B82F6', '#10B981'], // Azul pros Leads, Verde pro CPL
-    stroke: { width: [0, 3], curve: 'smooth' }, // 0 pra barra não ter borda, 3 pra espessura da linha
+    colors: ['#3B82F6', '#10B981'], 
+    stroke: { width: [0, 3], curve: 'smooth' }, 
     plotOptions: { bar: { borderRadius: 4, columnWidth: '40%' } },
     xaxis: {
       categories: categories,
@@ -1080,11 +1214,11 @@ function renderFunnelAndTimeline(){
       tooltip: { enabled: false }
     },
     yaxis: [
-      { // Eixo Y da Esquerda (Leads)
+      { 
         title: { text: 'Volume de Leads', style: { color: '#64748B', fontSize: '10px', fontWeight: 600 } },
         labels: { style: { colors: '#64748B', fontSize: '10px' }, formatter: v => Math.round(v) }
       },
-      { // Eixo Y da Direita (CPL)
+      { 
         opposite: true,
         title: { text: 'Custo por Lead (R$)', style: { color: '#64748B', fontSize: '10px', fontWeight: 600 } },
         labels: { style: { colors: '#64748B', fontSize: '10px' }, formatter: v => 'R$ ' + v.toFixed(2) }
@@ -1111,8 +1245,8 @@ function renderFunnelAndTimeline(){
 }
 
 function renderCriativos(){
-  const meta=filterByDate(launchState.dataMeta);
-  const google=filterByDate(launchState.dataGoogle);
+  let meta=filterByCampaign(filterByDate(launchState.dataMeta));
+  let google=filterByCampaign(filterByDate(launchState.dataGoogle));
   const gm={},mm={};
   
   google.forEach(r=>{
@@ -1140,8 +1274,8 @@ function renderCriativos(){
 }
 
 function renderPublicos(){
-  const meta=filterByDate(launchState.dataMeta);
-  const google=filterByDate(launchState.dataGoogle);
+  let meta=filterByCampaign(filterByDate(launchState.dataMeta));
+  let google=filterByCampaign(filterByDate(launchState.dataGoogle));
   const gm={},mm={};
   
   google.forEach(r=>{
@@ -1176,7 +1310,7 @@ function renderTableWithBadges(id,items){
   
   items.forEach(it=>{
     it.cpl=it.leads>0?it.spent/it.leads:999;
-    it.conv=it.lpv>0?(it.leads/it.lpv)*100:0; // Matematica Real (Leads/Visitas)
+    it.conv=it.lpv>0?(it.leads/it.lpv)*100:0; 
     
     if(it.cpl<minCPL.cpl)minCPL=it;
     if(it.conv>maxConv.conv)maxConv=it;
