@@ -1015,21 +1015,30 @@ async function saveAdminConfig(){
     try {
       const db = firebase.firestore();
       const setupToSave = { ...launchState };
+      // Previne que arquivos gigantes de dados passem pro setup principal
       delete setupToSave.dataMeta; delete setupToSave.dataGoogle;
 
+      // 1. Salva o setup que todo mundo vai ver ao entrar
       await db.collection('lancamentos').doc('setup_atual').set(setupToSave);
       
+      // 2. Salva uma cópia na pasta de histórico
       if(setupToSave.nomeLancamento) {
         const historicoId = setupToSave.nomeLancamento.replace(/[^a-zA-Z0-9]/g, '_').toUpperCase();
         await db.collection('historico_lancamentos').doc(historicoId).set(setupToSave);
       }
       fetchHistoricoList();
+
     } catch(e) {
       console.error("Erro ao salvar no Firestore:", e);
-      alert("Erro ao salvar na nuvem.");
+      alert("Erro ao salvar na nuvem. Verifique sua conexão ou tente novamente em instantes.");
+      
+      // Restaura o botão e aborta a função (O Segredo para não dar mensagem dupla)
+      btn.textContent = '💾 Salvar Configurações'; btn.disabled = false;
+      return; 
     }
   }
 
+  // Se chegou aqui, é porque deu tudo certo!
   btn.textContent = '💾 Salvar Configurações'; btn.disabled = false;
   
   launchState.filterStart=launchState.dataInicio;
@@ -1041,6 +1050,8 @@ async function saveAdminConfig(){
   updateHeaderName();
   updateTargetSummary();
   syncDataFromSheets();
+  
+  // Agora sim, a mensagem de sucesso!
   alert('Configurações salvas com sucesso!');
 }
 
