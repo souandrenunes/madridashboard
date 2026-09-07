@@ -88,8 +88,10 @@
       .dp-cal-title { font-size: 13px; }
     }
 
-    .apexcharts-tooltip { background: #0F121A !important; border: 1px solid #2D3148 !important; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5) !important; color: #F1F5F9 !important; }
+    /* TOOLTIP APEXCHARTS */
+    .apexcharts-tooltip { background: #0F121A !important; border: 1px solid #2D3148 !important; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3) !important; color: #F1F5F9 !important; }
     .apexcharts-tooltip-title { background: #1A1D27 !important; border-bottom: 1px solid #2D3148 !important; font-weight: 700 !important; padding: 6px 10px !important; font-size: 11px !important; }
+    .apexcharts-tooltip-series-group { padding: 4px 10px !important; }
 
     /* ESTILOS DO SIDEBAR COLLAPSE (DESKTOP) */
     #sidebar { transition: width 0.3s ease; width: 16rem; } 
@@ -124,7 +126,7 @@
         <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1.5 tracking-wider">Senha</label>
         <div class="input-wrap">
           <input type="password" id="loginPass" class="login-input" placeholder="••••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLogin()"/>
-          <button class="eye-btn" type="button" onclick="togglePass('loginPass', 'eyeIconLogin')" title="Mostrar/ocultar">
+          <button class="eye-btn" type="button" onclick="togglePass('loginPass', 'eyeIconLogin')" title="Mostrar/ocultar senha">
             <svg id="eyeIconLogin" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
           </button>
         </div>
@@ -155,7 +157,7 @@
         <label class="block text-[11px] font-semibold text-text-muted uppercase mb-1.5 tracking-wider">Criar Senha</label>
         <div class="input-wrap">
           <input type="password" id="regPass" class="login-input" placeholder="Min 6 caracteres"/>
-          <button class="eye-btn" type="button" onclick="togglePass('regPass', 'eyeIconReg')" title="Mostrar/ocultar">
+          <button class="eye-btn" type="button" onclick="togglePass('regPass', 'eyeIconReg')" title="Mostrar/ocultar senha">
             <svg id="eyeIconReg" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
           </button>
         </div>
@@ -176,8 +178,7 @@
 
 </div>
 
-<!-- ======= MODAL RECUPERAÇÃO ======= -->
-<!-- RESOLVIDO Z-INDEX AQUI (z-[10000] em vez de 9998) -->
+<!-- ======= MODAL RECUPERAÇÃO DE SENHA ======= -->
 <div id="forgotModal" class="hidden fixed inset-0 z-[10000] flex items-center justify-center" style="background:rgba(0,0,0,.8); padding:1rem;">
   <div class="login-card fade-in max-w-sm w-full relative">
     <div class="flex justify-between items-start mb-6">
@@ -237,6 +238,8 @@
         </button>
       </nav>
     </div>
+    
+    <!-- ÁREA INFERIOR DA SIDEBAR (BOTÃO DE RECARREGAR E STATUS) -->
     <div class="p-4 border-t border-border-custom space-y-3">
       <div class="sb-profile flex items-center gap-2.5 px-1">
         <div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-600 to-emerald-500 flex items-center justify-center text-white font-black text-xs shrink-0" id="userAvatar">A</div>
@@ -245,13 +248,18 @@
           <span id="userRoleBadge" class="role-admin">● ADMIN</span>
         </div>
       </div>
-      <div class="sb-sync-info flex items-center gap-2 text-xs text-text-muted px-1">
-        <span class="w-2 h-2 rounded-full bg-accent-green animate-pulse shrink-0"></span>
-        <span class="truncate font-medium sb-text">Adveronix Reader Active</span>
+      
+      <!-- BOLINHA DE STATUS INTELIGENTE -->
+      <div class="sb-sync-info flex items-center gap-2 text-xs text-text-muted px-1 mt-2">
+        <span id="sidebarStatusDot" class="w-2 h-2 rounded-full bg-accent-green shrink-0"></span>
+        <span id="sidebarStatusText" class="truncate font-medium sb-text">Conectado</span>
       </div>
-      <button onclick="syncDataFromSheets()" title="Recarregar Planilha" class="sb-nav-btn w-full bg-bg-input hover:bg-border-custom text-text-primary py-2 rounded-md text-xs font-bold transition flex items-center gap-2 border border-border-custom px-3.5">
+      
+      <!-- BOTÃO RECARREGAR -->
+      <button onclick="syncDataFromSheets()" title="Recarregar Dados" class="sb-nav-btn w-full bg-bg-input hover:bg-border-custom text-text-primary py-2 rounded-md text-xs font-bold transition flex items-center gap-2 border border-border-custom px-3.5">
         <span class="shrink-0">🔄</span> <span class="sb-text truncate">Recarregar</span>
       </button>
+      
       <button onclick="doLogout()" title="Sair do War Room" class="sb-nav-btn w-full bg-accent-red/10 hover:bg-accent-red/20 text-accent-red py-2 rounded-md text-xs font-bold transition flex items-center gap-2 border border-accent-red/20 px-3.5">
         <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
         <span class="sb-text truncate">Sair</span>
@@ -285,15 +293,17 @@
     <!-- HEADER com Date Picker global -->
     <header class="h-14 md:h-16 border-b border-border-custom bg-bg-card px-4 md:px-6 flex items-center justify-between sticky top-0 z-30 shrink-0">
       <div class="flex items-center gap-3 min-w-0 pr-2">
-        <h2 class="text-sm md:text-base font-extrabold text-white tracking-wide truncate" id="headerLaunchName">CLIENTE | LANÇAMENTO</h2>
+        <h2 class="text-sm md:text-base font-extrabold text-white tracking-wide truncate" id="headerLaunchName">NOME DO CLIENTE | NOME DO LANÇAMENTO</h2>
         <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-accent-green/10 text-accent-green border border-accent-green/20 hidden md:flex items-center gap-1.5 shrink-0">
           <span class="w-1.5 h-1.5 rounded-full bg-accent-green"></span> Ativo
         </span>
       </div>
       <div class="flex items-center gap-4 shrink-0">
-        <div id="syncStatus" class="hidden sm:flex items-center gap-1.5 text-xs font-medium text-accent-blue">
-          <span class="inline-block w-2 h-2 rounded-full bg-accent-blue animate-ping"></span>
-          <span>Adveronix Conectado</span>
+        
+        <!-- STATUS DO HEADER (SEMAFORO) -->
+        <div id="syncStatus" class="hidden sm:flex items-center gap-1.5 text-xs font-medium text-accent-green">
+          <span class="inline-block w-2 h-2 rounded-full bg-accent-green"></span>
+          <span>Conectado</span>
         </div>
 
         <div class="dp-wrap" id="dpWrap">
@@ -371,7 +381,7 @@
         
         <form id="adminForm" onsubmit="event.preventDefault();saveAdminConfig();" class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           
-          <!-- BLOCO 1: IDENTIDADE E ORIGEM -->
+          <!-- BLOCO 1: IDENTIDADE E ORIGEM (CAMPO URL REMOVIDO) -->
           <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4">
             <h3 class="text-sm font-bold text-white border-b border-border-custom pb-3 flex items-center gap-2">
               <span class="text-accent-blue">1.</span> Identidade e Origem
@@ -391,10 +401,6 @@
                 Filtro Captação <span class="text-[9px] text-accent-blue font-normal normal-case">*(Opcional)*</span>
               </label>
               <input type="text" id="admFiltroCampanha" placeholder="Palavra na campanha (ex: CPL, [CAP])" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
-            </div>
-            <div>
-              <label class="block text-[10px] md:text-[11px] font-semibold text-text-muted uppercase mb-1">URL da Planilha (Adveronix)</label>
-              <input type="url" id="admSheetUrl" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
             </div>
           </div>
 
@@ -556,7 +562,7 @@
             </h3>
             <span class="text-[9px] md:text-[10px] text-text-muted font-bold px-2 py-1 bg-bg-input rounded border border-border-custom" id="pacingDaysLeft">Faltam: 0 dias</span>
           </div>
-          <!-- overflow-x-auto com min-w força o swipe suave em celulares -->
+          <!-- overflow-x-auto força scroll em mobile -->
           <div class="overflow-x-auto custom-scrollbar pb-2">
             <table class="w-full text-left text-xs min-w-[600px]">
               <thead class="bg-bg-input text-text-muted uppercase text-[9px] md:text-[10px]">
@@ -663,7 +669,7 @@ function toggleSidebar() {
 }
 
 // ============================================================
-// FIREBASE & AUTENTICAÇÃO (SaaS)
+// FIREBASE & AUTENTICAÇÃO OFICIAL
 // ============================================================
 const firebaseConfig = {
   apiKey: "AIzaSyDZYRKSZ3ain-6NXrvBux9K2WzJ27TTjlQ",
@@ -719,7 +725,7 @@ async function doLogin(){
   document.getElementById('loginError').classList.add('hidden');
   
   if(!e||!p){showAuthError('loginError', 'Preencha e-mail e senha.'); return;}
-  if(!firebaseReady){alert("Firebase não conectado."); return;}
+  if(!firebaseReady){showAuthError('loginError', 'Conexão com a nuvem indisponível.'); return;}
   
   btn.disabled=true; btn.textContent='Acessando...';
   try {
@@ -739,20 +745,14 @@ async function doSignup() {
   document.getElementById('regError').classList.add('hidden');
 
   if(!e||!p||!sec){ showAuthError('regError', 'Preencha todos os campos.'); return;}
-  
-  // TRAVA DE SEGURANÇA (CÓDIGO SECRETO)
-  if(sec !== 'Billion') { 
-    showAuthError('regError', 'Código secreto inválido. Acesso negado.'); 
-    return;
-  }
-
-  if(!firebaseReady){alert("Firebase não conectado."); return;}
+  if(sec !== 'Billion') { showAuthError('regError', 'Código secreto inválido. Acesso negado.'); return;}
+  if(!firebaseReady){showAuthError('regError', 'Firebase não conectado.'); return;}
   
   btn.disabled=true; btn.textContent='Criando Conta...';
   try {
     await firebase.auth().createUserWithEmailAndPassword(e, p);
   } catch(err) {
-    showAuthError('regError', 'Erro ao criar conta: ' + err.message);
+    showAuthError('regError', 'Erro ao criar conta: O email já existe ou é inválido.');
     btn.disabled=false; btn.textContent='Validar e Cadastrar';
   }
 }
@@ -771,13 +771,11 @@ async function enterApp(userData){
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('appShell').classList.remove('hidden');
   
-  // Atualiza Perfil na tela
   document.getElementById('userDisplayName').textContent = currentUser.name;
   document.getElementById('userAvatar').textContent = currentUser.name[0].toUpperCase();
   document.getElementById('userRoleBadge').textContent = '● ADMIN';
   document.getElementById('userRoleBadge').className = 'role-admin';
 
-  // Buscar setup_atual da nuvem
   if(firebaseReady) {
     try {
       const db = firebase.firestore();
@@ -795,7 +793,6 @@ async function enterApp(userData){
   document.getElementById('admNomeCliente').value=launchState.nomeCliente||'';
   document.getElementById('admNomeLancamento').value=launchState.nomeLancamento||'';
   document.getElementById('admFiltroCampanha').value=launchState.filtroCampanha||'';
-  document.getElementById('admSheetUrl').value=launchState.sheetUrl;
   
   document.getElementById('admDataInicio').value=launchState.dataInicio;
   document.getElementById('admDataFim').value=launchState.dataFim;
@@ -829,7 +826,7 @@ function doLogout(){
 }
 
 // ============================================================
-// CARREGAR HISTÓRICO DA NUVEM (MENU DROPDOWN)
+// CARREGAR HISTÓRICO DA NUVEM
 // ============================================================
 async function fetchHistoricoList() {
   if(!firebaseReady) return;
@@ -875,7 +872,6 @@ async function loadHistorico() {
       document.getElementById('admNomeCliente').value=launchState.nomeCliente||'';
       document.getElementById('admNomeLancamento').value=launchState.nomeLancamento||'';
       document.getElementById('admFiltroCampanha').value=launchState.filtroCampanha||'';
-      document.getElementById('admSheetUrl').value=launchState.sheetUrl;
       
       document.getElementById('admDataInicio').value=launchState.dataInicio;
       document.getElementById('admDataFim').value=launchState.dataFim;
@@ -929,7 +925,7 @@ async function doForgot(){
       msgEl.classList.remove('hidden');
       document.getElementById('forgotEmail').value='';
     } catch(e) {
-      msgEl.textContent=e.message||'Erro ao enviar.';
+      msgEl.textContent=e.message||'Erro ao enviar. Tente novamente.';
       msgEl.className='text-xs rounded-md px-3 py-2.5 font-medium bg-accent-red/10 border border-accent-red/20 text-accent-red';
       msgEl.classList.remove('hidden');
     }
@@ -1092,9 +1088,66 @@ function validatePercentages(){
   }
 }
 
+async function saveAdminConfig(){
+  if(!validatePercentages()){alert('As somas do Google e do Meta devem ser 100% individualmente.');return;}
+  
+  launchState.nomeCliente=document.getElementById('admNomeCliente').value.trim();
+  launchState.nomeLancamento=document.getElementById('admNomeLancamento').value.trim();
+  launchState.filtroCampanha=document.getElementById('admFiltroCampanha').value.trim();
+  
+  launchState.dataInicio=document.getElementById('admDataInicio').value;
+  launchState.dataFim=document.getElementById('admDataFim').value;
+  launchState.verbaMeta=parseFloat(document.getElementById('admVerbaMeta').value)||0;
+  launchState.verbaGoogle=parseFloat(document.getElementById('admVerbaGoogle').value)||0;
+  launchState.metaLeads=parseFloat(document.getElementById('admMetaLeads').value)||10000;
+  
+  launchState.pctGQ=parseFloat(document.getElementById('admPctGQ').value)||0;
+  launchState.pctGF=parseFloat(document.getElementById('admPctGF').value)||0;
+  launchState.pctMQ=parseFloat(document.getElementById('admPctMQ').value)||0;
+  launchState.pctMF=parseFloat(document.getElementById('admPctMF').value)||0;
+  
+  const btn = document.getElementById('btnSaveAdmin');
+  btn.textContent = 'Salvando na nuvem...'; btn.disabled = true;
+
+  if (firebaseReady) {
+    try {
+      const db = firebase.firestore();
+      const setupToSave = { ...launchState };
+      delete setupToSave.dataMeta; delete setupToSave.dataGoogle;
+
+      await db.collection('lancamentos').doc('setup_atual').set(setupToSave);
+      
+      if(setupToSave.nomeLancamento) {
+        const historicoId = setupToSave.nomeLancamento.replace(/[^a-zA-Z0-9]/g, '_').toUpperCase();
+        await db.collection('historico_lancamentos').doc(historicoId).set(setupToSave);
+      }
+      fetchHistoricoList();
+    } catch(e) {
+      console.error("Erro ao salvar no Firestore:", e);
+      alert("Erro ao salvar na nuvem.");
+    }
+  }
+
+  btn.textContent = '💾 Salvar & Recarregar'; btn.disabled = false;
+  
+  launchState.filterStart=launchState.dataInicio;
+  launchState.filterEnd=launchState.dataFim;
+  dpState.selStart=isoToDate(launchState.dataInicio);
+  dpState.selEnd=isoToDate(launchState.dataFim);
+  applyDateRange();
+  
+  updateHeaderName();
+  syncDataFromSheets();
+  alert('Configurações salvas na nuvem com sucesso!');
+}
+
 // ============================================================
-// ADVERONIX & MOCK RENDER
+// CONEXÃO COM A PLANILHA (CÓDIGO FIXO) E STATUS INTELIGENTE
 // ============================================================
+
+// LINK CHUMBADO DA SUA PLANILHA:
+const SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1iY5TYTyFDIlQ_5N3MizfCpPVwj7I8_sEkyFBtVrzb_k/edit?usp=sharing";
+
 function parseGvizTable(g){
   if(!g||!g.table||!g.table.rows)return[];
   const cols=(g.table.cols||[]).map(c=>(c?(c.label||c.id||''):'').trim());
@@ -1111,6 +1164,7 @@ function parseGvizTable(g){
   });
   return rows;
 }
+
 function fetchGvizJSONP(url,sheet){
   return new Promise(resolve=>{
     const m=url.match(/\/d\/([^\/]+)/); if(!m)return resolve(null);
@@ -1126,16 +1180,39 @@ function fetchGvizJSONP(url,sheet){
 }
 
 async function syncDataFromSheets(){
-  const st=document.getElementById('syncStatus');
-  st.innerHTML=`<span class="inline-block w-2 h-2 rounded-full bg-accent-yellow animate-ping"></span><span class="hidden sm:inline">Lendo Adveronix...</span>`;
-  let meta=await fetchGvizJSONP(launchState.sheetUrl,'Meta Ads');
-  let google=await fetchGvizJSONP(launchState.sheetUrl,'Google Ads');
+  const headerStatus = document.getElementById('syncStatus');
+  const sidebarDot = document.getElementById('sidebarStatusDot');
+  const sidebarText = document.getElementById('sidebarStatusText');
   
-  if(!meta||!meta.length) meta=generateMockMeta();
-  if(!google||!google.length) google=generateMockGoogle();
+  // 1. ESTADO: CARREGANDO (AMARELO E PISCANDO)
+  headerStatus.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-accent-yellow animate-ping"></span><span class="hidden sm:inline">Sincronizando...</span>`;
+  if(sidebarDot) sidebarDot.className = 'w-2 h-2 rounded-full bg-accent-yellow animate-pulse shrink-0';
+  if(sidebarText) sidebarText.textContent = 'Sincronizando...';
+
+  // Faz a leitura real da planilha
+  let meta = await fetchGvizJSONP(SPREADSHEET_URL, 'Meta Ads');
+  let google = await fetchGvizJSONP(SPREADSHEET_URL, 'Google Ads');
   
-  launchState.dataMeta=meta; launchState.dataGoogle=google;
-  st.innerHTML=`<span class="inline-block w-2 h-2 rounded-full bg-accent-green"></span><span class="hidden sm:inline">Adveronix Conectado</span>`;
+  let isSuccess = true;
+  
+  // Se falhar, usa os dados simulados apenas para não deixar o painel em branco
+  if(!meta||!meta.length) { meta=generateMockMeta(); isSuccess=false; }
+  if(!google||!google.length) { google=generateMockGoogle(); isSuccess=false; }
+  
+  launchState.dataMeta = meta; 
+  launchState.dataGoogle = google;
+
+  // 2. ESTADO: CONECTADO OU FALHA
+  if (isSuccess) {
+    headerStatus.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-accent-green"></span><span class="hidden sm:inline">Conectado</span>`;
+    if(sidebarDot) sidebarDot.className = 'w-2 h-2 rounded-full bg-accent-green shrink-0';
+    if(sidebarText) sidebarText.textContent = 'Conectado';
+  } else {
+    headerStatus.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-accent-red"></span><span class="hidden sm:inline text-accent-red">Falha na Conexão</span>`;
+    if(sidebarDot) sidebarDot.className = 'w-2 h-2 rounded-full bg-accent-red shrink-0';
+    if(sidebarText) sidebarText.textContent = 'Falha na Conexão';
+  }
+
   renderAllScreens();
 }
 
@@ -1265,28 +1342,23 @@ function renderFunnelAndTimeline(){
   meta.forEach(r => processRow(r, true));
   google.forEach(r => processRow(r, false));
 
-  // 1. Progresso da Meta
   const metaLeadsStr = launchState.metaLeads || 1;
   const pctMeta = Math.min(100, (totalLeads / metaLeadsStr) * 100);
-  
   document.getElementById('metaLeadsAtual').innerText = totalLeads.toLocaleString('pt-BR');
   document.getElementById('metaLeadsTotal').innerText = `/ ${Number(metaLeadsStr).toLocaleString('pt-BR')} Leads`;
   document.getElementById('metaLeadsPct').innerText = pctMeta.toFixed(1) + '%';
   document.getElementById('metaLeadsBar').style.width = pctMeta + '%';
 
-  // 2. Volume do Funil
   document.getElementById('funnelImp').innerText = totalImp.toLocaleString('pt-BR');
   document.getElementById('funnelClick').innerText = totalClicks.toLocaleString('pt-BR');
   document.getElementById('funnelLPV').innerText = Math.round(totalLPV).toLocaleString('pt-BR');
   document.getElementById('funnelLeads').innerText = totalLeads.toLocaleString('pt-BR');
 
-  // 3. Eficiência e Custos
   const cpm = totalImp > 0 ? (totalGasto / totalImp) * 1000 : 0;
   const ctr = totalImp > 0 ? (totalClicks / totalImp) * 100 : 0;
   const cr = totalClicks > 0 ? (totalLPV / totalClicks) * 100 : 0;
   const cpl = totalLeads > 0 ? (totalGasto / totalLeads) : 0;
   const cvr = totalLPV > 0 ? (totalLeads / totalLPV) * 100 : 0; 
-
   document.getElementById('funnelSpent').innerText = 'R$ ' + totalGasto.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
   document.getElementById('funnelCPM').innerText = 'R$ ' + cpm.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
   document.getElementById('funnelCTR').innerText = ctr.toFixed(2) + '%';
@@ -1294,23 +1366,19 @@ function renderFunnelAndTimeline(){
   document.getElementById('funnelCPL').innerText = 'R$ ' + cpl.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
   document.getElementById('funnelConv').innerText = cvr.toFixed(2) + '%';
 
-  // Lógica de Pacing
   const t = today();
   const launchEnd = isoToDate(launchState.dataFim);
   let daysLeft = Math.round((launchEnd - t) / 86400000) + 1;
   if(t > launchEnd) daysLeft = 0;
-  
-  document.getElementById('pacingDaysLeft').innerText = `Faltam: ${daysLeft} dias`;
+  document.getElementById('pacingDaysLeft').innerText = `Dias Restantes: ${daysLeft}`;
   const divDays = Math.max(1, daysLeft);
   
   const pacingBody = document.getElementById('pacingTableBody');
   pacingBody.innerHTML = '';
-  
   Object.values(pacing).forEach(cat => {
     const previsto = cat.teto * (cat.pct / 100);
     const restante = Math.max(0, previsto - cat.gasto);
     const metaDiaria = restante / divDays;
-    
     pacingBody.innerHTML += `
       <tr class="hover:bg-bg-input/50 transition">
         <td class="p-3 font-bold text-white whitespace-nowrap">${cat.nome}</td>
@@ -1322,7 +1390,6 @@ function renderFunnelAndTimeline(){
     `;
   });
 
-  // Top 5 Publicos
   const pubBody=document.getElementById('top5PublicosBody'); pubBody.innerHTML='';
   Object.values(audMap).sort((a,b)=>b.leads-a.leads).slice(0,5).forEach((p,i)=>{
     const cpl=p.leads>0?(p.spent/p.leads).toFixed(2):'0.00';
@@ -1330,7 +1397,6 @@ function renderFunnelAndTimeline(){
     pubBody.innerHTML+=`<tr class="hover:bg-bg-input/50 transition"><td class="p-2.5 font-bold text-accent-blue whitespace-nowrap">#${i+1}</td><td class="p-2.5 font-medium text-white truncate max-w-[120px] md:max-w-[200px]">${p.name}</td><td class="p-2.5 font-bold text-accent-green whitespace-nowrap">${p.leads}</td><td class="p-2.5 text-accent-yellow whitespace-nowrap">R$ ${cpl}</td><td class="p-2.5 text-accent-blue font-bold whitespace-nowrap">${conv}%</td></tr>`;
   });
 
-  // Top 5 Criativos
   const criBody=document.getElementById('top5CriativosBody'); criBody.innerHTML='';
   Object.values(adMap).sort((a,b)=>b.leads-a.leads).slice(0,5).forEach((c,i)=>{
     const cpl=c.leads>0?(c.spent/c.leads).toFixed(2):'0.00';
@@ -1338,14 +1404,10 @@ function renderFunnelAndTimeline(){
     criBody.innerHTML+=`<tr class="hover:bg-bg-input/50 transition"><td class="p-2.5 font-bold text-accent-green whitespace-nowrap">#${i+1}</td><td class="p-2.5 font-medium text-white truncate max-w-[120px] md:max-w-[200px]">${c.name}</td><td class="p-2.5 font-bold text-accent-green whitespace-nowrap">${c.leads}</td><td class="p-2.5 text-accent-yellow whitespace-nowrap">R$ ${cpl}</td><td class="p-2.5 text-accent-blue font-bold whitespace-nowrap">${conv}%</td></tr>`;
   });
 
-  // ====== GRÁFICO (REMOVIDO SIMULAÇÕES - APENAS DADOS REAIS) ======
   const startDate=isoToDate(launchState.filterStart);
   const endDate=isoToDate(launchState.filterEnd);
   const dayDiff=Math.round((endDate-startDate)/(1000*60*60*24))+1;
-  
-  const categories = [];
-  const seriesLeads = [];
-  const seriesCPL = [];
+  const categories = [], seriesLeads = [], seriesCPL = [];
 
   for(let i=0;i<Math.max(1,dayDiff);i++){
     const d=new Date(startDate); d.setDate(d.getDate()+i);
@@ -1395,8 +1457,7 @@ function renderFunnelAndTimeline(){
     grid: { borderColor: '#2D3148', strokeDashArray: 3 },
     legend: { labels: { colors: '#F1F5F9' }, fontSize: '10px', markers: { radius: 12 } },
     tooltip: {
-      shared: true,
-      intersect: false,
+      shared: true, intersect: false,
       y: {
         formatter: function (y, { seriesIndex }) {
           if (typeof y !== "undefined") {
@@ -1408,7 +1469,6 @@ function renderFunnelAndTimeline(){
       }
     }
   });
-  
   comboChartInstance.render();
 }
 
@@ -1426,7 +1486,6 @@ function renderCriativos(){
     if(!gm[n]) gm[n]={name:n,spent:0,leads:0,lpv:0}; 
     gm[n].spent+=s; gm[n].leads+=l; gm[n].lpv+=lpv;
   });
-  
   meta.forEach(r=>{
     const n=getCol(r,['Ad Name','Nome do anúncio'])||'M-ADS';
     const s=parseNum(getCol(r,['Amount Spent','Cost (Spend)'])), l=parseNum(getCol(r,['Leads','Conversions']));
@@ -1436,7 +1495,6 @@ function renderCriativos(){
     if(!mm[n]) mm[n]={name:n,spent:0,leads:0,lpv:0}; 
     mm[n].spent+=s; mm[n].leads+=l; mm[n].lpv+=lpv;
   });
-  
   renderTableWithBadges('googleCriativosTable',Object.values(gm));
   renderTableWithBadges('metaCriativosTable',Object.values(mm));
 }
@@ -1455,7 +1513,6 @@ function renderPublicos(){
     if(!gm[n]) gm[n]={name:n,spent:0,leads:0,lpv:0}; 
     gm[n].spent+=s; gm[n].leads+=l; gm[n].lpv+=lpv;
   });
-  
   meta.forEach(r=>{
     const n=getCol(r,['Ad Set Name','Nome do conjunto de anúncios'])||'Conjunto M';
     const s=parseNum(getCol(r,['Amount Spent','Cost (Spend)'])), l=parseNum(getCol(r,['Leads','Conversions']));
@@ -1465,7 +1522,6 @@ function renderPublicos(){
     if(!mm[n]) mm[n]={name:n,spent:0,leads:0,lpv:0}; 
     mm[n].spent+=s; mm[n].leads+=l; mm[n].lpv+=lpv;
   });
-  
   renderTableWithBadges('googlePublicosTable',Object.values(gm));
   renderTableWithBadges('metaPublicosTable',Object.values(mm));
 }
@@ -1479,7 +1535,6 @@ function renderTableWithBadges(id,items){
   items.forEach(it=>{
     it.cpl=it.leads>0?it.spent/it.leads:999;
     it.conv=it.lpv>0?(it.leads/it.lpv)*100:0; 
-    
     if(it.cpl<minCPL.cpl)minCPL=it;
     if(it.conv>maxConv.conv)maxConv=it;
     if(it.leads>maxVol.leads)maxVol=it;
