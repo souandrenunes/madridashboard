@@ -89,6 +89,7 @@
 
     .apexcharts-tooltip { background: #0F121A !important; border: 1px solid #2D3148 !important; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5) !important; color: #F1F5F9 !important; }
     .apexcharts-tooltip-title { background: #1A1D27 !important; border-bottom: 1px solid #2D3148 !important; font-weight: 700 !important; padding: 6px 10px !important; font-size: 11px !important; }
+    .apexcharts-tooltip-series-group { padding: 4px 10px !important; }
 
     #sidebar { transition: width 0.3s ease; width: 16rem; } 
     #sidebar.collapsed { width: 5.5rem !important; }
@@ -290,7 +291,7 @@
       </div>
       <div class="flex items-center gap-4 shrink-0">
         
-        <!-- STATUS DO HEADER (SEMÁFORO) -->
+        <!-- STATUS DO HEADER -->
         <div id="syncStatus" class="hidden sm:flex items-center gap-1.5 text-xs font-medium text-accent-green">
           <span class="inline-block w-2 h-2 rounded-full bg-accent-green"></span>
           <span>Conectado</span>
@@ -350,7 +351,7 @@
           </button>
         </div>
 
-        <!-- HISTÓRICO AUTOMÁTICO VIA DROPDOWN (SEM BOTÃO EXTRAS) -->
+        <!-- HISTÓRICO AUTOMÁTICO VIA DROPDOWN -->
         <div class="bg-bg-input p-4 md:p-5 rounded-lg border border-border-custom flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div class="flex items-center gap-3">
             <span class="text-xl">📂</span>
@@ -368,10 +369,10 @@
         
         <form id="adminForm" onsubmit="event.preventDefault();saveAdminConfig();" class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           
-          <!-- BLOCO 1: IDENTIDADE E ORIGEM -->
+          <!-- BLOCO 1: IDENTIDADE E ORIGEM COM TAGS DE CAMPANHA -->
           <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4">
             <h3 class="text-sm font-bold text-white border-b border-border-custom pb-3 flex items-center gap-2">
-              <span class="text-accent-blue">1.</span> Identidade e Origem
+              <span class="text-accent-blue">1.</span> Identidade e Filtros
             </h3>
             <div class="grid grid-cols-2 gap-4">
               <div>
@@ -385,9 +386,21 @@
             </div>
             <div>
               <label class="block text-[10px] md:text-[11px] font-semibold text-text-muted uppercase mb-1 flex items-center justify-between">
-                Filtro Captação <span class="text-[9px] text-accent-blue font-normal normal-case">*(Opcional)*</span>
+                Filtro Geral Captação <span class="text-[9px] text-accent-blue font-normal normal-case">*(Opcional)*</span>
               </label>
-              <input type="text" id="admFiltroCampanha" placeholder="Palavra na campanha (ex: CPL, [CAP])" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
+              <input type="text" id="admFiltroCampanha" placeholder="Ex: [L37_CAP]" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
+            </div>
+            
+            <!-- NOVAS TAGS PARA PACING -->
+            <div class="grid grid-cols-2 gap-4 mt-2">
+              <div>
+                <label class="block text-[10px] md:text-[11px] font-semibold text-accent-red uppercase mb-1">Tag Campanha Quente</label>
+                <input type="text" id="admTagQuente" placeholder="Ex: QUENTE, RMKT" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-red"/>
+              </div>
+              <div>
+                <label class="block text-[10px] md:text-[11px] font-semibold text-accent-blue uppercase mb-1">Tag Campanha Fria</label>
+                <input type="text" id="admTagFria" placeholder="Ex: FRIO, PROSP" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
+              </div>
             </div>
           </div>
 
@@ -545,7 +558,7 @@
         <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4">
           <div class="flex items-center justify-between">
             <h3 class="text-[11px] md:text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-2">
-              <span class="p-1.5 rounded bg-accent-blue/10 text-accent-blue">💰</span> Pacing de Verba
+              <span class="p-1.5 rounded bg-accent-blue/10 text-accent-blue">💰</span> Pacing de Verba Diária
             </h3>
             <span class="text-[9px] md:text-[10px] text-text-muted font-bold px-2 py-1 bg-bg-input rounded border border-border-custom" id="pacingDaysLeft">Faltam: 0 dias</span>
           </div>
@@ -814,6 +827,8 @@ let launchState={
   nomeCliente: "NA FONTE",
   nomeLancamento: "CHINELOS",
   filtroCampanha: "",
+  tagQuente: "QUENTE, RMKT", // Padrões de início
+  tagFria: "FRIO, PROSP",
   dataInicio:"2026-09-01", dataFim:"2026-09-13",
   filterStart:"2026-09-01", filterEnd:"2026-09-13",
   verbaMeta:10000, verbaGoogle:10000,
@@ -852,6 +867,10 @@ async function enterApp(userData){
   document.getElementById('admNomeLancamento').value=launchState.nomeLancamento||'';
   document.getElementById('admFiltroCampanha').value=launchState.filtroCampanha||'';
   
+  // Novas tags
+  document.getElementById('admTagQuente').value=launchState.tagQuente||'';
+  document.getElementById('admTagFria').value=launchState.tagFria||'';
+  
   document.getElementById('admDataInicio').value=launchState.dataInicio;
   document.getElementById('admDataFim').value=launchState.dataFim;
   document.getElementById('admVerbaMeta').value=launchState.verbaMeta;
@@ -878,7 +897,6 @@ function updateHeaderName() {
   document.getElementById('headerLaunchName').textContent = `${cliente} | ${lancamento}`.toUpperCase();
 }
 
-// CÁLCULO AUTOMÁTICO DO RESUMO ALVO
 function updateTargetSummary() {
   const vMeta = parseFloat(document.getElementById('admVerbaMeta').value) || 0;
   const vGoogle = parseFloat(document.getElementById('admVerbaGoogle').value) || 0;
@@ -894,7 +912,7 @@ function updateTargetSummary() {
 }
 
 // ============================================================
-// HISTÓRICO AUTOMÁTICO (ONCHANGE)
+// HISTÓRICO AUTOMÁTICO E SAVE
 // ============================================================
 async function fetchHistoricoList() {
   if(!firebaseReady) return;
@@ -926,10 +944,7 @@ async function loadHistorico() {
   const id = select.value;
   if(!id) return;
   
-  if(!firebaseReady) { 
-    alert("Conexão com a nuvem indisponível."); 
-    return; 
-  }
+  if(!firebaseReady) { alert("Conexão com a nuvem indisponível."); return; }
   
   try {
     const db = firebase.firestore();
@@ -942,6 +957,9 @@ async function loadHistorico() {
       document.getElementById('admNomeCliente').value=launchState.nomeCliente||'';
       document.getElementById('admNomeLancamento').value=launchState.nomeLancamento||'';
       document.getElementById('admFiltroCampanha').value=launchState.filtroCampanha||'';
+      
+      document.getElementById('admTagQuente').value=launchState.tagQuente||'';
+      document.getElementById('admTagFria').value=launchState.tagFria||'';
       
       document.getElementById('admDataInicio').value=launchState.dataInicio;
       document.getElementById('admDataFim').value=launchState.dataFim;
@@ -997,6 +1015,9 @@ async function saveAdminConfig(){
   launchState.nomeLancamento=document.getElementById('admNomeLancamento').value.trim();
   launchState.filtroCampanha=document.getElementById('admFiltroCampanha').value.trim();
   
+  launchState.tagQuente=document.getElementById('admTagQuente').value.trim();
+  launchState.tagFria=document.getElementById('admTagFria').value.trim();
+  
   launchState.dataInicio=document.getElementById('admDataInicio').value;
   launchState.dataFim=document.getElementById('admDataFim').value;
   launchState.verbaMeta=parseFloat(document.getElementById('admVerbaMeta').value)||0;
@@ -1015,30 +1036,23 @@ async function saveAdminConfig(){
     try {
       const db = firebase.firestore();
       const setupToSave = { ...launchState };
-      // Previne que arquivos gigantes de dados passem pro setup principal
       delete setupToSave.dataMeta; delete setupToSave.dataGoogle;
 
-      // 1. Salva o setup que todo mundo vai ver ao entrar
       await db.collection('lancamentos').doc('setup_atual').set(setupToSave);
       
-      // 2. Salva uma cópia na pasta de histórico
       if(setupToSave.nomeLancamento) {
         const historicoId = setupToSave.nomeLancamento.replace(/[^a-zA-Z0-9]/g, '_').toUpperCase();
         await db.collection('historico_lancamentos').doc(historicoId).set(setupToSave);
       }
       fetchHistoricoList();
-
     } catch(e) {
       console.error("Erro ao salvar no Firestore:", e);
       alert("Erro ao salvar na nuvem. Verifique sua conexão ou tente novamente em instantes.");
-      
-      // Restaura o botão e aborta a função (O Segredo para não dar mensagem dupla)
       btn.textContent = '💾 Salvar Configurações'; btn.disabled = false;
       return; 
     }
   }
 
-  // Se chegou aqui, é porque deu tudo certo!
   btn.textContent = '💾 Salvar Configurações'; btn.disabled = false;
   
   launchState.filterStart=launchState.dataInicio;
@@ -1050,13 +1064,11 @@ async function saveAdminConfig(){
   updateHeaderName();
   updateTargetSummary();
   syncDataFromSheets();
-  
-  // Agora sim, a mensagem de sucesso!
   alert('Configurações salvas com sucesso!');
 }
 
 // ============================================================
-// DATE PICKER LOGIC (REVISADO E BLINDADO)
+// DATE PICKER LOGIC 
 // ============================================================
 const MONTHS_PT=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 let dpState={ viewYear:2026, viewMonth:8, selStart:null, selEnd:null, picking:'start', activeShortcut:null };
@@ -1353,10 +1365,6 @@ function renderAllScreens(){
   renderPublicos();
 }
 
-function isQuente(nome) {
-  return /quente|remarketing|envolvimento|personalizado|lista|30d|180/i.test(nome);
-}
-
 function renderFunnelAndTimeline(){
   let meta=filterByCampaign(filterByDate(launchState.dataMeta));
   let google=filterByCampaign(filterByDate(launchState.dataGoogle));
@@ -1384,13 +1392,33 @@ function renderFunnelAndTimeline(){
     const sp = parseNum(getCol(r,['Amount Spent','Cost (Spend)','Valor gasto','Cost']));
     const day = getCol(r,['Day','Dia'])||'';
     
+    const campName = getCol(r, ['Campaign Name', 'Nome da campanha', 'Campaign', 'Campanha']) || 'Outros';
     const pubName = getCol(r, isMeta ? ['Ad Set Name','Nome do conjunto de anúncios'] : ['Ad Group Name','Grupo de anúncios']) || 'Outros';
     const adName = getCol(r, isMeta ? ['Ad Name','Nome do anúncio'] : ['Ad Name','Anúncio']) || 'Outros';
 
     totalImp+=i; totalClicks+=c; totalLPV+=lpv; totalLeads+=l; totalGasto+=sp;
     
-    if(isMeta) isQuente(pubName) ? pacing.mq.gasto+=sp : pacing.mf.gasto+=sp;
-    else isQuente(pubName) ? pacing.gq.gasto+=sp : pacing.gf.gasto+=sp;
+    // ==========================================
+    // NOVA INTELIGÊNCIA: Filtro pela Campanha
+    // ==========================================
+    let quente = false;
+    const nameLower = campName.toLowerCase();
+    
+    // Pega as palavras-chave que você digitou lá no painel Admin e transforma em lista
+    const tagsQ = (launchState.tagQuente || '').toLowerCase().split(',').map(t=>t.trim()).filter(Boolean);
+    const tagsF = (launchState.tagFria || '').toLowerCase().split(',').map(t=>t.trim()).filter(Boolean);
+
+    if (tagsQ.length > 0 && tagsQ.some(t => nameLower.includes(t))) {
+      quente = true; // Achou tag Quente
+    } else if (tagsF.length > 0 && tagsF.some(t => nameLower.includes(t))) {
+      quente = false; // Achou tag Fria
+    } else {
+      // Mecanismo de Segurança: Se as tags não baterem, ele usa o padrão básico
+      quente = /quente|remarketing|rmkt|envolvimento|00|01/i.test(nameLower);
+    }
+
+    if(isMeta) quente ? pacing.mq.gasto+=sp : pacing.mf.gasto+=sp;
+    else quente ? pacing.gq.gasto+=sp : pacing.gf.gasto+=sp;
 
     if(!dayStats[day]) dayStats[day]={leads:0,spent:0};
     dayStats[day].leads+=l; dayStats[day].spent+=sp;
