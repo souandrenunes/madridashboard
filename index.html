@@ -26,7 +26,6 @@
   <style>
     body { background:#0F1117; color:#F1F5F9; font-family:'Inter',sans-serif; }
     
-    /* SCROLLBAR E TABELAS SWIPE */
     .custom-scrollbar::-webkit-scrollbar{height:6px;width:6px}
     .custom-scrollbar::-webkit-scrollbar-track{background:#0F1117}
     .custom-scrollbar::-webkit-scrollbar-thumb{background:#2D3148;border-radius:4px}
@@ -70,7 +69,7 @@
     .dp-cal-title { font-size: 14px; font-weight: 700; color: #f8fafc; }
     .dp-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 12px; }
     .dp-weekday { font-size: 11px; font-weight: 500; color: #64748b; text-align: center; }
-    .dp-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px 0; }
+    .dp-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px 0; min-h-[180px]; }
     .dp-day-wrapper { display: flex; justify-content: center; position: relative; }
     .dp-day { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: #f8fafc; cursor: pointer; border-radius: 6px; transition: all .15s; border: 1px solid transparent; }
     .dp-day:hover:not(.dp-day-empty) { border-color: #475569; }
@@ -88,12 +87,9 @@
       .dp-cal-title { font-size: 13px; }
     }
 
-    /* TOOLTIP APEXCHARTS */
-    .apexcharts-tooltip { background: #0F121A !important; border: 1px solid #2D3148 !important; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3) !important; color: #F1F5F9 !important; }
+    .apexcharts-tooltip { background: #0F121A !important; border: 1px solid #2D3148 !important; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5) !important; color: #F1F5F9 !important; }
     .apexcharts-tooltip-title { background: #1A1D27 !important; border-bottom: 1px solid #2D3148 !important; font-weight: 700 !important; padding: 6px 10px !important; font-size: 11px !important; }
-    .apexcharts-tooltip-series-group { padding: 4px 10px !important; }
 
-    /* ESTILOS DO SIDEBAR COLLAPSE (DESKTOP) */
     #sidebar { transition: width 0.3s ease; width: 16rem; } 
     #sidebar.collapsed { width: 5.5rem !important; }
     #sidebar.collapsed .sb-text { display: none; }
@@ -109,7 +105,6 @@
 
 <!-- ======= ÁREA DE AUTENTICAÇÃO ======= -->
 <div id="loginScreen">
-  
   <!-- CARD DE LOGIN -->
   <div id="cardLogin" class="login-card fade-in">
     <div class="flex flex-col items-center mb-8">
@@ -142,7 +137,7 @@
     </div>
   </div>
 
-  <!-- CARD DE CADASTRO (CÓDIGO SECRETO) -->
+  <!-- CARD DE CADASTRO -->
   <div id="cardSignup" class="login-card fade-in hidden">
     <div class="flex flex-col items-center mb-6">
       <h1 class="text-lg font-extrabold text-white tracking-wider uppercase">CRIAR CONTA VIP</h1>
@@ -175,7 +170,6 @@
       </div>
     </div>
   </div>
-
 </div>
 
 <!-- ======= MODAL RECUPERAÇÃO DE SENHA ======= -->
@@ -207,7 +201,6 @@
 
   <!-- SIDEBAR (ESCONDIDO NO MOBILE, COM COLLAPSE NO DESKTOP) -->
   <aside id="sidebar" class="hidden md:flex bg-bg-card border-r border-border-custom flex-col justify-between h-screen sticky top-0 z-40 shrink-0 relative">
-    <!-- BOTÃO DE RECOLHER/EXPANDIR -->
     <button onclick="toggleSidebar()" class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-bg-card border border-border-custom rounded-full flex items-center justify-center text-text-muted hover:text-white hover:border-accent-blue transition z-50 shadow-md">
       <svg id="sb-toggle-icon" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
     </button>
@@ -239,7 +232,6 @@
       </nav>
     </div>
     
-    <!-- ÁREA INFERIOR DA SIDEBAR (BOTÃO DE RECARREGAR E STATUS) -->
     <div class="p-4 border-t border-border-custom space-y-3">
       <div class="sb-profile flex items-center gap-2.5 px-1">
         <div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-600 to-emerald-500 flex items-center justify-center text-white font-black text-xs shrink-0" id="userAvatar">A</div>
@@ -249,13 +241,11 @@
         </div>
       </div>
       
-      <!-- BOLINHA DE STATUS INTELIGENTE -->
       <div class="sb-sync-info flex items-center gap-2 text-xs text-text-muted px-1 mt-2">
         <span id="sidebarStatusDot" class="w-2 h-2 rounded-full bg-accent-green shrink-0"></span>
         <span id="sidebarStatusText" class="truncate font-medium sb-text">Conectado</span>
       </div>
       
-      <!-- BOTÃO RECARREGAR -->
       <button onclick="syncDataFromSheets()" title="Recarregar Dados" class="sb-nav-btn w-full bg-bg-input hover:bg-border-custom text-text-primary py-2 rounded-md text-xs font-bold transition flex items-center gap-2 border border-border-custom px-3.5">
         <span class="shrink-0">🔄</span> <span class="sb-text truncate">Recarregar</span>
       </button>
@@ -300,7 +290,7 @@
       </div>
       <div class="flex items-center gap-4 shrink-0">
         
-        <!-- STATUS DO HEADER (SEMAFORO) -->
+        <!-- STATUS DO HEADER (SEMÁFORO) -->
         <div id="syncStatus" class="hidden sm:flex items-center gap-1.5 text-xs font-medium text-accent-green">
           <span class="inline-block w-2 h-2 rounded-full bg-accent-green"></span>
           <span>Conectado</span>
@@ -356,32 +346,29 @@
             <p class="text-[11px] md:text-xs text-text-muted mt-1">Configure a origem, metas e o período do projeto.</p>
           </div>
           <button id="btnSaveAdmin" onclick="saveAdminConfig()" class="w-full md:w-auto px-6 py-2.5 rounded-md bg-accent-blue hover:bg-blue-600 text-white text-xs font-bold transition shadow-lg shadow-blue-500/20">
-            💾 Salvar & Recarregar
+            💾 Salvar Configurações
           </button>
         </div>
 
-        <!-- CARREGAR HISTÓRICO -->
+        <!-- HISTÓRICO AUTOMÁTICO VIA DROPDOWN (SEM BOTÃO EXTRAS) -->
         <div class="bg-bg-input p-4 md:p-5 rounded-lg border border-border-custom flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div class="flex items-center gap-3">
             <span class="text-xl">📂</span>
             <div>
               <h3 class="text-sm font-bold text-white">Histórico de Lançamentos</h3>
-              <p class="text-[10px] md:text-[11px] text-text-muted mt-0.5">Carregue um projeto salvo na nuvem</p>
+              <p class="text-[10px] md:text-[11px] text-text-muted mt-0.5">Selecione para carregar os dados instantaneamente</p>
             </div>
           </div>
-          <div class="flex items-center gap-2">
-            <select id="historicoSelect" class="bg-bg-card border border-border-custom rounded-md px-3 py-2.5 text-xs text-white focus:outline-none focus:border-accent-blue w-full md:min-w-[250px]">
+          <div class="w-full md:w-auto">
+            <select id="historicoSelect" onchange="loadHistorico()" class="bg-bg-card border border-border-custom rounded-md px-3 py-2.5 text-xs text-white focus:outline-none focus:border-accent-blue w-full md:min-w-[280px]">
               <option value="">Carregando da nuvem...</option>
             </select>
-            <button type="button" onclick="loadHistorico()" class="bg-border-custom hover:bg-gray-600 text-white px-4 py-2.5 rounded-md text-xs font-bold transition">
-              Carregar
-            </button>
           </div>
         </div>
         
         <form id="adminForm" onsubmit="event.preventDefault();saveAdminConfig();" class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           
-          <!-- BLOCO 1: IDENTIDADE E ORIGEM (CAMPO URL REMOVIDO) -->
+          <!-- BLOCO 1: IDENTIDADE E ORIGEM -->
           <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4">
             <h3 class="text-sm font-bold text-white border-b border-border-custom pb-3 flex items-center gap-2">
               <span class="text-accent-blue">1.</span> Identidade e Origem
@@ -423,21 +410,21 @@
               <div class="grid grid-cols-2 gap-4 mt-4">
                 <div>
                   <label class="block text-[10px] md:text-[11px] font-semibold text-text-muted uppercase mb-1">Verba Meta</label>
-                  <input type="number" id="admVerbaMeta" step="100" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-sm font-bold text-accent-blue focus:outline-none focus:border-accent-blue"/>
+                  <input type="number" id="admVerbaMeta" step="100" oninput="updateTargetSummary()" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-sm font-bold text-accent-blue focus:outline-none focus:border-accent-blue"/>
                 </div>
                 <div>
                   <label class="block text-[10px] md:text-[11px] font-semibold text-text-muted uppercase mb-1">Verba Google</label>
-                  <input type="number" id="admVerbaGoogle" step="100" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-sm font-bold text-accent-red focus:outline-none focus:border-accent-blue"/>
+                  <input type="number" id="admVerbaGoogle" step="100" oninput="updateTargetSummary()" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-sm font-bold text-accent-red focus:outline-none focus:border-accent-blue"/>
                 </div>
               </div>
               <div class="mt-4">
                 <label class="block text-[10px] md:text-[11px] font-semibold text-text-muted uppercase mb-1">Meta de Leads (Total)</label>
-                <input type="number" id="admMetaLeads" step="50" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-sm font-bold text-white focus:outline-none focus:border-accent-blue"/>
+                <input type="number" id="admMetaLeads" step="50" oninput="updateTargetSummary()" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-sm font-bold text-white focus:outline-none focus:border-accent-blue"/>
               </div>
             </div>
             <div class="p-4 bg-bg-input rounded-md border border-border-custom space-y-2 mt-4">
               <span class="text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-accent-blue block">💡 Resumo Alvo</span>
-              <p class="text-[11px] md:text-xs text-text-primary leading-relaxed" id="admTargetSummary">Aguardando dados...</p>
+              <p class="text-[11px] md:text-xs text-text-primary leading-relaxed" id="admTargetSummary">Calculando resumo do projeto...</p>
             </div>
           </div>
 
@@ -562,7 +549,6 @@
             </h3>
             <span class="text-[9px] md:text-[10px] text-text-muted font-bold px-2 py-1 bg-bg-input rounded border border-border-custom" id="pacingDaysLeft">Faltam: 0 dias</span>
           </div>
-          <!-- overflow-x-auto força scroll em mobile -->
           <div class="overflow-x-auto custom-scrollbar pb-2">
             <table class="w-full text-left text-xs min-w-[600px]">
               <thead class="bg-bg-input text-text-muted uppercase text-[9px] md:text-[10px]">
@@ -648,24 +634,40 @@
       </section>
     </div>
   </main>
-</div><!-- fim appShell -->
+</div>
 
 <script>
 // ============================================================
-// LÓGICA DO SIDEBAR COLLAPSE
+// LÓGICA DO SIDEBAR COLLAPSE E MENU
 // ============================================================
 function toggleSidebar() {
   const sb = document.getElementById('sidebar');
   const icon = document.getElementById('sb-toggle-icon');
-  
   sb.classList.toggle('collapsed');
-  
   if(sb.classList.contains('collapsed')) {
     icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>';
   } else {
     icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>';
   }
   setTimeout(() => window.dispatchEvent(new Event('resize')), 300);
+}
+
+function navTo(id){
+  document.querySelectorAll('.screen-view').forEach(el=>el.classList.add('hidden'));
+  document.getElementById('screen-'+id).classList.remove('hidden');
+  
+  ['t1','t2','t3','t4'].forEach(i=>{
+    const b=document.getElementById('nav-'+i); if(!b)return;
+    b.className=i===id?'sb-nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all bg-accent-blue text-white shadow-md':'sb-nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all text-text-muted hover:text-text-primary hover:bg-bg-input';
+  });
+
+  ['t1','t2','t3','t4'].forEach(i=>{
+    const mb=document.getElementById('mob-nav-'+i); if(!mb)return;
+    if(i===id) mb.className='flex flex-col items-center justify-center gap-1 text-accent-blue transition-colors flex-1 p-2 transform scale-105';
+    else mb.className='flex flex-col items-center justify-center gap-1 text-text-muted hover:text-white transition-colors flex-1 p-2';
+  });
+
+  if(id==='t2') setTimeout(()=>renderFunnelAndTimeline(),100);
 }
 
 // ============================================================
@@ -757,6 +759,43 @@ async function doSignup() {
   }
 }
 
+function doLogout(){
+  if(!confirm('Deseja sair?'))return;
+  if(firebaseReady) firebase.auth().signOut();
+  location.reload();
+}
+
+function showForgotModal(){document.getElementById('forgotModal').classList.remove('hidden');document.getElementById('forgotEmail').value='';document.getElementById('forgotMsg').classList.add('hidden');}
+function hideForgotModal(){document.getElementById('forgotModal').classList.add('hidden');}
+async function doForgot(){
+  const email=document.getElementById('forgotEmail').value.trim();
+  const msgEl=document.getElementById('forgotMsg');
+  const btn=document.getElementById('forgotBtn');
+  msgEl.classList.add('hidden');
+  
+  if(!email){
+    msgEl.textContent='Informe um e-mail válido.';
+    msgEl.className='text-xs rounded-md px-3 py-2.5 font-medium bg-accent-red/10 border border-accent-red/20 text-accent-red';
+    msgEl.classList.remove('hidden'); return;
+  }
+  
+  if(firebaseReady){
+    btn.disabled=true; btn.textContent='Enviando...';
+    try{
+      await firebase.auth().sendPasswordResetEmail(email);
+      msgEl.textContent=`✅ Link enviado para ${email}.`;
+      msgEl.className='text-xs rounded-md px-3 py-2.5 font-medium bg-accent-green/10 border border-accent-green/20 text-accent-green';
+      msgEl.classList.remove('hidden');
+      document.getElementById('forgotEmail').value='';
+    } catch(e) {
+      msgEl.textContent=e.message||'Erro ao enviar. Tente novamente.';
+      msgEl.className='text-xs rounded-md px-3 py-2.5 font-medium bg-accent-red/10 border border-accent-red/20 text-accent-red';
+      msgEl.classList.remove('hidden');
+    }
+    btn.disabled=false; btn.textContent='Enviar Link de Redefinição';
+  }
+}
+
 if(firebaseReady){
   firebase.auth().onAuthStateChanged(u=>{
     if(u){
@@ -765,6 +804,25 @@ if(firebaseReady){
     }
   });
 }
+
+// ============================================================
+// CONEXÃO COM A PLANILHA E ESTADO GLOBAL
+// ============================================================
+const SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1iY5TYTyFDIlQ_5N3MizfCpPVwj7I8_sEkyFBtVrzb_k/edit?usp=sharing";
+
+let launchState={
+  nomeCliente: "NA FONTE",
+  nomeLancamento: "CHINELOS",
+  filtroCampanha: "",
+  dataInicio:"2026-09-01", dataFim:"2026-09-13",
+  filterStart:"2026-09-01", filterEnd:"2026-09-13",
+  verbaMeta:10000, verbaGoogle:10000,
+  pctGQ:40, pctGF:60, pctMQ:30, pctMF:70,
+  metaLeads:10000,
+  dataMeta:[],dataGoogle:[]
+};
+
+let comboChartInstance=null;
 
 async function enterApp(userData){
   currentUser=userData;
@@ -810,6 +868,7 @@ async function enterApp(userData){
   applyDateRange(); 
   
   updateHeaderName();
+  updateTargetSummary();
   syncDataFromSheets();
 }
 
@@ -819,14 +878,23 @@ function updateHeaderName() {
   document.getElementById('headerLaunchName').textContent = `${cliente} | ${lancamento}`.toUpperCase();
 }
 
-function doLogout(){
-  if(!confirm('Deseja sair?'))return;
-  if(firebaseReady) firebase.auth().signOut();
-  location.reload();
+// CÁLCULO AUTOMÁTICO DO RESUMO ALVO
+function updateTargetSummary() {
+  const vMeta = parseFloat(document.getElementById('admVerbaMeta').value) || 0;
+  const vGoogle = parseFloat(document.getElementById('admVerbaGoogle').value) || 0;
+  const mLeads = parseFloat(document.getElementById('admMetaLeads').value) || 0;
+  
+  const vTotal = vMeta + vGoogle;
+  const cplAlvo = mLeads > 0 ? (vTotal / mLeads).toFixed(2) : '0.00';
+  
+  const el = document.getElementById('admTargetSummary');
+  if(el) {
+    el.innerHTML = `Verba Total <b class="text-accent-green">R$ ${vTotal.toLocaleString('pt-BR')}</b> · Meta <b class="text-accent-blue">${mLeads.toLocaleString('pt-BR')} leads</b> · <b class="text-accent-yellow">CPL alvo: R$ ${cplAlvo}</b>`;
+  }
 }
 
 // ============================================================
-// CARREGAR HISTÓRICO DA NUVEM
+// HISTÓRICO AUTOMÁTICO (ONCHANGE)
 // ============================================================
 async function fetchHistoricoList() {
   if(!firebaseReady) return;
@@ -835,7 +903,7 @@ async function fetchHistoricoList() {
     const snapshot = await db.collection('historico_lancamentos').get();
     const select = document.getElementById('historicoSelect');
     
-    let options = '<option value="">Selecione um lançamento...</option>';
+    let options = '<option value="">Selecione um lançamento para carregar...</option>';
     let count = 0;
     
     snapshot.forEach(doc => {
@@ -846,20 +914,22 @@ async function fetchHistoricoList() {
       count++;
     });
     
-    if(count > 0) {
-      select.innerHTML = options;
-    } else {
-      select.innerHTML = '<option value="">Nenhum histórico salvo ainda.</option>';
-    }
+    if(count > 0) select.innerHTML = options;
+    else select.innerHTML = '<option value="">Nenhum histórico salvo ainda.</option>';
   } catch(e) {
     console.warn("Nuvem: Erro ao ler histórico", e);
   }
 }
 
 async function loadHistorico() {
-  const id = document.getElementById('historicoSelect').value;
+  const select = document.getElementById('historicoSelect');
+  const id = select.value;
   if(!id) return;
-  if(!firebaseReady) { alert("Conexão com a nuvem indisponível."); return; }
+  
+  if(!firebaseReady) { 
+    alert("Conexão com a nuvem indisponível."); 
+    return; 
+  }
   
   try {
     const db = firebase.firestore();
@@ -889,180 +959,12 @@ async function loadHistorico() {
       applyDateRange(); 
       
       updateHeaderName();
+      updateTargetSummary();
       syncDataFromSheets();
-      alert('Lançamento histórico carregado com sucesso!');
     }
   } catch(e) {
-    console.error(e);
-    alert("Erro ao carregar histórico.");
+    console.warn("Aviso ao carregar histórico:", e);
   }
-}
-
-// ============================================================
-// MODAL RECUPERAÇÃO DE SENHA
-// ============================================================
-function showForgotModal(){document.getElementById('forgotModal').classList.remove('hidden');document.getElementById('forgotEmail').value='';document.getElementById('forgotMsg').classList.add('hidden');}
-function hideForgotModal(){document.getElementById('forgotModal').classList.add('hidden');}
-async function doForgot(){
-  const email=document.getElementById('forgotEmail').value.trim();
-  const msgEl=document.getElementById('forgotMsg');
-  const btn=document.getElementById('forgotBtn');
-  msgEl.classList.add('hidden');
-  
-  if(!email){
-    msgEl.textContent='Informe um e-mail válido.';
-    msgEl.className='text-xs rounded-md px-3 py-2.5 font-medium bg-accent-red/10 border border-accent-red/20 text-accent-red';
-    msgEl.classList.remove('hidden');
-    return;
-  }
-  
-  if(firebaseReady){
-    btn.disabled=true; btn.textContent='Enviando...';
-    try{
-      await firebase.auth().sendPasswordResetEmail(email);
-      msgEl.textContent=`✅ Link enviado para ${email}.`;
-      msgEl.className='text-xs rounded-md px-3 py-2.5 font-medium bg-accent-green/10 border border-accent-green/20 text-accent-green';
-      msgEl.classList.remove('hidden');
-      document.getElementById('forgotEmail').value='';
-    } catch(e) {
-      msgEl.textContent=e.message||'Erro ao enviar. Tente novamente.';
-      msgEl.className='text-xs rounded-md px-3 py-2.5 font-medium bg-accent-red/10 border border-accent-red/20 text-accent-red';
-      msgEl.classList.remove('hidden');
-    }
-    btn.disabled=false; btn.textContent='Enviar Link de Redefinição';
-  }
-}
-
-// ============================================================
-// DATE PICKER LOGIC
-// ============================================================
-const MONTHS_PT=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-let dpState={ viewYear:2026, viewMonth:8, selStart:null, selEnd:null, picking:'start', activeShortcut:null };
-
-function isoToDate(s){ const[y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
-function dateToIso(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-function fmtShort(d){ return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getFullYear()).slice(-2)}`; }
-function stripTime(d){ return new Date(d.getFullYear(),d.getMonth(),d.getDate()); }
-function today(){ return stripTime(new Date()); }
-
-function toggleDatePicker(){
-  const dd=document.getElementById('dpDropdown');
-  const trigger=document.getElementById('dpTrigger');
-  const isOpen=dd.classList.contains('open');
-  if(isOpen){ closeDatePicker(); return; }
-  dd.classList.add('open'); trigger.classList.add('active');
-  renderDpCalendar();
-}
-function closeDatePicker(){
-  document.getElementById('dpDropdown').classList.remove('open');
-  document.getElementById('dpTrigger').classList.remove('active');
-}
-document.addEventListener('click',e=>{
-  const wrap=document.getElementById('dpWrap');
-  if(wrap && !wrap.contains(e.target)) closeDatePicker();
-});
-
-function dpNavMonth(dir){
-  dpState.viewMonth+=dir;
-  if(dpState.viewMonth>11){dpState.viewMonth=0;dpState.viewYear++;}
-  if(dpState.viewMonth<0){dpState.viewMonth=11;dpState.viewYear--;}
-  renderDpCalendar();
-}
-
-function renderDpCalendar(){
-  document.getElementById('dpCalTitle').textContent=`${MONTHS_PT[dpState.viewMonth]} ${dpState.viewYear}`;
-  const firstDay=new Date(dpState.viewYear,dpState.viewMonth,1).getDay();
-  const daysInMonth=new Date(dpState.viewYear,dpState.viewMonth+1,0).getDate();
-  const td=today();
-  let html='';
-  for(let i=0;i<firstDay;i++) html+=`<div class="dp-day-wrapper"><div class="dp-day dp-day-empty"></div></div>`;
-  for(let day=1;day<=daysInMonth;day++){
-    const dt=new Date(dpState.viewYear,dpState.viewMonth,day);
-    let cls='dp-day';
-    const s=dpState.selStart, e=dpState.selEnd;
-    if(s && e){
-      const lo=s<e?s:e, hi=s<e?e:s;
-      if(dt.getTime()===lo.getTime()) cls+=' dp-day-selected dp-day-range-start';
-      else if(dt.getTime()===hi.getTime()) cls+=' dp-day-range-end';
-      else if(dt>lo && dt<hi) cls+=' dp-day-in-range';
-    } else if(s && dt.getTime()===s.getTime()){
-      cls+=' dp-day-selected';
-    }
-    html+=`<div class="dp-day-wrapper"><div class="${cls}" onclick="dpClickDay(${dpState.viewYear},${dpState.viewMonth},${day})">${day}</div></div>`;
-  }
-  document.getElementById('dpDays').innerHTML=html;
-}
-
-function dpClickDay(y,m,d){
-  const dt=new Date(y,m,d);
-  if(dpState.picking==='start'||(!dpState.selStart)){
-    dpState.selStart=dt; dpState.selEnd=null; dpState.picking='end';
-  } else {
-    if(dt<dpState.selStart){ dpState.selEnd=dpState.selStart; dpState.selStart=dt; }
-    else { dpState.selEnd=dt; }
-    dpState.picking='start';
-    applyDateRange();
-    return;
-  }
-  dpState.activeShortcut=null;
-  document.querySelectorAll('.dp-shortcut').forEach(b=>b.classList.remove('active'));
-  renderDpCalendar();
-}
-
-function applyShortcut(key){
-  const t=today(); let s,e;
-  if(key==='today'){s=t;e=t;}
-  else if(key==='yesterday'){s=new Date(t.getFullYear(),t.getMonth(),t.getDate()-1);e=s;}
-  else if(key==='last7'){s=new Date(t.getFullYear(),t.getMonth(),t.getDate()-6);e=t;}
-  else if(key==='last30'){s=new Date(t.getFullYear(),t.getMonth(),t.getDate()-29);e=t;}
-  else if(key==='thisMonth'){s=new Date(t.getFullYear(),t.getMonth(),1);e=t;}
-  else if(key==='lastMonth'){s=new Date(t.getFullYear(),t.getMonth()-1,1);e=new Date(t.getFullYear(),t.getMonth(),0);}
-  else if(key==='thisYear'){s=new Date(t.getFullYear(),0,1);e=t;}
-  dpState.selStart=s; dpState.selEnd=e;
-  dpState.viewYear=e.getFullYear(); dpState.viewMonth=e.getMonth();
-  dpState.activeShortcut=key;
-  document.querySelectorAll('.dp-shortcut').forEach(b=>b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-  applyDateRange();
-}
-
-function applyDateRange(){
-  if(!dpState.selStart) return;
-  const s=dpState.selStart, e=dpState.selEnd||dpState.selStart;
-  const lo=s<e?s:e, hi=s<e?e:s;
-  launchState.filterStart=dateToIso(lo);
-  launchState.filterEnd=dateToIso(hi);
-  const isMobile = window.innerWidth <= 768;
-  if(isMobile) {
-    const sTxt = `${String(lo.getDate()).padStart(2,'0')}/${String(lo.getMonth()+1).padStart(2,'0')}`;
-    const eTxt = `${String(hi.getDate()).padStart(2,'0')}/${String(hi.getMonth()+1).padStart(2,'0')}`;
-    document.getElementById('dpTriggerLabel').textContent=`${sTxt} - ${eTxt}`;
-  } else {
-    document.getElementById('dpTriggerLabel').textContent=`${fmtShort(lo)} - ${fmtShort(hi)}`;
-  }
-  closeDatePicker();
-  renderAllScreens();
-}
-
-// ============================================================
-// NAVEGAÇÃO E REGRAS DE ADMIN
-// ============================================================
-function navTo(id){
-  document.querySelectorAll('.screen-view').forEach(el=>el.classList.add('hidden'));
-  document.getElementById('screen-'+id).classList.remove('hidden');
-  
-  ['t1','t2','t3','t4'].forEach(i=>{
-    const b=document.getElementById('nav-'+i); if(!b)return;
-    b.className=i===id?'sb-nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all bg-accent-blue text-white shadow-md':'sb-nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all text-text-muted hover:text-text-primary hover:bg-bg-input';
-  });
-
-  ['t1','t2','t3','t4'].forEach(i=>{
-    const mb=document.getElementById('mob-nav-'+i); if(!mb)return;
-    if(i===id) mb.className='flex flex-col items-center justify-center gap-1 text-accent-blue transition-colors flex-1 p-2 transform scale-105';
-    else mb.className='flex flex-col items-center justify-center gap-1 text-text-muted hover:text-white transition-colors flex-1 p-2';
-  });
-
-  if(id==='t2') setTimeout(()=>renderFunnelAndTimeline(),100);
 }
 
 function validatePercentages(){
@@ -1128,7 +1030,7 @@ async function saveAdminConfig(){
     }
   }
 
-  btn.textContent = '💾 Salvar & Recarregar'; btn.disabled = false;
+  btn.textContent = '💾 Salvar Configurações'; btn.disabled = false;
   
   launchState.filterStart=launchState.dataInicio;
   launchState.filterEnd=launchState.dataFim;
@@ -1137,17 +1039,167 @@ async function saveAdminConfig(){
   applyDateRange();
   
   updateHeaderName();
+  updateTargetSummary();
   syncDataFromSheets();
-  alert('Configurações salvas na nuvem com sucesso!');
+  alert('Configurações salvas com sucesso!');
 }
 
 // ============================================================
-// CONEXÃO COM A PLANILHA (CÓDIGO FIXO) E STATUS INTELIGENTE
+// DATE PICKER LOGIC (REVISADO E BLINDADO)
 // ============================================================
+const MONTHS_PT=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+let dpState={ viewYear:2026, viewMonth:8, selStart:null, selEnd:null, picking:'start', activeShortcut:null };
 
-// LINK CHUMBADO DA SUA PLANILHA:
-const SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1iY5TYTyFDIlQ_5N3MizfCpPVwj7I8_sEkyFBtVrzb_k/edit?usp=sharing";
+function isoToDate(s){ 
+  if(!s) return new Date();
+  if(s instanceof Date) return s;
+  if(typeof s === 'string' && s.includes('/')) {
+    const parts = s.split('/');
+    if(parts.length === 3) return new Date(parts[2], parts[1]-1, parts[0]);
+  }
+  if(typeof s === 'string' && s.includes('-')) {
+    const parts = s.split('-');
+    if(parts.length === 3) return new Date(parts[0], parts[1]-1, parts[2]);
+  }
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? new Date() : d;
+}
 
+function dateToIso(d){ 
+  if(!d || isNaN(d.getTime())) d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; 
+}
+
+function fmtShort(d){ 
+  if(!d || isNaN(d.getTime())) d = new Date();
+  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getFullYear()).slice(-2)}`; 
+}
+
+function stripTime(d){ 
+  if(!d || isNaN(d.getTime())) d = new Date();
+  return new Date(d.getFullYear(),d.getMonth(),d.getDate()); 
+}
+
+function today(){ return stripTime(new Date()); }
+
+function toggleDatePicker(){
+  const dd=document.getElementById('dpDropdown');
+  const trigger=document.getElementById('dpTrigger');
+  const isOpen=dd.classList.contains('open');
+  if(isOpen){ closeDatePicker(); return; }
+  dd.classList.add('open'); trigger.classList.add('active');
+  renderDpCalendar();
+}
+
+function closeDatePicker(){
+  document.getElementById('dpDropdown').classList.remove('open');
+  document.getElementById('dpTrigger').classList.remove('active');
+}
+
+document.addEventListener('click',e=>{
+  const wrap=document.getElementById('dpWrap');
+  if(wrap && !wrap.contains(e.target)) closeDatePicker();
+});
+
+function dpNavMonth(dir){
+  dpState.viewMonth+=dir;
+  if(dpState.viewMonth>11){dpState.viewMonth=0;dpState.viewYear++;}
+  if(dpState.viewMonth<0){dpState.viewMonth=11;dpState.viewYear--;}
+  renderDpCalendar();
+}
+
+function renderDpCalendar(){
+  if(dpState.selStart && !isNaN(dpState.selStart.getTime())){
+    dpState.viewYear = dpState.selStart.getFullYear();
+    dpState.viewMonth = dpState.selStart.getMonth();
+  }
+  
+  document.getElementById('dpCalTitle').textContent=`${MONTHS_PT[dpState.viewMonth]} ${dpState.viewYear}`;
+  const firstDay=new Date(dpState.viewYear,dpState.viewMonth,1).getDay();
+  const daysInMonth=new Date(dpState.viewYear,dpState.viewMonth+1,0).getDate();
+  const td=today();
+  let html='';
+  
+  for(let i=0;i<firstDay;i++) {
+    html+=`<div class="dp-day-wrapper"><div class="dp-day dp-day-empty"></div></div>`;
+  }
+  
+  for(let day=1;day<=daysInMonth;day++){
+    const dt=new Date(dpState.viewYear,dpState.viewMonth,day);
+    let cls='dp-day';
+    const s=dpState.selStart, e=dpState.selEnd;
+    
+    if(s && e && !isNaN(s.getTime()) && !isNaN(e.getTime())){
+      const lo=s<e?s:e, hi=s<e?e:s;
+      if(dt.getTime()===lo.getTime()) cls+=' dp-day-selected dp-day-range-start';
+      else if(dt.getTime()===hi.getTime()) cls+=' dp-day-range-end';
+      else if(dt>lo && dt<hi) cls+=' dp-day-in-range';
+    } else if(s && !isNaN(s.getTime()) && dt.getTime()===s.getTime()){
+      cls+=' dp-day-selected';
+    }
+    
+    html+=`<div class="dp-day-wrapper"><div class="${cls}" onclick="dpClickDay(${dpState.viewYear},${dpState.viewMonth},${day})">${day}</div></div>`;
+  }
+  
+  const daysEl = document.getElementById('dpDays');
+  if(daysEl) daysEl.innerHTML=html;
+}
+
+function dpClickDay(y,m,d){
+  const dt=new Date(y,m,d);
+  if(dpState.picking==='start'||(!dpState.selStart)){
+    dpState.selStart=dt; dpState.selEnd=null; dpState.picking='end';
+  } else {
+    if(dt<dpState.selStart){ dpState.selEnd=dpState.selStart; dpState.selStart=dt; }
+    else { dpState.selEnd=dt; }
+    dpState.picking='start';
+    applyDateRange();
+    return;
+  }
+  dpState.activeShortcut=null;
+  document.querySelectorAll('.dp-shortcut').forEach(b=>b.classList.remove('active'));
+  renderDpCalendar();
+}
+
+function applyShortcut(key){
+  const t=today(); let s,e;
+  if(key==='today'){s=t;e=t;}
+  else if(key==='yesterday'){s=new Date(t.getFullYear(),t.getMonth(),t.getDate()-1);e=s;}
+  else if(key==='last7'){s=new Date(t.getFullYear(),t.getMonth(),t.getDate()-6);e=t;}
+  else if(key==='last30'){s=new Date(t.getFullYear(),t.getMonth(),t.getDate()-29);e=t;}
+  else if(key==='thisMonth'){s=new Date(t.getFullYear(),t.getMonth(),1);e=t;}
+  else if(key==='lastMonth'){s=new Date(t.getFullYear(),t.getMonth()-1,1);e=new Date(t.getFullYear(),t.getMonth(),0);}
+  else if(key==='thisYear'){s=new Date(t.getFullYear(),0,1);e=t;}
+  
+  dpState.selStart=s; dpState.selEnd=e;
+  dpState.viewYear=e.getFullYear(); dpState.viewMonth=e.getMonth();
+  dpState.activeShortcut=key;
+  document.querySelectorAll('.dp-shortcut').forEach(b=>b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  applyDateRange();
+}
+
+function applyDateRange(){
+  if(!dpState.selStart) return;
+  const s=dpState.selStart, e=dpState.selEnd||dpState.selStart;
+  const lo=s<e?s:e, hi=s<e?e:s;
+  launchState.filterStart=dateToIso(lo);
+  launchState.filterEnd=dateToIso(hi);
+  const isMobile = window.innerWidth <= 768;
+  if(isMobile) {
+    const sTxt = `${String(lo.getDate()).padStart(2,'0')}/${String(lo.getMonth()+1).padStart(2,'0')}`;
+    const eTxt = `${String(hi.getDate()).padStart(2,'0')}/${String(hi.getMonth()+1).padStart(2,'0')}`;
+    document.getElementById('dpTriggerLabel').textContent=`${sTxt} - ${eTxt}`;
+  } else {
+    document.getElementById('dpTriggerLabel').textContent=`${fmtShort(lo)} - ${fmtShort(hi)}`;
+  }
+  closeDatePicker();
+  renderAllScreens();
+}
+
+// ============================================================
+// DADOS DA PLANILHA (GViz)
+// ============================================================
 function parseGvizTable(g){
   if(!g||!g.table||!g.table.rows)return[];
   const cols=(g.table.cols||[]).map(c=>(c?(c.label||c.id||''):'').trim());
@@ -1184,31 +1236,29 @@ async function syncDataFromSheets(){
   const sidebarDot = document.getElementById('sidebarStatusDot');
   const sidebarText = document.getElementById('sidebarStatusText');
   
-  // 1. ESTADO: CARREGANDO (AMARELO E PISCANDO)
-  headerStatus.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-accent-yellow animate-ping"></span><span class="hidden sm:inline">Sincronizando...</span>`;
+  headerStatus.className = 'hidden sm:flex items-center gap-1.5 text-xs font-medium text-accent-yellow';
+  headerStatus.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-accent-yellow animate-ping"></span><span>Sincronizando...</span>`;
   if(sidebarDot) sidebarDot.className = 'w-2 h-2 rounded-full bg-accent-yellow animate-pulse shrink-0';
   if(sidebarText) sidebarText.textContent = 'Sincronizando...';
 
-  // Faz a leitura real da planilha
   let meta = await fetchGvizJSONP(SPREADSHEET_URL, 'Meta Ads');
   let google = await fetchGvizJSONP(SPREADSHEET_URL, 'Google Ads');
   
   let isSuccess = true;
-  
-  // Se falhar, usa os dados simulados apenas para não deixar o painel em branco
   if(!meta||!meta.length) { meta=generateMockMeta(); isSuccess=false; }
   if(!google||!google.length) { google=generateMockGoogle(); isSuccess=false; }
   
   launchState.dataMeta = meta; 
   launchState.dataGoogle = google;
 
-  // 2. ESTADO: CONECTADO OU FALHA
   if (isSuccess) {
-    headerStatus.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-accent-green"></span><span class="hidden sm:inline">Conectado</span>`;
+    headerStatus.className = 'hidden sm:flex items-center gap-1.5 text-xs font-medium text-accent-green';
+    headerStatus.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-accent-green"></span><span>Conectado</span>`;
     if(sidebarDot) sidebarDot.className = 'w-2 h-2 rounded-full bg-accent-green shrink-0';
     if(sidebarText) sidebarText.textContent = 'Conectado';
   } else {
-    headerStatus.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-accent-red"></span><span class="hidden sm:inline text-accent-red">Falha na Conexão</span>`;
+    headerStatus.className = 'hidden sm:flex items-center gap-1.5 text-xs font-medium text-accent-red';
+    headerStatus.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-accent-red"></span><span>Falha na Conexão</span>`;
     if(sidebarDot) sidebarDot.className = 'w-2 h-2 rounded-full bg-accent-red shrink-0';
     if(sidebarText) sidebarText.textContent = 'Falha na Conexão';
   }
@@ -1234,6 +1284,7 @@ function generateMockMeta(){
   }
   return rows;
 }
+
 function generateMockGoogle(){
   const ads=["YT-ADS02","YT-ADS07","YT-ADS11","YT-ADS01","YT-ADS05"];
   const grps=["Públicos Personalizados (Quente)","Interesses (Frio)","envolvimento_180","Semelhantes (Frio)"];
@@ -1258,6 +1309,7 @@ function getCol(row,aliases){
   for(const a of aliases){const f=keys.find(k=>k.toLowerCase()===a.toLowerCase());if(f)return row[f];}
   return null;
 }
+
 function parseNum(v){
   if(!v)return 0;
   let s=String(v).replace(/[R$\s%"']/g,'');
