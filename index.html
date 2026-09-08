@@ -37,7 +37,7 @@
     .login-input{width:100%;background:#22263A;border:1px solid #2D3148;border-radius:8px;padding:.75rem 1rem;color:#F1F5F9;font-size:.875rem;transition:border-color .2s;outline:none}
     .login-input:focus{border-color:#3B82F6}
     .login-input::placeholder{color:#64748B}
-    .login-btn{width:100%;background:linear-gradient(135deg,#3B82F6,#1d4ed8);color:white;border:none;border-radius:8px;padding:.875rem;font-size:.875rem;font-weight:700;cursor:pointer;transition:opacity .2s,transform .1s;letter-spacing:.03em}
+    .login-btn{width:100%;background:linear-gradient(135deg,#3B82F6,#1d4ed8);color:white;border:none;border-radius:8px;padding:.875rem;font-size:.875rem;font-weight:700;cursor:pointer;transition:opacity .2s,transform .1s, background-color .3s;letter-spacing:.03em}
     .login-btn:hover{opacity:.9}
     .login-btn:active{transform:scale(.98)}
     .login-btn:disabled{opacity:.5;cursor:not-allowed}
@@ -200,7 +200,7 @@
 <!-- ======= APP SHELL ======= -->
 <div id="appShell" class="hidden w-full flex h-screen overflow-hidden">
 
-  <!-- SIDEBAR (ESCONDIDO NO MOBILE, COM COLLAPSE NO DESKTOP) -->
+  <!-- SIDEBAR -->
   <aside id="sidebar" class="hidden md:flex bg-bg-card border-r border-border-custom flex-col justify-between h-screen sticky top-0 z-40 shrink-0 relative">
     <button onclick="toggleSidebar()" class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-bg-card border border-border-custom rounded-full flex items-center justify-center text-text-muted hover:text-white hover:border-accent-blue transition z-50 shadow-md">
       <svg id="sb-toggle-icon" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
@@ -258,7 +258,7 @@
     </div>
   </aside>
 
-  <!-- BOTTOM NAV (MOBILE EXCLUSIVO) -->
+  <!-- BOTTOM NAV (MOBILE) -->
   <nav id="bottomNav" class="md:hidden fixed bottom-0 left-0 w-full bg-bg-card border-t border-border-custom flex justify-around items-center z-50 pt-2 pb-safe px-2 shadow-[0_-4px_15px_rgba(0,0,0,0.6)]">
     <button id="mob-nav-t1" onclick="navTo('t1')" class="flex flex-col items-center justify-center gap-1 text-accent-blue transition-colors flex-1 p-2 transform scale-105">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -278,7 +278,7 @@
     </button>
   </nav>
 
-  <!-- MAIN AREA DE CONTEÚDO (SCROLL INTERNO) -->
+  <!-- MAIN AREA DE CONTEÚDO -->
   <main class="flex-grow flex flex-col min-w-0 overflow-y-auto">
 
     <!-- HEADER com Date Picker global -->
@@ -291,7 +291,6 @@
       </div>
       <div class="flex items-center gap-4 shrink-0">
         
-        <!-- STATUS DO HEADER -->
         <div id="syncStatus" class="hidden sm:flex items-center gap-1.5 text-xs font-medium text-accent-green">
           <span class="inline-block w-2 h-2 rounded-full bg-accent-green"></span>
           <span>Conectado</span>
@@ -346,12 +345,12 @@
             <h2 class="text-lg md:text-xl font-extrabold text-white">⚙️ Painel de Administração</h2>
             <p class="text-[11px] md:text-xs text-text-muted mt-1">Configure a origem, metas e o período do projeto.</p>
           </div>
-          <button id="btnSaveAdmin" onclick="saveAdminConfig()" class="w-full md:w-auto px-6 py-2.5 rounded-md bg-accent-blue hover:bg-blue-600 text-white text-xs font-bold transition shadow-lg shadow-blue-500/20">
+          <!-- Type button impede refresh da página acidentalmente -->
+          <button type="button" id="btnSaveAdmin" onclick="saveAdminConfig()" class="w-full md:w-auto px-6 py-2.5 rounded-md bg-accent-blue hover:bg-blue-600 text-white text-xs font-bold transition shadow-lg shadow-blue-500/20">
             💾 Salvar Configurações
           </button>
         </div>
 
-        <!-- HISTÓRICO AUTOMÁTICO VIA DROPDOWN -->
         <div class="bg-bg-input p-4 md:p-5 rounded-lg border border-border-custom flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div class="flex items-center gap-3">
             <span class="text-xl">📂</span>
@@ -367,9 +366,10 @@
           </div>
         </div>
         
-        <form id="adminForm" onsubmit="event.preventDefault();saveAdminConfig();" class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+        <!-- form sem comportamento nativo que causa refresh da tela -->
+        <form id="adminForm" onsubmit="event.preventDefault();" class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           
-          <!-- BLOCO 1: IDENTIDADE E ORIGEM COM TAGS DE CAMPANHA -->
+          <!-- BLOCO 1 -->
           <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4">
             <h3 class="text-sm font-bold text-white border-b border-border-custom pb-3 flex items-center gap-2">
               <span class="text-accent-blue">1.</span> Identidade e Filtros
@@ -390,8 +390,6 @@
               </label>
               <input type="text" id="admFiltroCampanha" placeholder="Ex: [L37_CAP]" class="w-full bg-bg-input border border-border-custom rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-blue"/>
             </div>
-            
-            <!-- NOVAS TAGS PARA PACING -->
             <div class="grid grid-cols-2 gap-4 mt-2">
               <div>
                 <label class="block text-[10px] md:text-[11px] font-semibold text-accent-red uppercase mb-1">Tag Campanha Quente</label>
@@ -404,7 +402,7 @@
             </div>
           </div>
 
-          <!-- BLOCO 2: PERÍODO E METAS -->
+          <!-- BLOCO 2 -->
           <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4 flex flex-col justify-between">
             <div>
               <h3 class="text-sm font-bold text-white border-b border-border-custom pb-3 flex items-center gap-2">
@@ -441,7 +439,7 @@
             </div>
           </div>
 
-          <!-- BLOCO 3: DISTRIBUIÇÃO -->
+          <!-- BLOCO 3 -->
           <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4">
             <div class="flex justify-between items-center border-b border-border-custom pb-3">
               <h3 class="text-sm font-bold text-white flex items-center gap-2"><span class="text-accent-blue">3.</span> Distribuição (%)</h3>
@@ -464,7 +462,6 @@
 
       <!-- TELA 2 — FUNIL & TIMELINE -->
       <section id="screen-t2" class="screen-view space-y-4 md:space-y-6 hidden">
-        
         <!-- PROGRESSO DA META -->
         <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4">
           <div class="flex justify-between items-end">
@@ -485,7 +482,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-          
           <!-- VOLUME DO FUNIL -->
           <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4">
             <h3 class="text-[11px] md:text-xs font-extrabold text-text-muted uppercase tracking-wider flex items-center gap-2">
@@ -495,23 +491,17 @@
               <div class="bg-bg-input p-3 md:p-4 rounded-md border border-border-custom hover:border-accent-blue transition relative">
                 <span class="text-[9px] md:text-[10px] font-bold uppercase text-text-muted block mb-1">👁️ Impressões</span>
                 <div class="text-lg md:text-xl font-black text-white truncate" id="funnelImp">0</div>
-                <div class="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-border-custom">
-                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                </div>
+                <div class="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-border-custom"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
               </div>
               <div class="bg-bg-input p-3 md:p-4 rounded-md border border-border-custom hover:border-accent-blue transition relative">
                 <span class="text-[9px] md:text-[10px] font-bold uppercase text-text-muted block mb-1">🖱️ Cliques</span>
                 <div class="text-lg md:text-xl font-black text-white truncate" id="funnelClick">0</div>
-                <div class="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-border-custom">
-                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                </div>
+                <div class="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-border-custom"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
               </div>
               <div class="bg-bg-input p-3 md:p-4 rounded-md border border-border-custom hover:border-accent-yellow transition relative">
                 <span class="text-[9px] md:text-[10px] font-bold uppercase text-text-muted block mb-1">🌐 Visita Pág</span>
                 <div class="text-lg md:text-xl font-black text-white truncate" id="funnelLPV">0</div>
-                <div class="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-border-custom">
-                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                </div>
+                <div class="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-border-custom"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
               </div>
               <div class="bg-bg-input p-3 md:p-4 rounded-md border border-border-custom hover:border-accent-green transition">
                 <span class="text-[9px] md:text-[10px] font-bold uppercase text-text-muted block mb-1">✅ Leads</span>
@@ -827,7 +817,7 @@ let launchState={
   nomeCliente: "NA FONTE",
   nomeLancamento: "CHINELOS",
   filtroCampanha: "",
-  tagQuente: "QUENTE, RMKT", // Padrões de início
+  tagQuente: "QUENTE, RMKT", 
   tagFria: "FRIO, PROSP",
   dataInicio:"2026-09-01", dataFim:"2026-09-13",
   filterStart:"2026-09-01", filterEnd:"2026-09-13",
@@ -867,7 +857,6 @@ async function enterApp(userData){
   document.getElementById('admNomeLancamento').value=launchState.nomeLancamento||'';
   document.getElementById('admFiltroCampanha').value=launchState.filtroCampanha||'';
   
-  // Novas tags
   document.getElementById('admTagQuente').value=launchState.tagQuente||'';
   document.getElementById('admTagFria').value=launchState.tagFria||'';
   
@@ -912,7 +901,7 @@ function updateTargetSummary() {
 }
 
 // ============================================================
-// HISTÓRICO AUTOMÁTICO E SAVE
+// HISTÓRICO E SETUP (SALVAMENTO "OPTIMISTIC UI")
 // ============================================================
 async function fetchHistoricoList() {
   if(!firebaseReady) return;
@@ -920,6 +909,9 @@ async function fetchHistoricoList() {
     const db = firebase.firestore();
     const snapshot = await db.collection('historico_lancamentos').get();
     const select = document.getElementById('historicoSelect');
+    
+    // Preserva o valor que estava selecionado antes de atualizar a lista
+    const val = select.value;
     
     let options = '<option value="">Selecione um lançamento para carregar...</option>';
     let count = 0;
@@ -934,6 +926,10 @@ async function fetchHistoricoList() {
     
     if(count > 0) select.innerHTML = options;
     else select.innerHTML = '<option value="">Nenhum histórico salvo ainda.</option>';
+    
+    // Devolve a seleção original
+    if(val) select.value = val;
+
   } catch(e) {
     console.warn("Nuvem: Erro ao ler histórico", e);
   }
@@ -978,7 +974,9 @@ async function loadHistorico() {
       
       updateHeaderName();
       updateTargetSummary();
-      syncDataFromSheets();
+      
+      // Aplicar graficos instantaneamente com dados que ja estão na memoria
+      renderAllScreens();
     }
   } catch(e) {
     console.warn("Aviso ao carregar histórico:", e);
@@ -1008,9 +1006,14 @@ function validatePercentages(){
   }
 }
 
+// NOVA FUNÇÃO DE SALVAMENTO OTIMISTA
 async function saveAdminConfig(){
-  if(!validatePercentages()){alert('As somas do Google e do Meta devem ser 100% individualmente.');return;}
+  if(!validatePercentages()){
+    alert('As somas do Google e do Meta devem ser 100% individualmente.');
+    return;
+  }
   
+  // 1. CAPTURA IMEDIATA DOS DADOS
   launchState.nomeCliente=document.getElementById('admNomeCliente').value.trim();
   launchState.nomeLancamento=document.getElementById('admNomeLancamento').value.trim();
   launchState.filtroCampanha=document.getElementById('admFiltroCampanha').value.trim();
@@ -1029,14 +1032,31 @@ async function saveAdminConfig(){
   launchState.pctMQ=parseFloat(document.getElementById('admPctMQ').value)||0;
   launchState.pctMF=parseFloat(document.getElementById('admPctMF').value)||0;
   
-  const btn = document.getElementById('btnSaveAdmin');
-  btn.textContent = 'Salvando na nuvem...'; btn.disabled = true;
+  // 2. APLICAÇÃO INSTANTÂNEA NOS GRÁFICOS (Sem refresh da planilha)
+  launchState.filterStart=launchState.dataInicio;
+  launchState.filterEnd=launchState.dataFim;
+  dpState.selStart=isoToDate(launchState.dataInicio);
+  dpState.selEnd=isoToDate(launchState.dataFim);
+  
+  applyDateRange();
+  updateHeaderName();
+  updateTargetSummary();
+  renderAllScreens(); 
 
+  // 3. FEEDBACK VISUAL NO BOTÃO
+  const btn = document.getElementById('btnSaveAdmin');
+  const originalText = '💾 Salvar Configurações';
+  btn.textContent = '⏳ Salvando...'; 
+  btn.disabled = true;
+
+  // 4. SALVAMENTO SILENCIOSO NO FIREBASE (Background)
   if (firebaseReady) {
     try {
       const db = firebase.firestore();
       const setupToSave = { ...launchState };
-      delete setupToSave.dataMeta; delete setupToSave.dataGoogle;
+      // Limpa arrays grandes antes de gravar na nuvem
+      delete setupToSave.dataMeta; 
+      delete setupToSave.dataGoogle;
 
       await db.collection('lancamentos').doc('setup_atual').set(setupToSave);
       
@@ -1044,27 +1064,45 @@ async function saveAdminConfig(){
         const historicoId = setupToSave.nomeLancamento.replace(/[^a-zA-Z0-9]/g, '_').toUpperCase();
         await db.collection('historico_lancamentos').doc(historicoId).set(setupToSave);
       }
-      fetchHistoricoList();
+      
+      // Atualiza lista invisivelmente
+      await fetchHistoricoList();
+
+      // Botão fica Verde de Sucesso
+      btn.textContent = '✅ Salvo!';
+      btn.classList.add('bg-accent-green', 'hover:bg-green-500');
+      btn.classList.remove('bg-accent-blue', 'hover:bg-blue-600');
+      
+      // Retorna ao botão original após 2 segundos
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.disabled = false;
+        btn.classList.remove('bg-accent-green', 'hover:bg-green-500');
+        btn.classList.add('bg-accent-blue', 'hover:bg-blue-600');
+      }, 2000);
+
     } catch(e) {
       console.error("Erro ao salvar no Firestore:", e);
-      alert("Erro ao salvar na nuvem. Verifique sua conexão ou tente novamente em instantes.");
-      btn.textContent = '💾 Salvar Configurações'; btn.disabled = false;
-      return; 
+      // Botão fica Vermelho de Erro
+      btn.textContent = '❌ Erro ao Salvar';
+      btn.classList.add('bg-accent-red');
+      btn.classList.remove('bg-accent-blue');
+      
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.disabled = false;
+        btn.classList.remove('bg-accent-red');
+        btn.classList.add('bg-accent-blue');
+      }, 3000);
     }
+  } else {
+    // Caso de uso local sem firebase
+    btn.textContent = '✅ Aplicado localmente';
+    setTimeout(() => {
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }, 2000);
   }
-
-  btn.textContent = '💾 Salvar Configurações'; btn.disabled = false;
-  
-  launchState.filterStart=launchState.dataInicio;
-  launchState.filterEnd=launchState.dataFim;
-  dpState.selStart=isoToDate(launchState.dataInicio);
-  dpState.selEnd=isoToDate(launchState.dataFim);
-  applyDateRange();
-  
-  updateHeaderName();
-  updateTargetSummary();
-  syncDataFromSheets();
-  alert('Configurações salvas com sucesso!');
 }
 
 // ============================================================
@@ -1221,7 +1259,7 @@ function applyDateRange(){
 }
 
 // ============================================================
-// DADOS DA PLANILHA (GViz)
+// DADOS DA PLANILHA E FUNÇÕES DE TABELA
 // ============================================================
 function parseGvizTable(g){
   if(!g||!g.table||!g.table.rows)return[];
@@ -1398,22 +1436,18 @@ function renderFunnelAndTimeline(){
 
     totalImp+=i; totalClicks+=c; totalLPV+=lpv; totalLeads+=l; totalGasto+=sp;
     
-    // ==========================================
-    // NOVA INTELIGÊNCIA: Filtro pela Campanha
-    // ==========================================
+    // Filtro Quente/Frio pelas Tags do Painel
     let quente = false;
     const nameLower = campName.toLowerCase();
     
-    // Pega as palavras-chave que você digitou lá no painel Admin e transforma em lista
     const tagsQ = (launchState.tagQuente || '').toLowerCase().split(',').map(t=>t.trim()).filter(Boolean);
     const tagsF = (launchState.tagFria || '').toLowerCase().split(',').map(t=>t.trim()).filter(Boolean);
 
     if (tagsQ.length > 0 && tagsQ.some(t => nameLower.includes(t))) {
-      quente = true; // Achou tag Quente
+      quente = true;
     } else if (tagsF.length > 0 && tagsF.some(t => nameLower.includes(t))) {
-      quente = false; // Achou tag Fria
+      quente = false;
     } else {
-      // Mecanismo de Segurança: Se as tags não baterem, ele usa o padrão básico
       quente = /quente|remarketing|rmkt|envolvimento|00|01/i.test(nameLower);
     }
 
