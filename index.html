@@ -47,8 +47,6 @@
     #userRoleBadge{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:9999px;font-size:10px;font-weight:700;letter-spacing:.05em}
     .role-admin{background:rgba(59,130,246,.12);color:#3B82F6;border:1px solid rgba(59,130,246,.25)}
     
-    @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
-    .shake{animation:shake .4s ease}
     @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
     .fade-in{animation:fadeIn .35s ease forwards}
 
@@ -69,7 +67,7 @@
     .dp-cal-title { font-size: 14px; font-weight: 700; color: #f8fafc; }
     .dp-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 12px; }
     .dp-weekday { font-size: 11px; font-weight: 500; color: #64748b; text-align: center; }
-    .dp-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px 0; min-h-[180px]; }
+    .dp-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px 0; min-height: 180px; }
     .dp-day-wrapper { display: flex; justify-content: center; position: relative; }
     .dp-day { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: #f8fafc; cursor: pointer; border-radius: 6px; transition: all .15s; border: 1px solid transparent; }
     .dp-day:hover:not(.dp-day-empty) { border-color: #475569; }
@@ -77,19 +75,13 @@
     .dp-day.dp-day-selected { background: #9333ea !important; color: #ffffff; border-color: #9333ea !important; box-shadow: 0 0 10px rgba(147, 51, 234, 0.4); }
     .dp-day.dp-day-range-end { background: #080A10 !important; color: #f8fafc; border-color: #9333ea !important; box-shadow: none; }
     .dp-day.dp-day-in-range { background: rgba(147, 51, 234, 0.15); color: #c084fc; border-radius: 6px; }
-    .dp-day.dp-day-selected.dp-day-range-end { background: #9333ea !important; color: #ffffff; }
 
     @media (max-width: 768px) {
       .dp-dropdown { right: -10px; min-width: 290px; max-width: calc(100vw - 32px); }
       .dp-shortcuts { grid-template-columns: repeat(2, 1fr); padding: 16px; gap: 12px; }
       .dp-calendar-wrap { padding: 16px; }
       .dp-day { width: 28px; height: 28px; font-size: 12px; }
-      .dp-cal-title { font-size: 13px; }
     }
-
-    .apexcharts-tooltip { background: #0F121A !important; border: 1px solid #2D3148 !important; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5) !important; color: #F1F5F9 !important; }
-    .apexcharts-tooltip-title { background: #1A1D27 !important; border-bottom: 1px solid #2D3148 !important; font-weight: 700 !important; padding: 6px 10px !important; font-size: 11px !important; }
-    .apexcharts-tooltip-series-group { padding: 4px 10px !important; }
 
     #sidebar { transition: width 0.3s ease; width: 16rem; } 
     #sidebar.collapsed { width: 5.5rem !important; }
@@ -98,7 +90,6 @@
     #sidebar.collapsed .sb-nav-btn { justify-content: center; padding-left: 0; padding-right: 0; }
     #sidebar.collapsed .sb-profile { justify-content: center; padding-left: 0; padding-right: 0; }
     #sidebar.collapsed .sb-sync-info { justify-content: center; }
-    
     .pb-safe { padding-bottom: env(safe-area-inset-bottom, 16px); }
   </style>
 </head>
@@ -106,7 +97,6 @@
 
 <!-- ======= ÁREA DE AUTENTICAÇÃO ======= -->
 <div id="loginScreen">
-  <!-- CARD DE LOGIN -->
   <div id="cardLogin" class="login-card fade-in">
     <div class="flex flex-col items-center mb-8">
       <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-600 to-emerald-500 flex items-center justify-center font-black text-white text-2xl shadow-lg mb-4">A</div>
@@ -128,9 +118,7 @@
         </div>
       </div>
       <div id="loginError" class="hidden text-xs text-accent-red bg-accent-red/10 border border-accent-red/20 rounded-md px-3 py-2.5 font-medium"></div>
-      
       <button id="loginBtn" class="login-btn mt-2" onclick="doLogin()">Acessar Painel</button>
-      
       <div class="flex justify-between pt-2">
         <button onclick="showForgotModal()" class="text-[11px] text-text-muted hover:text-accent-blue transition font-medium">Esqueci a senha</button>
         <button onclick="toggleAuthView('signup')" class="text-[11px] text-accent-blue font-bold hover:text-white transition">Criar Conta</button>
@@ -138,7 +126,6 @@
     </div>
   </div>
 
-  <!-- CARD DE CADASTRO -->
   <div id="cardSignup" class="login-card fade-in hidden">
     <div class="flex flex-col items-center mb-6">
       <h1 class="text-lg font-extrabold text-white tracking-wider uppercase">CRIAR CONTA VIP</h1>
@@ -163,9 +150,7 @@
         <input type="password" id="regSecret" class="login-input border-accent-yellow/50 focus:border-accent-yellow" placeholder="Digite a chave de acesso" onkeydown="if(event.key==='Enter') doSignup()"/>
       </div>
       <div id="regError" class="hidden text-xs text-accent-red bg-accent-red/10 border border-accent-red/20 rounded-md px-3 py-2.5 font-medium"></div>
-      
       <button id="regBtn" class="login-btn mt-2 bg-gradient-to-r from-accent-green to-emerald-600" onclick="doSignup()">Validar e Cadastrar</button>
-      
       <div class="text-center pt-2">
         <button onclick="toggleAuthView('login')" class="text-[11px] text-text-muted hover:text-white transition font-medium">Já tenho conta. Voltar ao Login.</button>
       </div>
@@ -199,8 +184,6 @@
 
 <!-- ======= APP SHELL ======= -->
 <div id="appShell" class="hidden w-full flex h-screen overflow-hidden">
-
-  <!-- SIDEBAR -->
   <aside id="sidebar" class="hidden md:flex bg-bg-card border-r border-border-custom flex-col justify-between h-screen sticky top-0 z-40 shrink-0 relative">
     <button onclick="toggleSidebar()" class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-bg-card border border-border-custom rounded-full flex items-center justify-center text-text-muted hover:text-white hover:border-accent-blue transition z-50 shadow-md">
       <svg id="sb-toggle-icon" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
@@ -252,13 +235,13 @@
       </button>
       
       <button onclick="doLogout()" title="Sair do War Room" class="sb-nav-btn w-full bg-accent-red/10 hover:bg-accent-red/20 text-accent-red py-2 rounded-md text-xs font-bold transition flex items-center gap-2 border border-accent-red/20 px-3.5">
-        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 01-3-3h4a3 3 0 013 3v1"/></svg>
         <span class="sb-text truncate">Sair</span>
       </button>
     </div>
   </aside>
 
-  <!-- BOTTOM NAV (MOBILE) -->
+  <!-- BOTTOM NAV (MOBILE EXCLUSIVO) -->
   <nav id="bottomNav" class="md:hidden fixed bottom-0 left-0 w-full bg-bg-card border-t border-border-custom flex justify-around items-center z-50 pt-2 pb-safe px-2 shadow-[0_-4px_15px_rgba(0,0,0,0.6)]">
     <button id="mob-nav-t1" onclick="navTo('t1')" class="flex flex-col items-center justify-center gap-1 text-accent-blue transition-colors flex-1 p-2 transform scale-105">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -280,8 +263,6 @@
 
   <!-- MAIN AREA DE CONTEÚDO -->
   <main class="flex-grow flex flex-col min-w-0 overflow-y-auto">
-
-    <!-- HEADER com Date Picker global -->
     <header class="h-14 md:h-16 border-b border-border-custom bg-bg-card px-4 md:px-6 flex items-center justify-between sticky top-0 z-30 shrink-0">
       <div class="flex items-center gap-3 min-w-0 pr-2">
         <h2 class="text-sm md:text-base font-extrabold text-white tracking-wide truncate" id="headerLaunchName">NOME DO CLIENTE | NOME DO LANÇAMENTO</h2>
@@ -290,7 +271,6 @@
         </span>
       </div>
       <div class="flex items-center gap-4 shrink-0">
-        
         <div id="syncStatus" class="hidden sm:flex items-center gap-1.5 text-xs font-medium text-accent-green">
           <span class="inline-block w-2 h-2 rounded-full bg-accent-green"></span>
           <span>Conectado</span>
@@ -312,7 +292,6 @@
               <button class="dp-shortcut" onclick="applyShortcut('lastMonth')">Mês Passado</button>
               <button class="dp-shortcut" onclick="applyShortcut('thisYear')">Este Ano</button>
             </div>
-            
             <div class="dp-calendar-wrap">
               <div class="dp-cal-header">
                 <button class="dp-cal-nav" onclick="dpNavMonth(-1)">
@@ -339,13 +318,11 @@
       
       <!-- TELA 1 — ADMIN -->
       <section id="screen-t1" class="screen-view space-y-6">
-        
         <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
           <div>
             <h2 class="text-lg md:text-xl font-extrabold text-white">⚙️ Painel de Administração</h2>
             <p class="text-[11px] md:text-xs text-text-muted mt-1">Configure a origem, metas e o período do projeto.</p>
           </div>
-          <!-- Type button impede refresh da página acidentalmente -->
           <button type="button" id="btnSaveAdmin" onclick="saveAdminConfig()" class="w-full md:w-auto px-6 py-2.5 rounded-md bg-accent-blue hover:bg-blue-600 text-white text-xs font-bold transition shadow-lg shadow-blue-500/20">
             💾 Salvar Configurações
           </button>
@@ -366,9 +343,7 @@
           </div>
         </div>
         
-        <!-- form sem comportamento nativo que causa refresh da tela -->
         <form id="adminForm" onsubmit="event.preventDefault();" class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-          
           <!-- BLOCO 1 -->
           <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4">
             <h3 class="text-sm font-bold text-white border-b border-border-custom pb-3 flex items-center gap-2">
@@ -462,7 +437,6 @@
 
       <!-- TELA 2 — FUNIL & TIMELINE -->
       <section id="screen-t2" class="screen-view space-y-4 md:space-y-6 hidden">
-        <!-- PROGRESSO DA META -->
         <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4">
           <div class="flex justify-between items-end">
             <div>
@@ -482,7 +456,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-          <!-- VOLUME DO FUNIL -->
           <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4">
             <h3 class="text-[11px] md:text-xs font-extrabold text-text-muted uppercase tracking-wider flex items-center gap-2">
               <span class="text-base md:text-lg">🌊</span> Volume de Tráfego
@@ -491,17 +464,14 @@
               <div class="bg-bg-input p-3 md:p-4 rounded-md border border-border-custom hover:border-accent-blue transition relative">
                 <span class="text-[9px] md:text-[10px] font-bold uppercase text-text-muted block mb-1">👁️ Impressões</span>
                 <div class="text-lg md:text-xl font-black text-white truncate" id="funnelImp">0</div>
-                <div class="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-border-custom"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
               </div>
               <div class="bg-bg-input p-3 md:p-4 rounded-md border border-border-custom hover:border-accent-blue transition relative">
                 <span class="text-[9px] md:text-[10px] font-bold uppercase text-text-muted block mb-1">🖱️ Cliques</span>
                 <div class="text-lg md:text-xl font-black text-white truncate" id="funnelClick">0</div>
-                <div class="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-border-custom"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
               </div>
               <div class="bg-bg-input p-3 md:p-4 rounded-md border border-border-custom hover:border-accent-yellow transition relative">
                 <span class="text-[9px] md:text-[10px] font-bold uppercase text-text-muted block mb-1">🌐 Visita Pág</span>
                 <div class="text-lg md:text-xl font-black text-white truncate" id="funnelLPV">0</div>
-                <div class="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-border-custom"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
               </div>
               <div class="bg-bg-input p-3 md:p-4 rounded-md border border-border-custom hover:border-accent-green transition">
                 <span class="text-[9px] md:text-[10px] font-bold uppercase text-text-muted block mb-1">✅ Leads</span>
@@ -510,7 +480,6 @@
             </div>
           </div>
 
-          <!-- CUSTOS E TAXAS -->
           <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4">
             <h3 class="text-[11px] md:text-xs font-extrabold text-text-muted uppercase tracking-wider flex items-center gap-2">
               <span class="text-base md:text-lg">⚡</span> Custos e Eficiência
@@ -544,7 +513,6 @@
           </div>
         </div>
 
-        <!-- CONTROLE DE VERBA (PACING) -->
         <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4">
           <div class="flex items-center justify-between">
             <h3 class="text-[11px] md:text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-2">
@@ -563,9 +531,7 @@
                   <th class="p-3 text-right text-accent-blue whitespace-nowrap">Meta Diária (Ideal)</th>
                 </tr>
               </thead>
-              <tbody id="pacingTableBody" class="divide-y divide-border-custom text-text-primary">
-                <!-- Gerado via JS -->
-              </tbody>
+              <tbody id="pacingTableBody" class="divide-y divide-border-custom text-text-primary"></tbody>
             </table>
           </div>
         </div>
@@ -591,7 +557,6 @@
           </div>
         </div>
         
-        <!-- GRÁFICO -->
         <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4">
           <div class="flex items-center justify-between">
             <h3 class="text-[11px] md:text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-2">
@@ -640,9 +605,6 @@
 </div>
 
 <script>
-// ============================================================
-// LÓGICA DO SIDEBAR COLLAPSE E MENU
-// ============================================================
 function toggleSidebar() {
   const sb = document.getElementById('sidebar');
   const icon = document.getElementById('sb-toggle-icon');
@@ -673,9 +635,7 @@ function navTo(id){
   if(id==='t2') setTimeout(()=>renderFunnelAndTimeline(),100);
 }
 
-// ============================================================
-// FIREBASE & AUTENTICAÇÃO OFICIAL
-// ============================================================
+// FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyDZYRKSZ3ain-6NXrvBux9K2WzJ27TTjlQ",
   authDomain: "dashboardtrafego-4417b.firebaseapp.com",
@@ -808,9 +768,7 @@ if(firebaseReady){
   });
 }
 
-// ============================================================
-// CONEXÃO COM A PLANILHA E ESTADO GLOBAL
-// ============================================================
+// ESTADO GLOBAL
 const SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1iY5TYTyFDIlQ_5N3MizfCpPVwj7I8_sEkyFBtVrzb_k/edit?usp=sharing";
 
 let launchState={
@@ -824,6 +782,7 @@ let launchState={
   verbaMeta:10000, verbaGoogle:10000,
   pctGQ:40, pctGF:60, pctMQ:30, pctMF:70,
   metaLeads:10000,
+  sheetUrl: SPREADSHEET_URL,
   dataMeta:[],dataGoogle:[]
 };
 
@@ -900,17 +859,13 @@ function updateTargetSummary() {
   }
 }
 
-// ============================================================
-// HISTÓRICO E SETUP (SALVAMENTO "OPTIMISTIC UI")
-// ============================================================
+// HISTÓRICO
 async function fetchHistoricoList() {
   if(!firebaseReady) return;
   try {
     const db = firebase.firestore();
     const snapshot = await db.collection('historico_lancamentos').get();
     const select = document.getElementById('historicoSelect');
-    
-    // Preserva o valor que estava selecionado antes de atualizar a lista
     const val = select.value;
     
     let options = '<option value="">Selecione um lançamento para carregar...</option>';
@@ -926,10 +881,7 @@ async function fetchHistoricoList() {
     
     if(count > 0) select.innerHTML = options;
     else select.innerHTML = '<option value="">Nenhum histórico salvo ainda.</option>';
-    
-    // Devolve a seleção original
     if(val) select.value = val;
-
   } catch(e) {
     console.warn("Nuvem: Erro ao ler histórico", e);
   }
@@ -974,8 +926,6 @@ async function loadHistorico() {
       
       updateHeaderName();
       updateTargetSummary();
-      
-      // Aplicar graficos instantaneamente com dados que ja estão na memoria
       renderAllScreens();
     }
   } catch(e) {
@@ -1006,14 +956,13 @@ function validatePercentages(){
   }
 }
 
-// NOVA FUNÇÃO DE SALVAMENTO OTIMISTA
+// SALVAMENTO EXPLÍCITO NO FIREBASE
 async function saveAdminConfig(){
   if(!validatePercentages()){
     alert('As somas do Google e do Meta devem ser 100% individualmente.');
     return;
   }
   
-  // 1. CAPTURA IMEDIATA DOS DADOS
   launchState.nomeCliente=document.getElementById('admNomeCliente').value.trim();
   launchState.nomeLancamento=document.getElementById('admNomeLancamento').value.trim();
   launchState.filtroCampanha=document.getElementById('admFiltroCampanha').value.trim();
@@ -1032,7 +981,6 @@ async function saveAdminConfig(){
   launchState.pctMQ=parseFloat(document.getElementById('admPctMQ').value)||0;
   launchState.pctMF=parseFloat(document.getElementById('admPctMF').value)||0;
   
-  // 2. APLICAÇÃO INSTANTÂNEA NOS GRÁFICOS (Sem refresh da planilha)
   launchState.filterStart=launchState.dataInicio;
   launchState.filterEnd=launchState.dataFim;
   dpState.selStart=isoToDate(launchState.dataInicio);
@@ -1043,60 +991,66 @@ async function saveAdminConfig(){
   updateTargetSummary();
   renderAllScreens(); 
 
-  // 3. FEEDBACK VISUAL NO BOTÃO
   const btn = document.getElementById('btnSaveAdmin');
   const originalText = '💾 Salvar Configurações';
   btn.textContent = '⏳ Salvando...'; 
   btn.disabled = true;
 
-  // 4. SALVAMENTO SILENCIOSO NO FIREBASE (Background)
   if (firebaseReady) {
     try {
       const db = firebase.firestore();
-      const setupToSave = { ...launchState };
-      // Limpa arrays grandes antes de gravar na nuvem
-      delete setupToSave.dataMeta; 
-      delete setupToSave.dataGoogle;
+      
+      // MONTAGEM EXPLÍCITA DE TODAS AS CHAVES (Garante o salvamento das tags)
+      const setupToSave = {
+        nomeCliente: launchState.nomeCliente,
+        nomeLancamento: launchState.nomeLancamento,
+        filtroCampanha: launchState.filtroCampanha,
+        tagQuente: launchState.tagQuente,
+        tagFria: launchState.tagFria,
+        dataInicio: launchState.dataInicio,
+        dataFim: launchState.dataFim,
+        filterStart: launchState.filterStart,
+        filterEnd: launchState.filterEnd,
+        verbaMeta: launchState.verbaMeta,
+        verbaGoogle: launchState.verbaGoogle,
+        metaLeads: launchState.metaLeads,
+        pctGQ: launchState.pctGQ,
+        pctGF: launchState.pctGF,
+        pctMQ: launchState.pctMQ,
+        pctMF: launchState.pctMF,
+        sheetUrl: SPREADSHEET_URL
+      };
 
-      await db.collection('lancamentos').doc('setup_atual').set(setupToSave);
+      await db.collection('lancamentos').doc('setup_atual').set(setupToSave, { merge: true });
       
       if(setupToSave.nomeLancamento) {
         const historicoId = setupToSave.nomeLancamento.replace(/[^a-zA-Z0-9]/g, '_').toUpperCase();
-        await db.collection('historico_lancamentos').doc(historicoId).set(setupToSave);
+        await db.collection('historico_lancamentos').doc(historicoId).set(setupToSave, { merge: true });
       }
       
-      // Atualiza lista invisivelmente
       await fetchHistoricoList();
 
-      // Botão fica Verde de Sucesso
       btn.textContent = '✅ Salvo!';
-      btn.classList.add('bg-accent-green', 'hover:bg-green-500');
-      btn.classList.remove('bg-accent-blue', 'hover:bg-blue-600');
+      btn.className = 'w-full md:w-auto px-6 py-2.5 rounded-md bg-accent-green text-white text-xs font-bold transition shadow-lg';
       
-      // Retorna ao botão original após 2 segundos
       setTimeout(() => {
         btn.textContent = originalText;
         btn.disabled = false;
-        btn.classList.remove('bg-accent-green', 'hover:bg-green-500');
-        btn.classList.add('bg-accent-blue', 'hover:bg-blue-600');
+        btn.className = 'w-full md:w-auto px-6 py-2.5 rounded-md bg-accent-blue hover:bg-blue-600 text-white text-xs font-bold transition shadow-lg shadow-blue-500/20';
       }, 2000);
 
     } catch(e) {
       console.error("Erro ao salvar no Firestore:", e);
-      // Botão fica Vermelho de Erro
       btn.textContent = '❌ Erro ao Salvar';
-      btn.classList.add('bg-accent-red');
-      btn.classList.remove('bg-accent-blue');
+      btn.className = 'w-full md:w-auto px-6 py-2.5 rounded-md bg-accent-red text-white text-xs font-bold transition shadow-lg';
       
       setTimeout(() => {
         btn.textContent = originalText;
         btn.disabled = false;
-        btn.classList.remove('bg-accent-red');
-        btn.classList.add('bg-accent-blue');
+        btn.className = 'w-full md:w-auto px-6 py-2.5 rounded-md bg-accent-blue hover:bg-blue-600 text-white text-xs font-bold transition shadow-lg shadow-blue-500/20';
       }, 3000);
     }
   } else {
-    // Caso de uso local sem firebase
     btn.textContent = '✅ Aplicado localmente';
     setTimeout(() => {
         btn.textContent = originalText;
@@ -1105,9 +1059,7 @@ async function saveAdminConfig(){
   }
 }
 
-// ============================================================
-// DATE PICKER LOGIC 
-// ============================================================
+// DATE PICKER
 const MONTHS_PT=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 let dpState={ viewYear:2026, viewMonth:8, selStart:null, selEnd:null, picking:'start', activeShortcut:null };
 
@@ -1258,9 +1210,7 @@ function applyDateRange(){
   renderAllScreens();
 }
 
-// ============================================================
-// DADOS DA PLANILHA E FUNÇÕES DE TABELA
-// ============================================================
+// PLANILHA
 function parseGvizTable(g){
   if(!g||!g.table||!g.table.rows)return[];
   const cols=(g.table.cols||[]).map(c=>(c?(c.label||c.id||''):'').trim());
@@ -1436,7 +1386,6 @@ function renderFunnelAndTimeline(){
 
     totalImp+=i; totalClicks+=c; totalLPV+=lpv; totalLeads+=l; totalGasto+=sp;
     
-    // Filtro Quente/Frio pelas Tags do Painel
     let quente = false;
     const nameLower = campName.toLowerCase();
     
