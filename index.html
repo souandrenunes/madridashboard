@@ -213,6 +213,10 @@
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
           <span class="sb-text truncate">Públicos</span>
         </button>
+        <button id="nav-t5" onclick="navTo('t5')" title="Distribuição de Conteúdo" class="sb-nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all text-text-muted hover:text-text-primary hover:bg-bg-input">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span class="sb-text truncate">Distribuição</span>
+        </button>
       </nav>
     </div>
     
@@ -242,22 +246,26 @@
   </aside>
 
   <!-- BOTTOM NAV (MOBILE EXCLUSIVO) -->
-  <nav id="bottomNav" class="md:hidden fixed bottom-0 left-0 w-full bg-bg-card border-t border-border-custom flex justify-around items-center z-50 pt-2 pb-safe px-2 shadow-[0_-4px_15px_rgba(0,0,0,0.6)]">
-    <button id="mob-nav-t1" onclick="navTo('t1')" class="flex flex-col items-center justify-center gap-1 text-accent-blue transition-colors flex-1 p-2 transform scale-105">
+  <nav id="bottomNav" class="md:hidden fixed bottom-0 left-0 w-full bg-bg-card border-t border-border-custom flex justify-around items-center z-50 pt-2 pb-safe px-2 shadow-[0_-4px_15px_rgba(0,0,0,0.6)] overflow-x-auto">
+    <button id="mob-nav-t1" onclick="navTo('t1')" class="flex flex-col items-center justify-center gap-1 text-accent-blue transition-colors flex-1 p-2 transform scale-105 min-w-[60px]">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
       <span class="text-[9px] font-bold tracking-wide">Admin</span>
     </button>
-    <button id="mob-nav-t2" onclick="navTo('t2')" class="flex flex-col items-center justify-center gap-1 text-text-muted hover:text-white transition-colors flex-1 p-2">
+    <button id="mob-nav-t2" onclick="navTo('t2')" class="flex flex-col items-center justify-center gap-1 text-text-muted hover:text-white transition-colors flex-1 p-2 min-w-[60px]">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
       <span class="text-[9px] font-bold tracking-wide">Jornada</span>
     </button>
-    <button id="mob-nav-t3" onclick="navTo('t3')" class="flex flex-col items-center justify-center gap-1 text-text-muted hover:text-white transition-colors flex-1 p-2">
+    <button id="mob-nav-t3" onclick="navTo('t3')" class="flex flex-col items-center justify-center gap-1 text-text-muted hover:text-white transition-colors flex-1 p-2 min-w-[60px]">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
       <span class="text-[9px] font-bold tracking-wide">Criativos</span>
     </button>
-    <button id="mob-nav-t4" onclick="navTo('t4')" class="flex flex-col items-center justify-center gap-1 text-text-muted hover:text-white transition-colors flex-1 p-2">
+    <button id="mob-nav-t4" onclick="navTo('t4')" class="flex flex-col items-center justify-center gap-1 text-text-muted hover:text-white transition-colors flex-1 p-2 min-w-[60px]">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
       <span class="text-[9px] font-bold tracking-wide">Públicos</span>
+    </button>
+    <button id="mob-nav-t5" onclick="navTo('t5')" class="flex flex-col items-center justify-center gap-1 text-text-muted hover:text-white transition-colors flex-1 p-2 min-w-[60px]">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <span class="text-[9px] font-bold tracking-wide">Distrib.</span>
     </button>
   </nav>
 
@@ -294,11 +302,11 @@
             </div>
             <div class="dp-calendar-wrap">
               <div class="dp-cal-header">
-                <button class="dp-cal-nav" onclick="dpNavMonth(-1)">
+                <button class="dp-cal-nav" type="button" onclick="dpNavMonth(-1)">
                   <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
                 </button>
                 <span class="dp-cal-title" id="dpCalTitle">setembro 2026</span>
-                <button class="dp-cal-nav" onclick="dpNavMonth(1)">
+                <button class="dp-cal-nav" type="button" onclick="dpNavMonth(1)">
                   <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                 </button>
               </div>
@@ -600,6 +608,145 @@
           </div>
         </div>
       </section>
+
+      <!-- TELA 5 — DISTRIBUIÇÃO E AQUECIMENTO -->
+      <section id="screen-t5" class="screen-view space-y-6 md:space-y-8 hidden">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+          <div>
+            <h2 class="text-lg md:text-xl font-extrabold text-white">📈 Distribuição & Crescimento</h2>
+            <p class="text-[11px] md:text-xs text-text-muted mt-1">Acompanhe a retenção de vídeo, aquecimento de base e aquisição de seguidores.</p>
+          </div>
+        </div>
+
+        <!-- BLOCO: AQUISIÇÃO E INSCRITOS -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+          <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4 flex flex-col justify-between">
+            <div>
+              <h3 class="text-[11px] md:text-xs font-extrabold text-accent-blue uppercase tracking-wider flex items-center gap-2">
+                <span class="text-base md:text-lg">👥</span> Meta Ads - Aquisição (Seguidores)
+              </h3>
+              <div class="grid grid-cols-2 gap-3 mt-4">
+                <div class="bg-bg-input p-3 rounded-md border border-border-custom">
+                  <span class="text-[9px] font-bold uppercase text-text-muted block mb-1">💰 Investimento</span>
+                  <div class="text-lg font-black text-white truncate" id="distMetaAcqSpent">R$ 0</div>
+                </div>
+                <div class="bg-bg-input p-3 rounded-md border border-border-custom">
+                  <span class="text-[9px] font-bold uppercase text-text-muted block mb-1">👁️ Impressões</span>
+                  <div class="text-lg font-black text-white truncate" id="distMetaAcqImp">0</div>
+                </div>
+                <div class="bg-bg-input p-3 rounded-md border border-border-custom">
+                  <span class="text-[9px] font-bold uppercase text-text-muted block mb-1">🔗 Cliques</span>
+                  <div class="text-lg font-black text-white truncate" id="distMetaAcqClicks">0</div>
+                </div>
+                <div class="bg-bg-input p-3 rounded-md border border-accent-blue/50 bg-accent-blue/10">
+                  <span class="text-[9px] font-bold uppercase text-accent-blue block mb-1">🟢 Custo / Clique</span>
+                  <div class="text-lg font-black text-accent-blue truncate" id="distMetaAcqCPC">R$ 0,00</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-4 border-t border-border-custom pt-4">
+              <h4 class="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2">Desempenho por Criativo (Aquisição)</h4>
+              <div class="overflow-y-auto custom-scrollbar max-h-[220px]">
+                <table class="w-full text-left text-xs min-w-[300px]">
+                  <thead class="bg-bg-input text-text-muted uppercase text-[9px] sticky top-0"><tr><th class="p-2">Criativo</th><th class="p-2 text-right">Gasto</th><th class="p-2 text-right">Cliques</th><th class="p-2 text-right">CPC</th></tr></thead>
+                  <tbody id="distMetaAcqCreatives" class="divide-y divide-border-custom text-text-primary"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4 flex flex-col justify-between">
+            <div>
+              <h3 class="text-[11px] md:text-xs font-extrabold text-accent-red uppercase tracking-wider flex items-center gap-2">
+                <span class="text-base md:text-lg">📺</span> Google Ads - Inscrições
+              </h3>
+              <div class="grid grid-cols-2 gap-3 mt-4">
+                <div class="bg-bg-input p-3 rounded-md border border-border-custom">
+                  <span class="text-[9px] font-bold uppercase text-text-muted block mb-1">💰 Investimento</span>
+                  <div class="text-lg font-black text-white truncate" id="distGoogleInscSpent">R$ 0</div>
+                </div>
+                <div class="bg-bg-input p-3 rounded-md border border-border-custom">
+                  <span class="text-[9px] font-bold uppercase text-text-muted block mb-1">🎯 Inscritos (Conv)</span>
+                  <div class="text-lg font-black text-accent-green truncate" id="distGoogleInscConv">0</div>
+                </div>
+                <div class="bg-bg-input p-3 rounded-md border border-accent-red/50 bg-accent-red/10 col-span-2 flex justify-between items-center">
+                  <div>
+                    <span class="text-[9px] font-bold uppercase text-accent-red block mb-1">💸 CPA Médio</span>
+                    <div class="text-lg font-black text-accent-red truncate" id="distGoogleInscCPA">R$ 0,00</div>
+                  </div>
+                  <div class="text-right">
+                    <span class="text-[9px] text-accent-red/80 block">Quente: <b id="distGoogleInscCPAQ">R$ 0,00</b></span>
+                    <span class="text-[9px] text-accent-red/80 block">Frio: <b id="distGoogleInscCPAF">R$ 0,00</b></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 border-t border-border-custom pt-4">
+              <h4 class="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2">Desempenho por Criativo (Inscrições)</h4>
+              <div class="overflow-y-auto custom-scrollbar max-h-[220px]">
+                <table class="w-full text-left text-xs min-w-[300px]">
+                  <thead class="bg-bg-input text-text-muted uppercase text-[9px] sticky top-0"><tr><th class="p-2">Criativo</th><th class="p-2 text-right">Gasto</th><th class="p-2 text-right">Inscritos</th><th class="p-2 text-right">Custo/Insc.</th></tr></thead>
+                  <tbody id="distGoogleInscCreatives" class="divide-y divide-border-custom text-text-primary"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BLOCO: RETENÇÃO E AQUECIMENTO -->
+        <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-6">
+          <div class="flex items-center justify-between border-b border-border-custom pb-3">
+            <h3 class="text-[11px] md:text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-2">
+              <span class="p-1.5 rounded bg-accent-yellow/10 text-accent-yellow">🔥</span> Funil de Retenção de Vídeo (CPV Aquecimento)
+            </h3>
+          </div>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Funil Meta -->
+            <div class="space-y-4">
+              <h4 class="text-[10px] font-bold text-accent-blue uppercase tracking-wider">🔷 Meta Ads (Aquecimento Base)</h4>
+              <div class="bg-bg-input p-3 rounded border border-border-custom flex justify-between">
+                <span class="text-xs text-text-muted">Investimento:</span>
+                <span class="text-xs font-bold text-white" id="distMetaAqSpent">R$ 0,00</span>
+              </div>
+              <div class="space-y-2" id="funilMetaAq"></div>
+            </div>
+
+            <!-- Funil Google Quente -->
+            <div class="space-y-4">
+              <h4 class="text-[10px] font-bold text-accent-red uppercase tracking-wider">🔴 Google Ads ([DISTR] - Quente)</h4>
+              <div class="bg-bg-input p-3 rounded border border-border-custom flex justify-between">
+                <span class="text-xs text-text-muted">Investimento:</span>
+                <span class="text-xs font-bold text-white" id="distGoogleDistSpentQ">R$ 0,00</span>
+              </div>
+              <div class="space-y-2" id="funilGoogleDistQ"></div>
+            </div>
+
+            <!-- Funil Google Frio -->
+            <div class="space-y-4">
+              <h4 class="text-[10px] font-bold text-accent-red uppercase tracking-wider">🔴 Google Ads ([DISTR] - Frio)</h4>
+              <div class="bg-bg-input p-3 rounded border border-border-custom flex justify-between">
+                <span class="text-xs text-text-muted">Investimento:</span>
+                <span class="text-xs font-bold text-white" id="distGoogleDistSpentF">R$ 0,00</span>
+              </div>
+              <div class="space-y-2" id="funilGoogleDistF"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BLOCO: GRÁFICO 75% VIEWS -->
+        <div class="bg-bg-card p-5 md:p-6 rounded-lg border border-border-custom space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-[11px] md:text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-2">
+              <span class="p-1.5 rounded bg-purple-500/10 text-purple-400">📈</span> Evolução Diária da Audiência (Views a 75%)
+            </h3>
+          </div>
+          <div id="distChart" class="w-full h-56 md:h-64"></div>
+        </div>
+      </section>
+
     </div>
   </main>
 </div>
@@ -621,18 +768,19 @@ function navTo(id){
   document.querySelectorAll('.screen-view').forEach(el=>el.classList.add('hidden'));
   document.getElementById('screen-'+id).classList.remove('hidden');
   
-  ['t1','t2','t3','t4'].forEach(i=>{
+  ['t1','t2','t3','t4','t5'].forEach(i=>{
     const b=document.getElementById('nav-'+i); if(!b)return;
     b.className=i===id?'sb-nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all bg-accent-blue text-white shadow-md':'sb-nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-md text-xs font-semibold transition-all text-text-muted hover:text-text-primary hover:bg-bg-input';
   });
 
-  ['t1','t2','t3','t4'].forEach(i=>{
+  ['t1','t2','t3','t4','t5'].forEach(i=>{
     const mb=document.getElementById('mob-nav-'+i); if(!mb)return;
-    if(i===id) mb.className='flex flex-col items-center justify-center gap-1 text-accent-blue transition-colors flex-1 p-2 transform scale-105';
-    else mb.className='flex flex-col items-center justify-center gap-1 text-text-muted hover:text-white transition-colors flex-1 p-2';
+    if(i===id) mb.className='flex flex-col items-center justify-center gap-1 text-accent-blue transition-colors flex-1 p-2 transform scale-105 min-w-[60px]';
+    else mb.className='flex flex-col items-center justify-center gap-1 text-text-muted hover:text-white transition-colors flex-1 p-2 min-w-[60px]';
   });
 
   if(id==='t2') setTimeout(()=>renderFunnelAndTimeline(),100);
+  if(id==='t5') setTimeout(()=>renderDistribuicao(),100);
 }
 
 // FIREBASE
@@ -787,6 +935,7 @@ let launchState={
 };
 
 let comboChartInstance=null;
+let distChartInstance=null;
 
 async function enterApp(userData){
   currentUser=userData;
@@ -1000,7 +1149,6 @@ async function saveAdminConfig(){
     try {
       const db = firebase.firestore();
       
-      // MONTAGEM EXPLÍCITA DE TODAS AS CHAVES (Garante o salvamento das tags)
       const setupToSave = {
         nomeCliente: launchState.nomeCliente,
         nomeLancamento: launchState.nomeLancamento,
@@ -1109,9 +1257,18 @@ function closeDatePicker(){
   document.getElementById('dpTrigger').classList.remove('active');
 }
 
-document.addEventListener('click',e=>{
-  const wrap=document.getElementById('dpWrap');
-  if(wrap && !wrap.contains(e.target)) closeDatePicker();
+// Novo listener global de clique que não bloqueia o calendário
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('dpWrap');
+  const dropdown = document.getElementById('dpDropdown');
+  const trigger = document.getElementById('dpTrigger');
+
+  if (dropdown && dropdown.contains(e.target)) return;
+  if (trigger && trigger.contains(e.target)) return;
+
+  if (wrap && !wrap.contains(e.target)) {
+    closeDatePicker();
+  }
 });
 
 function dpNavMonth(dir){
@@ -1252,14 +1409,28 @@ async function syncDataFromSheets(){
   if(sidebarDot) sidebarDot.className = 'w-2 h-2 rounded-full bg-accent-yellow animate-pulse shrink-0';
   if(sidebarText) sidebarText.textContent = 'Sincronizando...';
 
+  // Usa as abas corretas. Tenta puxar a aba Meta Ads (Geral) e a aba de Distribuição (usando as nomenclaturas possíveis)
   let meta = await fetchGvizJSONP(SPREADSHEET_URL, 'Meta Ads');
+  let metaDist = await fetchGvizJSONP(SPREADSHEET_URL, 'Meta Ads - Distribuição'); 
+  
+  if(!metaDist || !metaDist.length) {
+      metaDist = await fetchGvizJSONP(SPREADSHEET_URL, 'Meta Ads_Distribuição');
+  }
+  
   let google = await fetchGvizJSONP(SPREADSHEET_URL, 'Google Ads');
   
   let isSuccess = true;
   if(!meta||!meta.length) { meta=generateMockMeta(); isSuccess=false; }
+  
+  if(!metaDist||!metaDist.length) { 
+      console.warn("Aba Meta Distribuição não encontrada. Usando Meta Ads geral como fallback.");
+      metaDist=meta; 
+  }
+  
   if(!google||!google.length) { google=generateMockGoogle(); isSuccess=false; }
   
   launchState.dataMeta = meta; 
+  launchState.dataMetaDist = metaDist;
   launchState.dataGoogle = google;
 
   if (isSuccess) {
@@ -1329,6 +1500,12 @@ function parseNum(v){
   return parseFloat(s)||0;
 }
 
+function parsePct(v) {
+  let n = parseNum(v);
+  if(n > 1) n = n / 100;
+  return n;
+}
+
 function filterByDate(rows){
   const fs=launchState.filterStart, fe=launchState.filterEnd;
   if(!fs||!fe) return rows;
@@ -1351,6 +1528,7 @@ function renderAllScreens(){
   renderFunnelAndTimeline();
   renderCriativos();
   renderPublicos();
+  renderDistribuicao();
 }
 
 function renderFunnelAndTimeline(){
@@ -1371,6 +1549,14 @@ function renderFunnelAndTimeline(){
   const adMap={};
 
   const processRow = (r, isMeta) => {
+    const campName = getCol(r, ['Campaign Name', 'Nome da campanha', 'Campaign', 'Campanha']) || 'Outros';
+    const nameLower = campName.toLowerCase();
+    
+    // Ignorar Campanhas de Distribuição/Inscrição no funil principal de captação
+    if(nameLower.includes('distribuição') || nameLower.includes('distribuicao') || nameLower.includes('distr') || nameLower.includes('inscrição') || nameLower.includes('inscricao')) {
+        return; 
+    }
+
     const i = parseNum(getCol(r,['Impressions','Impressões']));
     const c = parseNum(getCol(r,['Unique Link Clicks','Link clicks','Clicks','Cliques']));
     let lpv = parseNum(getCol(r,['Website landing page views','Landing Page Views','Visualizações de página']));
@@ -1380,14 +1566,12 @@ function renderFunnelAndTimeline(){
     const sp = parseNum(getCol(r,['Amount Spent','Cost (Spend)','Valor gasto','Cost']));
     const day = getCol(r,['Day','Dia'])||'';
     
-    const campName = getCol(r, ['Campaign Name', 'Nome da campanha', 'Campaign', 'Campanha']) || 'Outros';
     const pubName = getCol(r, isMeta ? ['Ad Set Name','Nome do conjunto de anúncios'] : ['Ad Group Name','Grupo de anúncios']) || 'Outros';
     const adName = getCol(r, isMeta ? ['Ad Name','Nome do anúncio'] : ['Ad Name','Anúncio']) || 'Outros';
 
     totalImp+=i; totalClicks+=c; totalLPV+=lpv; totalLeads+=l; totalGasto+=sp;
     
     let quente = false;
-    const nameLower = campName.toLowerCase();
     
     const tagsQ = (launchState.tagQuente || '').toLowerCase().split(',').map(t=>t.trim()).filter(Boolean);
     const tagsF = (launchState.tagFria || '').toLowerCase().split(',').map(t=>t.trim()).filter(Boolean);
@@ -1552,6 +1736,9 @@ function renderCriativos(){
   const gm={},mm={};
   
   google.forEach(r=>{
+    const campName = (getCol(r, ['Campaign Name', 'Nome da campanha', 'Campaign', 'Campanha']) || '').toLowerCase();
+    if(campName.includes('distribuição') || campName.includes('distr') || campName.includes('inscrição')) return; 
+
     const n=getCol(r,['Ad Name','Anúncio'])||'G-ADS';
     const s=parseNum(getCol(r,['Cost (Spend)','Cost'])), l=parseNum(getCol(r,['Conversions','Leads']));
     let c=parseNum(getCol(r,['Clicks','Cliques'])), lpv=parseNum(getCol(r,['Landing Page Views','Visualizações de página']));
@@ -1561,6 +1748,9 @@ function renderCriativos(){
     gm[n].spent+=s; gm[n].leads+=l; gm[n].lpv+=lpv;
   });
   meta.forEach(r=>{
+    const campName = (getCol(r, ['Campaign Name', 'Nome da campanha', 'Campaign', 'Campanha']) || '').toLowerCase();
+    if(campName.includes('distribuição') || campName.includes('distr') || campName.includes('aquisição') || campName.includes('seguidor')) return; 
+
     const n=getCol(r,['Ad Name','Nome do anúncio'])||'M-ADS';
     const s=parseNum(getCol(r,['Amount Spent','Cost (Spend)'])), l=parseNum(getCol(r,['Leads','Conversions']));
     let c=parseNum(getCol(r,['Unique Link Clicks','Link clicks','Clicks'])), lpv=parseNum(getCol(r,['Website landing page views','Landing Page Views']));
@@ -1579,6 +1769,9 @@ function renderPublicos(){
   const gm={},mm={};
   
   google.forEach(r=>{
+    const campName = (getCol(r, ['Campaign Name', 'Nome da campanha', 'Campaign', 'Campanha']) || '').toLowerCase();
+    if(campName.includes('distribuição') || campName.includes('distr') || campName.includes('inscrição')) return; 
+
     const n=getCol(r,['Ad Group Name','Grupo de anúncios'])||'Grupo G';
     const s=parseNum(getCol(r,['Cost (Spend)','Cost'])), l=parseNum(getCol(r,['Conversions','Leads']));
     let c=parseNum(getCol(r,['Clicks','Cliques'])), lpv=parseNum(getCol(r,['Landing Page Views','Visualizações de página']));
@@ -1588,6 +1781,9 @@ function renderPublicos(){
     gm[n].spent+=s; gm[n].leads+=l; gm[n].lpv+=lpv;
   });
   meta.forEach(r=>{
+    const campName = (getCol(r, ['Campaign Name', 'Nome da campanha', 'Campaign', 'Campanha']) || '').toLowerCase();
+    if(campName.includes('distribuição') || campName.includes('distr') || campName.includes('aquisição') || campName.includes('seguidor')) return; 
+
     const n=getCol(r,['Ad Set Name','Nome do conjunto de anúncios'])||'Conjunto M';
     const s=parseNum(getCol(r,['Amount Spent','Cost (Spend)'])), l=parseNum(getCol(r,['Leads','Conversions']));
     let c=parseNum(getCol(r,['Unique Link Clicks','Link clicks','Clicks'])), lpv=parseNum(getCol(r,['Website landing page views','Landing Page Views']));
@@ -1624,6 +1820,249 @@ function renderTableWithBadges(id,items){
     
     tbody.innerHTML+=`<tr class="hover:bg-bg-input/50 transition"><td class="p-3 font-bold text-white whitespace-nowrap">${it.name}</td><td class="p-3 whitespace-nowrap">R$ ${it.spent.toFixed(2)}</td><td class="p-3 font-bold text-accent-green whitespace-nowrap">${it.leads}</td><td class="p-3 text-accent-yellow whitespace-nowrap">R$ ${(it.cpl===999?0:it.cpl).toFixed(2)}</td><td class="p-3 text-accent-blue font-bold whitespace-nowrap">${it.conv.toFixed(1)}%</td><td class="p-3 whitespace-nowrap">${b||'<span class="text-text-muted text-[10px]">—</span>'}</td></tr>`;
   });
+}
+
+// ==========================================
+// ABA 5: DISTRIBUIÇÃO E AQUECIMENTO
+// ==========================================
+function renderDistribuicao(){
+  const rawMetaDist = launchState.dataMetaDist && launchState.dataMetaDist.length ? launchState.dataMetaDist : launchState.dataMeta;
+  
+  let meta = filterByDate(rawMetaDist);
+  let google = filterByDate(launchState.dataGoogle);
+
+  let mAcq = { spent: 0, imp: 0, clicks: 0 };
+  let mAcqCreatives = {};
+
+  let mAq = { spent: 0, v25: 0, v50: 0, v75: 0, v95: 0, v100: 0 };
+  
+  let gInsc = { spent: 0, conv: 0, spentQ: 0, convQ: 0, spentF: 0, convF: 0 };
+  let gInscCreatives = {};
+
+  let gDistQ = { spent: 0, v25: 0, v50: 0, v75: 0, v100: 0 };
+  let gDistF = { spent: 0, v25: 0, v50: 0, v75: 0, v100: 0 };
+
+  const chartDataMap = {}; // key: isoDate => { v75: 0, spent: 0 }
+
+  // Processar dados Meta Ads (Distribuição)
+  meta.forEach(r => {
+    const camp = (getCol(r, ['Campaign Name', 'Nome da campanha', 'Campaign', 'Campanha']) || '').toLowerCase();
+    const adName = getCol(r, ['Ad Name', 'Nome do anúncio', 'Anúncio']) || 'Criativo Genérico';
+    const day = getCol(r,['Day','Dia'])||'';
+    const spent = parseNum(getCol(r, ['Amount Spent','Cost (Spend)','Valor gasto','Cost']));
+
+    // Aquisição / Seguidores
+    if(camp.includes('aquisição') || camp.includes('aquisicao') || camp.includes('seguidor')) {
+      const imp = parseNum(getCol(r, ['Impressions','Impressões']));
+      const clicks = parseNum(getCol(r, ['Unique Link Clicks','Link clicks','Clicks','Cliques']));
+      
+      mAcq.spent += spent;
+      mAcq.imp += imp;
+      mAcq.clicks += clicks;
+
+      if(!mAcqCreatives[adName]) mAcqCreatives[adName] = { name: adName, spent: 0, clicks: 0 };
+      mAcqCreatives[adName].spent += spent;
+      mAcqCreatives[adName].clicks += clicks;
+    }
+    
+    // Aquecimento
+    if(camp.includes('aquecimento') || camp.includes('engajamento') || camp.includes('video view')) {
+      const v25 = parseNum(getCol(r, ['Video Watches at 25%', 'Video played to 25%']));
+      const v50 = parseNum(getCol(r, ['Video Watches at 50%', 'Video played to 50%']));
+      const v75 = parseNum(getCol(r, ['Video Watches at 75%', 'Video played to 75%']));
+      const v95 = parseNum(getCol(r, ['Video Watches at 95%', 'Video played to 95%']));
+      const v100 = parseNum(getCol(r, ['Video Watches at 100%', 'Video played to 100%']));
+
+      mAq.spent += spent;
+      mAq.v25 += v25; mAq.v50 += v50; mAq.v75 += v75; mAq.v95 += v95; mAq.v100 += v100;
+
+      if(!chartDataMap[day]) chartDataMap[day] = { v75: 0, spent: 0 };
+      chartDataMap[day].v75 += v75;
+      chartDataMap[day].spent += spent;
+    }
+  });
+
+  // Processar dados Google Ads
+  google.forEach(r => {
+    const camp = (getCol(r, ['Campaign Name', 'Nome da campanha', 'Campaign', 'Campanha']) || '').toLowerCase();
+    const adName = getCol(r, ['Ad Name', 'Anúncio']) || 'Vídeo Genérico';
+    const day = getCol(r,['Day','Dia'])||'';
+    const spent = parseNum(getCol(r, ['Cost (Spend)','Cost','Valor gasto']));
+    const imp = parseNum(getCol(r, ['Impressions','Impressões']));
+    const isQuente = camp.includes('quente') || camp.includes('inscrito') || camp.includes('site');
+
+    // Aquisição / Inscrição
+    if(camp.includes('inscrição') || camp.includes('inscricao') || camp.includes('aquisição') || camp.includes('aquisicao')) {
+      const conv = parseNum(getCol(r, ['Conversions','Conversões']));
+      gInsc.spent += spent;
+      gInsc.conv += conv;
+      
+      if(isQuente) { gInsc.spentQ += spent; gInsc.convQ += conv; }
+      else { gInsc.spentF += spent; gInsc.convF += conv; }
+
+      if(!gInscCreatives[adName]) gInscCreatives[adName] = { name: adName, spent: 0, conv: 0 };
+      gInscCreatives[adName].spent += spent;
+      gInscCreatives[adName].conv += conv;
+    }
+    
+    // Distribuição / Aquecimento
+    if(camp.includes('distr') || camp.includes('aquecimento')) {
+      const v25 = imp * parsePct(getCol(r, ['Video played to 25%']));
+      const v50 = imp * parsePct(getCol(r, ['Video played to 50%']));
+      const v75 = imp * parsePct(getCol(r, ['Video played to 75%']));
+      const v100 = imp * parsePct(getCol(r, ['Video played to 100%']));
+
+      if(isQuente) {
+        gDistQ.spent += spent;
+        gDistQ.v25 += v25; gDistQ.v50 += v50; gDistQ.v75 += v75; gDistQ.v100 += v100;
+      } else {
+        gDistF.spent += spent;
+        gDistF.v25 += v25; gDistF.v50 += v50; gDistF.v75 += v75; gDistF.v100 += v100;
+      }
+
+      if(!chartDataMap[day]) chartDataMap[day] = { v75: 0, spent: 0 };
+      chartDataMap[day].v75 += v75;
+      chartDataMap[day].spent += spent;
+    }
+  });
+
+  // Renderizar META AQUISIÇÃO
+  document.getElementById('distMetaAcqSpent').innerText = 'R$ ' + mAcq.spent.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  document.getElementById('distMetaAcqImp').innerText = mAcq.imp.toLocaleString('pt-BR');
+  document.getElementById('distMetaAcqClicks').innerText = mAcq.clicks.toLocaleString('pt-BR');
+  const cpc = mAcq.clicks > 0 ? mAcq.spent / mAcq.clicks : 0;
+  document.getElementById('distMetaAcqCPC').innerText = 'R$ ' + cpc.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+  const tbMetaAcq = document.getElementById('distMetaAcqCreatives');
+  tbMetaAcq.innerHTML = '';
+  Object.values(mAcqCreatives).sort((a,b) => b.clicks - a.clicks).forEach(cr => {
+    const cpcr = cr.clicks > 0 ? (cr.spent / cr.clicks).toFixed(2) : '0.00';
+    tbMetaAcq.innerHTML += `
+      <tr class="hover:bg-bg-input/50 transition">
+        <td class="p-2 font-semibold text-white truncate max-w-[150px]" title="${cr.name}">${cr.name}</td>
+        <td class="p-2 text-right text-text-muted whitespace-nowrap">R$ ${cr.spent.toFixed(2)}</td>
+        <td class="p-2 text-right font-bold text-accent-blue whitespace-nowrap">${cr.clicks}</td>
+        <td class="p-2 text-right text-accent-yellow whitespace-nowrap">R$ ${cpcr}</td>
+      </tr>`;
+  });
+
+  // Renderizar GOOGLE AQUISIÇÃO
+  document.getElementById('distGoogleInscSpent').innerText = 'R$ ' + gInsc.spent.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  document.getElementById('distGoogleInscConv').innerText = gInsc.conv.toLocaleString('pt-BR');
+  const cpaG = gInsc.conv > 0 ? gInsc.spent / gInsc.conv : 0;
+  document.getElementById('distGoogleInscCPA').innerText = 'R$ ' + cpaG.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  
+  const cpaGQ = gInsc.convQ > 0 ? gInsc.spentQ / gInsc.convQ : 0;
+  const cpaGF = gInsc.convF > 0 ? gInsc.spentF / gInsc.convF : 0;
+  document.getElementById('distGoogleInscCPAQ').innerText = 'R$ ' + cpaGQ.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  document.getElementById('distGoogleInscCPAF').innerText = 'R$ ' + cpaGF.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+  const tbGoogleInsc = document.getElementById('distGoogleInscCreatives');
+  tbGoogleInsc.innerHTML = '';
+  Object.values(gInscCreatives).sort((a,b) => b.conv - a.conv).forEach(cr => {
+    const cpa_cr = cr.conv > 0 ? (cr.spent / cr.conv).toFixed(2) : '0.00';
+    tbGoogleInsc.innerHTML += `
+      <tr class="hover:bg-bg-input/50 transition">
+        <td class="p-2 font-semibold text-white truncate max-w-[150px]" title="${cr.name}">${cr.name}</td>
+        <td class="p-2 text-right text-text-muted whitespace-nowrap">R$ ${cr.spent.toFixed(2)}</td>
+        <td class="p-2 text-right font-bold text-accent-green whitespace-nowrap">${cr.conv}</td>
+        <td class="p-2 text-right text-accent-yellow whitespace-nowrap">R$ ${cpa_cr}</td>
+      </tr>`;
+  });
+
+  // Função Auxiliar para criar funis
+  const buildFunnelHTML = (obj, pcts, colorClass) => {
+    const maxVal = Math.max(obj.v25, 1);
+    return pcts.map(pct => {
+      const v = obj['v'+pct];
+      const cpv = v > 0 ? obj.spent / v : 0;
+      const w = (v / maxVal) * 100;
+      return `
+        <div class="relative w-full bg-bg-card h-7 rounded overflow-hidden flex items-center border border-border-custom">
+          <div class="absolute top-0 left-0 h-full bg-${colorClass}/20" style="width:${w}%"></div>
+          <div class="relative w-full flex justify-between items-center px-2 text-[10px]">
+            <span class="font-bold text-${colorClass}">${pct}% <span class="text-text-muted font-normal">(${Math.round(v).toLocaleString('pt-BR')})</span></span>
+            <span class="font-semibold text-white">R$ ${cpv.toLocaleString('pt-BR', {minimumFractionDigits:3, maximumFractionDigits:3})}</span>
+          </div>
+        </div>`;
+    }).join('');
+  };
+
+  // Funil Meta
+  document.getElementById('distMetaAqSpent').innerText = 'R$ ' + mAq.spent.toLocaleString('pt-BR', {minimumFractionDigits:2});
+  document.getElementById('funilMetaAq').innerHTML = buildFunnelHTML(mAq, [25,50,75,95,100], 'accent-blue') || '<p class="text-xs text-text-muted py-2">Sem dados.</p>';
+
+  // Funil Google Quente
+  document.getElementById('distGoogleDistSpentQ').innerText = 'R$ ' + gDistQ.spent.toLocaleString('pt-BR', {minimumFractionDigits:2});
+  document.getElementById('funilGoogleDistQ').innerHTML = buildFunnelHTML(gDistQ, [25,50,75,100], 'accent-yellow') || '<p class="text-xs text-text-muted py-2">Sem dados.</p>';
+
+  // Funil Google Frio
+  document.getElementById('distGoogleDistSpentF').innerText = 'R$ ' + gDistF.spent.toLocaleString('pt-BR', {minimumFractionDigits:2});
+  document.getElementById('funilGoogleDistF').innerHTML = buildFunnelHTML(gDistF, [25,50,75,100], 'accent-red') || '<p class="text-xs text-text-muted py-2">Sem dados.</p>';
+
+  // GRÁFICO DIÁRIO 75%
+  const startDate = isoToDate(launchState.filterStart);
+  const endDate = isoToDate(launchState.filterEnd);
+  const dayDiff = Math.round((endDate-startDate)/(1000*60*60*24))+1;
+  const categories = [], seriesV75 = [], seriesCPV75 = [];
+
+  for(let i=0; i < Math.max(1, dayDiff); i++){
+    const d = new Date(startDate); d.setDate(d.getDate()+i);
+    const iso = dateToIso(d);
+    const dayLabel = `${String(d.getDate()).padStart(2,'0')}/${d.getMonth()+1}`;
+    
+    const v75 = chartDataMap[iso] ? chartDataMap[iso].v75 : 0;
+    const spent = chartDataMap[iso] ? chartDataMap[iso].spent : 0;
+    const cpv75 = v75 > 0 ? (spent / v75) : 0;
+
+    categories.push(dayLabel);
+    seriesV75.push(Math.round(v75));
+    seriesCPV75.push(parseFloat(cpv75.toFixed(3)));
+  }
+
+  if(distChartInstance) distChartInstance.destroy();
+  distChartInstance = new ApexCharts(document.getElementById('distChart'), {
+    series: [
+      { name: 'Visualizações (75%)', type: 'column', data: seriesV75 },
+      { name: 'CPV a 75% (R$)', type: 'line', data: seriesCPV75 }
+    ],
+    chart: { height: window.innerWidth < 768 ? 220 : 260, type: 'line', background: 'transparent', toolbar: { show: false } },
+    theme: { mode: 'dark' },
+    colors: ['#8B5CF6', '#F59E0B'], 
+    stroke: { width: [0, 3], curve: 'smooth' }, 
+    plotOptions: { bar: { borderRadius: 4, columnWidth: '40%' } },
+    xaxis: {
+      categories: categories,
+      labels: { style: { colors: '#64748B', fontSize: '9px' } },
+      axisBorder: { color: '#2D3148' },
+      axisTicks: { color: '#2D3148' },
+      tooltip: { enabled: false }
+    },
+    yaxis: [
+      { 
+        labels: { style: { colors: '#64748B', fontSize: '10px' }, formatter: v => Math.round(v) }
+      },
+      { 
+        opposite: true,
+        labels: { style: { colors: '#64748B', fontSize: '10px' }, formatter: v => 'R$ ' + v.toFixed(3) }
+      }
+    ],
+    grid: { borderColor: '#2D3148', strokeDashArray: 3 },
+    legend: { labels: { colors: '#F1F5F9' }, fontSize: '10px', markers: { radius: 12 } },
+    tooltip: {
+      shared: true, intersect: false,
+      y: {
+        formatter: function (y, { seriesIndex }) {
+          if (typeof y !== "undefined") {
+            if (seriesIndex === 0) return Math.round(y) + " views";
+            return "R$ " + y.toFixed(3);
+          }
+          return y;
+        }
+      }
+    }
+  });
+  distChartInstance.render();
 }
 </script>
 </body>
